@@ -1,0 +1,65 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+user1:
+  id: 1
+  phone_number: '+6285643882066'
+  passcode: '1234'
+  fullname: 'Heru'
+  email: 'heru@gmail.com'
+  gender: 'male'
+  date_of_birth: '1994-07-01'
+  avatar_url: 'https://res.cloudinary.com/qiscus/image/upload/NITXR7pLhz/avatar1.jpg'
+  application_id: '1'
+  is_public: 'false'
+  verification_attempts: '0'
+  qiscus_token: 'IaF7RqdC5xj96lfO8umL'
+  qiscus_email: 'userid_1_6285643882066@qisme.com'
+  description: 'Hello World!'
+
+user2:
+  id: 2
+  phone_number: '+6285643123456'
+  passcode: '4321'
+  fullname: 'Setiawan'
+  email: 'setiawan@gmail.com'
+  gender: 'male'
+  date_of_birth: '1995-07-01'
+  avatar_url: 'https://res.cloudinary.com/qiscus/image/upload/NITXR7pLhz/avatar2.jpg'
+  application_id: '1'
+  is_public: 'false'
+  verification_attempts: '0'
+  qiscus_token: 'IaF7RqdC5xj96lfO8umL'
+  qiscus_email: 'userid_2_6285643123456@qisme.com'
+  description: 'Lets Code!'
+
+user3:
+  id: 3
+  phone_number: '+6289987612345'
+  passcode: '9876'
+  fullname: 'User 3'
+  email: 'user3@gmail.com'
+  gender: 'male'
+  date_of_birth: '1991-07-01'
+  avatar_url: 'https://res.cloudinary.com/qiscus/image/upload/NITXR7pLhz/avatar3.jpg'
+  application_id: '1'
+  is_public: 'false'
+  verification_attempts: '0'
+  qiscus_token: 'IaF7RqdC5xj96lfO8umL'
+  qiscus_email: 'userid_2_6285643123456@qisme.com'
+  description: 'User 3 Description'
+
+user4:
+  id: 4
+  phone_number: '+6288123456791'
+  passcode: '6721'
+  fullname: 'User 4'
+  email: 'user4@gmail.com'
+  gender: 'male'
+  date_of_birth: '1991-07-01'
+  avatar_url: 'https://res.cloudinary.com/qiscus/image/upload/NITXR7pLhz/avatar4.jpg'
+  application_id: '5'
+  is_public: 'false'
+  verification_attempts: '0'
+  qiscus_token: 'IaF7RqdC5xj96lfO8umL'
+  qiscus_email: 'userid_4_6285643123456@qisme.com'
+  description: 'User 4 Description' 

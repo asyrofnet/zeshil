@@ -1,0 +1,26 @@
+<legend>Provider Setting</legend>
+<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
+<% @provider_settings.each do |ps| %>
+	<div class="form-group">
+		<div class="col-xs-12">
+			<label for="provider_ids"><h4>Attempt <%= ps.attempt %> </h4></label>
+			<select name="provider_settings[][provider_ids]" class="form-control" required>
+				<% @providers.each do |provider| %>
+					<option value="<%= provider.id %>" <% if ps.provider_id == provider.id %> selected <% end %>>
+						<%= provider.provider_name %>
+					</option>
+				<% end %>
+			</select>
+      <input type="hidden" name="provider_settings[][ids]" value="<%= ps.id %>">
+		</div>
+	</div>
+<% end %>
+
+<div class="form-group">
+	<div class="col-xs-12">
+		<br>
+		<button class="btn btn-lg btn-success" type="submit"> Save</button>
+	</div>
+</div>
+</form>

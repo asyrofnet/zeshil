@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Installation - Qisme API Documentation</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Installation";
+    var mkdocs_page_input_path = "installation.md";
+    var mkdocs_page_url = "/installation/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Qisme API Documentation</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../api_documentation/">Api documentation</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../building_documentation/">Building documentation</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Installation</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#installation">Installation</a></li>
+                
+                    <li><a class="toctree-l4" href="#clone-project">Clone project</a></li>
+                
+                    <li><a class="toctree-l4" href="#set-environment-variable">Set Environment Variable</a></li>
+                
+                    <li><a class="toctree-l4" href="#deployment-instructions">Deployment instructions</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Qisme API Documentation</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Installation</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="installation">Installation</h1>
+<h2 id="clone-project">Clone project</h2>
+<p>Clone project from Github or Bitbucket.</p>
+<h2 id="set-environment-variable">Set Environment Variable</h2>
+<p>Please see <code>application.yml.sample</code> or simply copy it to <code>application.yml</code></p>
+<pre><code>$ cp config/application.yml.sample application.yml
+</code></pre>
+
+<p>Make sure you have change all variable value to real value, for example <code>SENTRY_DSN</code> must be changed to new sentry dsn url.</p>
+<h2 id="deployment-instructions">Deployment instructions</h2>
+<p>After you are set all environment variable, please run:</p>
+<pre><code>$ rails db:migrate
+$ rails db:seed
+</code></pre>
+
+<p>for migrating and seeding initial data.</p>
+<p>After that, you need to create your own application via rails console:</p>
+<pre><code>params = {
+  :app_id =&gt; 'qisme',
+  :app_name =&gt; 'Qisme Application',
+  :app_description =&gt; '',
+  :qiscus_sdk_url =&gt; 'http://qisme.qiscus.com',
+  :qiscus_sdk_secret =&gt; 'qisme-123'
+}
+
+Application.create(params)
+</code></pre>
+
+<p>Then if you want to register new user, you can post it via Postman or using CURL:</p>
+<pre><code>curl -X POST -H &quot;Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW&quot; -F &quot;user[phone_number]=+6281233541554&quot; -F &quot;user[app_id]=kiwari-stag&quot; &quot;{URL}/api/v1/auth/&quot;
+</code></pre>
+
+<p>If you want to set a registered user as an admin, you can do via dashboard admin page or via console:</p>
+<pre><code>u = User.find_by(phone_number: &quot;+6281233541554&quot;)
+UserRole.create(user: u, role: Role.admin)
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../building_documentation/" class="btn btn-neutral" title="Building documentation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../building_documentation/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script src="../js/theme.js"></script>
+
+</body>
+</html>

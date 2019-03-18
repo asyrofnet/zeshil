@@ -1,0 +1,15 @@
+<% if flash[:notice] %>
+  <div class="alert alert-danger"><%= flash[:notice] %></div>
+<% end %>
+
+<div class="btn-group pull-right" role="group">
+  <a href="/dashboard/super_admin/application/<%= @application.id %>/custom_menus" class="btn btn-primary">Back to list menus</a>
+</div>
+
+<div class="clear"></div>
+<br>
+<br>
+
+<form action="/dashboard/super_admin/application/<%= @application.id %>/custom_menus" method="post">
+ <%= render "/dashboard/shared/custom_menus/new" %>
+</form>

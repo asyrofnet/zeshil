@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+user1_chatroom100:
+  id: 1
+  qiscus_room_name: 'Chat Room 1'
+  qiscus_room_id: 1
+  is_group_chat: false
+  user_id: 1
+  group_chat_name: 'Chat Room 1'
+  application_id: 1
+  group_avatar_url: ''
+  is_official_chat: false
+  target_user_id: 2
+
+user2_chatroom200:
+  id: 2
+  qiscus_room_name: 'Chat Room 2'
+  qiscus_room_id: 2
+  is_group_chat: true
+  user_id: 2
+  group_chat_name: 'Chat Room 1'
+  application_id: 1
+  group_avatar_url: ''
+  is_official_chat: false
+  target_user_id: 3

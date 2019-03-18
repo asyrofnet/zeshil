@@ -1,0 +1,53 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+user1_chatroom100:
+  id: 1
+  call_event: 'incoming'
+  message: 'Heru call Setiawan'
+  caller_user_id: 1
+  callee_user_id: 2
+  application_id: 1
+  call_room_id: 12345
+  created_at: '2018-03-27 12:46:53.075288'
+  status: 0
+  connected_at: null
+  duration: null
+
+user1_chatroom200:
+  id: 2
+  call_event: 'incoming'
+  message: 'Heru call Setiawan'
+  caller_user_id: 1
+  callee_user_id: 2
+  application_id: 1
+  call_room_id: 12345
+  created_at: '2018-03-27 12:47:17.77774'
+  status: 0
+  connected_at: null
+  duration: null
+
+user1_chatroom300:
+  id: 3
+  call_event: 'incoming'
+  message: 'Heru call Setiawan'
+  caller_user_id: 1
+  callee_user_id: 2
+  application_id: 1
+  call_room_id: 12345
+  created_at: '2018-03-28 06:59:36.370009'
+  status: 0
+  connected_at: null
+  duration: null
+
+user1_chatroom400:
+  id: 4
+  call_event: 'incoming'
+  message: 'Heru call Setiawan'
+  caller_user_id: 1
+  callee_user_id: 2
+  application_id: 1
+  call_room_id: 12345
+  created_at: '2018-03-28 06:59:54.805585'
+  status: 0
+  connected_at: null
+  duration: null

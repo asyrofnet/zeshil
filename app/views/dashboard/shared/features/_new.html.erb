@@ -1,0 +1,21 @@
+<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+<div class="form-group">
+  <label for="">Feature Id</label>
+  <input type="text" name="feature_id" class="form-control" placeholder="Feature Id" required>
+</div>
+<div class="form-group">
+  <label for="">Feature Name</label>
+  <input type="text" name="feature_name" class="form-control" placeholder="Feature Name" required>
+</div>
+<div class="form-group">
+  <label for="featureId">Description</label>
+  <textarea name="description" class="form-control" placeholder="Description" ></textarea>
+</div>
+<div class="form-group">
+  <label for="">Is Rolled Out</label>
+  <select name="is_rolled_out" class="form-control" required>
+  	<option value="true">true</option>
+  	<option value="false" selected>false</option>
+  </select>
+</div>
+<button type="submit" class="btn btn-success">Save</button>

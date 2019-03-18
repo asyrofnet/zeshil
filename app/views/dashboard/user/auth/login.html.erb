@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Qisme Engine</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="container">
+
+        <% if flash[:notice] %>
+          <div class="alert alert-danger"><%= flash[:notice] %></div>
+        <% end %>
+
+        <form method="post" action="/dashboard/user/auth">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <h2>Please sign in</h2>
+          <div class="form-group">
+            <label for="appId">Application</label>
+            <input type="text" name="app_id" class="form-control" id="appId" readonly required value="<%= @application.app_id %>" >
+          </div>
+          <div class="form-group">
+            <label for="inputUsername">Username (phone number using country code)</label>
+            <input type="username" name="username" id="inputUsername" class="form-control" placeholder="Phone number using country code (+62)" required >
+            <br>
+            <div id="getPasscode" class="input-group-addon">
+              <div id="getPasscodeAlert" class="alert alert-danger" role="alert"></div>
+              <a href="#" id="getPasscodeAction" class="btn btn-small btn-success">Get Passcode</a>
+            </div>
+
+          </div>
+          <div class="form-group">
+            <label for="inputPasscode">Passcode</label>
+            <input type="password" name="passcode" id="inputPasscode" class="form-control" placeholder="Passcode" required>
+          </div>
+          <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+
+      </div> <!-- /container -->
+    </div>
+
+    <script>
+      $('#getPasscodeAlert').hide();
+
+      $('#getPasscodeAction').click(function (e) {
+        e.preventDefault();
+        $('#getPasscodeAlert').hide();
+
+        let appId = $('#appId').val();
+        let username = $('#inputUsername').val();
+        let data = {
+          user: {
+            app_id: appId,
+            phone_number: username
+          }
+        }
+
+        let request = $.ajax({
+          url: "/api/v1/auth_nonce",
+          method: "POST",
+          data,
+        });
+
+        request.done(function( msg ) {
+          console.log(msg)
+        });
+
+        request.fail(function( jqXHR, textStatus ) {
+          let error = JSON.parse(jqXHR.responseText);
+
+          $('#getPasscodeAlert').empty();
+          $('#getPasscodeAlert').show();
+          $('#getPasscodeAlert').html(error.error.message);
+        });
+      })
+    </script>
+  </body>
+</html>

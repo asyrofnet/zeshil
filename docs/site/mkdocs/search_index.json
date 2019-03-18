@@ -1,0 +1,74 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "Welcome to Qisme Documentation\n\n\nInfo\n\n\n\n\nRails version: 5.0.2\n\n\nRuby version: 2.4.0\n\n\nBASE URL PROD: \nhttp://qisme-engine.herokuapp.com\n\n\nBASE URL STAG: \nhttp://qisme-engine-stag.herokuapp.com\n\n\n\n\n\n\nAccessing protected resource\n\n\nTo access protected resources you can send \naccess_token\n via URL parameter or via \nAuthorization\n Header. Both this way will let you to access protected resources:\n\n\n\n\nVia Header token:\n\n\n\n\nGET /api/v1/me/ HTTP/1.1\nHost: qisme-engine.herokuapp.com\nAuthorization: Token token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ0aW1lc3RhbXAiOiIyMDE2LTEyLTIyIDA3OjU0OjI0ICswMDAwIn0.pomTKwTLZmvzqkXXtJ23l1KKgfLLLueXWK3BQf6RuOY\nCache-Control: no-cache\nPostman-Token: cf4cf2da-1857-3e39-5118-b3c76f5c6824\n\n\n\n\n\n\n\nVia URL parameter\n\n\n\n\nhttp://qisme-engine.herokuapp.com/api/v1/me?access_token=THE_ACCESS_TOKEN\n\n\nJSON Response\n\n\nAll end-point should return JSON, unless mentioned in specific route documentation. You must see JSON structure in each request before parsing it (in web or mobile client), because in some condition there are some changes (add or remove) JSON object and it is delitace task to update all JSON response example.", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#welcome-to-qisme-documentation", 
+            "text": "", 
+            "title": "Welcome to Qisme Documentation"
+        }, 
+        {
+            "location": "/#info", 
+            "text": "Rails version: 5.0.2  Ruby version: 2.4.0  BASE URL PROD:  http://qisme-engine.herokuapp.com  BASE URL STAG:  http://qisme-engine-stag.herokuapp.com", 
+            "title": "Info"
+        }, 
+        {
+            "location": "/#accessing-protected-resource", 
+            "text": "To access protected resources you can send  access_token  via URL parameter or via  Authorization  Header. Both this way will let you to access protected resources:   Via Header token:   GET /api/v1/me/ HTTP/1.1\nHost: qisme-engine.herokuapp.com\nAuthorization: Token token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ0aW1lc3RhbXAiOiIyMDE2LTEyLTIyIDA3OjU0OjI0ICswMDAwIn0.pomTKwTLZmvzqkXXtJ23l1KKgfLLLueXWK3BQf6RuOY\nCache-Control: no-cache\nPostman-Token: cf4cf2da-1857-3e39-5118-b3c76f5c6824   Via URL parameter   http://qisme-engine.herokuapp.com/api/v1/me?access_token=THE_ACCESS_TOKEN", 
+            "title": "Accessing protected resource"
+        }, 
+        {
+            "location": "/#json-response", 
+            "text": "All end-point should return JSON, unless mentioned in specific route documentation. You must see JSON structure in each request before parsing it (in web or mobile client), because in some condition there are some changes (add or remove) JSON object and it is delitace task to update all JSON response example.", 
+            "title": "JSON Response"
+        }, 
+        {
+            "location": "/api_documentation/", 
+            "text": "API Documentation\n\n\nPlease go to here \n/api-docs\n to see new api documentation.", 
+            "title": "Api documentation"
+        }, 
+        {
+            "location": "/api_documentation/#api-documentation", 
+            "text": "Please go to here  /api-docs  to see new api documentation.", 
+            "title": "API Documentation"
+        }, 
+        {
+            "location": "/building_documentation/", 
+            "text": "Building Documentation\n\n\nThere are 2 tools to build docs. First \nMKDOCS\n to build static page via markdown file, second is \nAPIDOCJS\n to build Inline Documentation for RESTful web APIs.\n\n\nInstalling two of them is easy, but they need this prerequisites:\n\n\nFor MKDOCS, it needs:\n\n\n\n\nPython 2.7 or later\n\n\nPIP 1.5.2 or later\n\n\n\n\nFor APIDOCJS, needs:\n\n\n\n\nNodeJS v6 or later\n\n\nNPM v3 or later\n\n\n\n\nThen install mkdocs and apidocjs:\n\n\n$ sudo pip install mkdocs\n$ sudo npm install --global apidoc\n\n\n\n\nAfter installation completed, you can build new api doc using following command from rails root directory:\n\n\n$ apidoc -i app/controllers -o docs/apidoc\n\n\n\n\nPlease keep in mind that you must generate apidoc in \ndocs/apidoc\n directory.\n\n\nIf you change or add new file inside \ndocs/docs\n directory (for instance you adding some note in there), you must re-generate your docs to html using mkdocs. First, change your directory to \ndocs\n, then run \nmkdocs build\n, here is the full command:\n\n\n$ cd docs\n$ mkdocs build\n$ cd ..\n\n\n\n\nAnd now your documentation is up-to-date, don't forget to commit and push it into repo.", 
+            "title": "Building documentation"
+        }, 
+        {
+            "location": "/building_documentation/#building-documentation", 
+            "text": "There are 2 tools to build docs. First  MKDOCS  to build static page via markdown file, second is  APIDOCJS  to build Inline Documentation for RESTful web APIs.  Installing two of them is easy, but they need this prerequisites:  For MKDOCS, it needs:   Python 2.7 or later  PIP 1.5.2 or later   For APIDOCJS, needs:   NodeJS v6 or later  NPM v3 or later   Then install mkdocs and apidocjs:  $ sudo pip install mkdocs\n$ sudo npm install --global apidoc  After installation completed, you can build new api doc using following command from rails root directory:  $ apidoc -i app/controllers -o docs/apidoc  Please keep in mind that you must generate apidoc in  docs/apidoc  directory.  If you change or add new file inside  docs/docs  directory (for instance you adding some note in there), you must re-generate your docs to html using mkdocs. First, change your directory to  docs , then run  mkdocs build , here is the full command:  $ cd docs\n$ mkdocs build\n$ cd ..  And now your documentation is up-to-date, don't forget to commit and push it into repo.", 
+            "title": "Building Documentation"
+        }, 
+        {
+            "location": "/installation/", 
+            "text": "Installation\n\n\nClone project\n\n\nClone project from Github or Bitbucket.\n\n\nSet Environment Variable\n\n\nPlease see \napplication.yml.sample\n or simply copy it to \napplication.yml\n\n\n$ cp config/application.yml.sample application.yml\n\n\n\n\nMake sure you have change all variable value to real value, for example \nSENTRY_DSN\n must be changed to new sentry dsn url.\n\n\nDeployment instructions\n\n\nAfter you are set all environment variable, please run:\n\n\n$ rails db:migrate\n$ rails db:seed\n\n\n\n\nfor migrating and seeding initial data.\n\n\nAfter that, you need to create your own application via rails console:\n\n\nparams = {\n  :app_id =\n 'qisme',\n  :app_name =\n 'Qisme Application',\n  :app_description =\n '',\n  :qiscus_sdk_url =\n 'http://qisme.qiscus.com',\n  :qiscus_sdk_secret =\n 'qisme-123'\n}\n\nApplication.create(params)\n\n\n\n\nThen if you want to register new user, you can post it via Postman or using CURL:\n\n\ncurl -X POST -H \nContent-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW\n -F \nuser[phone_number]=+6281233541554\n -F \nuser[app_id]=kiwari-stag\n \n{URL}/api/v1/auth/\n\n\n\n\n\nIf you want to set a registered user as an admin, you can do via dashboard admin page or via console:\n\n\nu = User.find_by(phone_number: \n+6281233541554\n)\nUserRole.create(user: u, role: Role.admin)", 
+            "title": "Installation"
+        }, 
+        {
+            "location": "/installation/#installation", 
+            "text": "", 
+            "title": "Installation"
+        }, 
+        {
+            "location": "/installation/#clone-project", 
+            "text": "Clone project from Github or Bitbucket.", 
+            "title": "Clone project"
+        }, 
+        {
+            "location": "/installation/#set-environment-variable", 
+            "text": "Please see  application.yml.sample  or simply copy it to  application.yml  $ cp config/application.yml.sample application.yml  Make sure you have change all variable value to real value, for example  SENTRY_DSN  must be changed to new sentry dsn url.", 
+            "title": "Set Environment Variable"
+        }, 
+        {
+            "location": "/installation/#deployment-instructions", 
+            "text": "After you are set all environment variable, please run:  $ rails db:migrate\n$ rails db:seed  for migrating and seeding initial data.  After that, you need to create your own application via rails console:  params = {\n  :app_id =  'qisme',\n  :app_name =  'Qisme Application',\n  :app_description =  '',\n  :qiscus_sdk_url =  'http://qisme.qiscus.com',\n  :qiscus_sdk_secret =  'qisme-123'\n}\n\nApplication.create(params)  Then if you want to register new user, you can post it via Postman or using CURL:  curl -X POST -H  Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW  -F  user[phone_number]=+6281233541554  -F  user[app_id]=kiwari-stag   {URL}/api/v1/auth/   If you want to set a registered user as an admin, you can do via dashboard admin page or via console:  u = User.find_by(phone_number:  +6281233541554 )\nUserRole.create(user: u, role: Role.admin)", 
+            "title": "Deployment instructions"
+        }
+    ]
+}

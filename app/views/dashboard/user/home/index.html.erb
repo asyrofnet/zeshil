@@ -1,0 +1,39 @@
+<% if flash[:success] %>
+<div class="alert alert-success"><%= flash[:success] %></div>
+<% end %>
+
+<% if flash[:notice] %>
+<div class="alert alert-warning"><%= flash[:notice] %></div>
+<% end %>
+
+<hr>
+<div class="container">
+	<div class="row">
+		<div class="col-sm-10"><h1><%= @user.fullname %></h1></div>
+		<div class="col-sm-2"><a href="<%= @user.avatar_url %>" class="pull-right"><img title="profile image" class="img-circle img-responsive" src="<%= @user.avatar_url %>"></a></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3"><!--left col-->
+			<%= render "/dashboard/shared/users/sidebar-info" %> 
+		</div><!--/col-3-->
+		<div class="col-sm-9">
+
+			<hr>
+			<form action="/dashboard/user/profile/<%= @user.id %>/auth_sessions" method="post">
+				<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+	            <div class="btn-group pull-right" role="group">
+	              <button class="btn btn-primary" type="subumit"> Create New Access</button>
+	              <% if !@auth_sessions.empty? %>
+	              <a href="/dashboard/user/profile/<%= @user.id %>/auth_sessions/delete_all" class="btn btn-danger" onclick="return confirm('Are you sure want to revoke all access?');">Revoke All Access</a>
+	              <% end %>
+	            </div>
+			</form>
+			<h4>Recent Activity</h4>
+			<%= render "/dashboard/shared/users/list-activity" %> 
+		</div><!--/tab-pane-->
+
+	</div><!--/tab-content-->
+
+</div><!--/col-9-->
+</div><!--/row-->
+</div> <!-- /container -->

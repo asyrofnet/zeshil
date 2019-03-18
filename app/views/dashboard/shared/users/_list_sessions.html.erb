@@ -1,0 +1,50 @@
+<div class="table-responsive">
+  <div class="pull-right">
+    <%= paginate @users, views_prefix: 'dashboard/shared' %>
+  </div>
+
+  <table class="table table-hover table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>ID</th>
+        <th>Fullname</th>
+        <th>Phone Number</th>
+        <th>Email</th>
+        <th>Sessions Count</th>
+        <th>Last Session</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% idx = params[:page].to_i %>
+      <% idx = 1 if !params[:page].present? %>
+      <% idx = (idx + (24 * idx) - 25) + 1 %>
+      <% @users.each do |u| %>
+      <tr>
+        <td><%= ( idx || 1) %></td>
+        <td><%= u['id'] %></td>
+        <td><%= u['fullname'] %></td>
+        <td><%= u['phone_number'] %></td>
+        <td><%= u['email'] %></td>
+        <td><%= u['sessions_count'] %></td>
+        <td><%= u['last_session'].in_time_zone("Asia/Jakarta")  %></td>
+        <td>
+          <div class="btn-group" role="group">
+            <% if @path_segments[2] == "admin" %>
+              <a href="/dashboard/admin/users/<%= u['id'] %>" class="btn btn-default">Show</a>
+              <% elsif @path_segments[2] == "super_admin" %>
+                <a href="/dashboard/super_admin/application/<%= @application.id %>/users/<%= u['id'] %>" class="btn btn-default">Show</a>
+                <% end %>
+          </div>
+        </td>
+      </tr>
+      <% idx += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="pull-right">
+    <%= paginate @users, views_prefix: 'dashboard/shared' %>
+  </div>
+</div>

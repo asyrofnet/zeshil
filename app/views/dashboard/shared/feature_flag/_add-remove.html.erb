@@ -1,0 +1,32 @@
+<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+<div class="col-md-2">
+  <div class="form-group">
+    <label for="action">Action</label>
+    <br>
+    <input type="radio" name="feature_action" value="add" required> Add Feature<br>
+    <input type="radio" name="feature_action" value="delete" required> Delete Feature<br>
+  </div>
+</div>
+<div class="col-md-2">
+  <div class="form-group">
+    <label for="features">Features</label>
+    <select multiple name="features[]" class="form-control" required>
+      <% @features.each do | feature | %>
+      <option value="<%= feature.id %>"><%= feature.feature_id %></option>
+      <% end %>
+    </select> 
+  </div>
+</div>
+<div class="col-md-8">
+  <div class="form-group">
+    <label for="targetUserId">Target User ID</label>
+    <textarea name="target_user_id" id="target_user_id" cols="120" rows="4" class="form-control" placeholder="Target User ID" readonly></textarea>
+  </div>
+</div>
+<div class="col-md-12">
+  <div class="btn-group pull-right" role="group">
+    <button class="btn btn-warning" type="reset" onclick="resetTargetUserId()">Reset</button>
+    <button class="btn btn-info" type="reset" onclick="allUsersAsTargets()">All Users as Targets</button>
+    <button type="submit" class="btn btn-success">Save</button>
+  </div>
+</div>

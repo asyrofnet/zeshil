@@ -1,0 +1,24 @@
+{
+  "name": "qisme",
+  "version": "1.0.0",
+  "description": "This is for apidoc documentation",
+  "main": "apidoc_server.js",
+  "scripts": {
+    "start": "node apidoc_server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/qiscus/qisme-engine.git"
+  },
+  "keywords": [
+    "qisme",
+    "kiwari"
+  ],
+  "author": "Qiscus Developer",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/qiscus/qisme-engine#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}

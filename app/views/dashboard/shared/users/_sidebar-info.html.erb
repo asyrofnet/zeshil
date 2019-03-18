@@ -1,0 +1,48 @@
+<ul class="list-group">
+  <li class="list-group-item text-muted">
+    Profile
+<!--     <% if @path_segments[2] == "super_admin" %>
+    <a onclick="return confirm('Are you sure? This action cannot be undone, once you delete the user will forever be deleted.');" href="/dashboard/super_admin/application/<%= @user.application_id %>/users/<%= @user.id %>/delete" class="btn btn-danger btn-sm pull-right">Delete User</a>
+    <% elsif @path_segments[2] == "admin" %>
+    <a onclick="return confirm('Are you sure? This action cannot be undone, once you delete the user will forever be deleted.');" href="/dashboard/admin/users/<%= @user.id %>/delete" class="btn btn-danger btn-sm pull-right">Delete User</a>
+    <% end %>
+ -->  </li>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Joined</strong></span> <%= @user.created_at.in_time_zone("Asia/Jakarta") %></li>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Gender</strong></span> <%= @user.gender || '-' %></li>
+
+  <% if @auth_sessions.empty? %>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Last seen</strong></span> -</li>
+  <% else %>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Last seen</strong></span> <%= @user.auth_sessions.last.updated_at.in_time_zone("Asia/Jakarta") %></li>
+  <% end %>
+
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Phone number</strong></span> <%= @user.phone_number %></li>
+  <% if @path_segments[2] == "super_admin" %>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Qiscus Email</strong></span> <%= @user.qiscus_email %></li>
+  <% end %>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Qiscus Token</strong></span> <%= @user.qiscus_token %></li>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Roles</strong></span> <%= @user.roles.pluck(:name).join(", ") %></li>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Current passcode</strong></span> <%= @user.passcode || "-"%></li>
+</ul> 
+
+<div class="panel panel-default">
+  <div class="panel-heading">Callback URL <i class="fa fa-link fa-1x"></i></div>
+  <div class="panel-body"><a href="<%= @user.callback_url %>"><%= @user.callback_url %></a></div>
+</div>
+
+
+<ul class="list-group">
+  <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i> 
+    <% if @path_segments[2] == "super_admin" %>
+    <a href="/dashboard/super_admin/application/<%= @user.application_id %>/users/<%= @user.id %>/activity" class="btn btn-primary btn-sm pull-right">Detail Activity</a>
+    <% elsif @path_segments[2] == "admin" %>
+    <a href="/dashboard/admin/users/<%= @user.id %>/activity" class="btn btn-primary btn-sm pull-right">Detail Activity</a></li>
+    <% elsif @path_segments[2] == "user" %>
+    <a href="/dashboard/user/profile/activity" class="btn btn-primary btn-sm pull-right">Detail Activity</a></li>
+    <% end %>
+  </li>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Chat Room Total</strong></span> <%= @chat_rooms.count %></li>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Group Chat Room</strong></span> <%= @chat_rooms.where(is_group_chat: true).count %></li>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Single Chat Room</strong></span> <%= @chat_rooms.where(is_group_chat: false).count %></li>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Posts</strong></span> <%= @user.posts.count %></li>
+</ul>

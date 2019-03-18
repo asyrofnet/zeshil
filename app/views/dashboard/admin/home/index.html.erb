@@ -1,0 +1,27 @@
+<div class="row">
+  <div class="col-md-12">
+    <% if flash[:success] %>
+      <div class="alert alert-success"><%= flash[:success] %></div>
+    <% end %>
+
+    <% if flash[:notice] %>
+      <div class="alert alert-warning"><%= flash[:notice] %></div>
+    <% end %>
+
+
+    <h2><%= @application.app_name %></h2>
+    <h3>Application SDK ID: <strong><%= @application.app_id %></strong></h3>
+    <h3>SDK Secret Key: <strong><%= @application.qiscus_sdk_secret %></strong></h3>
+    <h3>Auto Add Friend: <strong><%= @application.is_auto_friend %></strong></h3>
+    <h3><%= button_to "Make All Users as Contact", {action: "make_all_users_as_contact"}, {class: 'btn btn-primary'} %></h3>
+    <p>
+      <%= @application.description %>
+    </p>
+  </div>
+</div>
+
+<div class="clear"></div>
+<br>
+<br>
+
+<%= render "/dashboard/shared/applications/show" %>

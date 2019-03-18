@@ -1,0 +1,24 @@
+<% if flash[:success] %>
+  <div class="alert alert-success"><%= flash[:success] %></div>
+<% end %>
+
+<% if flash[:notice] %>
+  <div class="alert alert-warning"><%= flash[:notice] %></div>
+<% end %>
+
+
+<br>
+<br>
+
+<div class="btn-group pull-right" role="group">
+  <a href="/dashboard/super_admin/application/<%= @application.id %>" class="btn btn-primary">Back to application detail</a>
+  <a href="/dashboard/super_admin/application/<%= @application.id %>/users/list_sessions" class="btn btn-warning">List sesssions</a>
+  <a href="/dashboard/super_admin/application/<%= @application.id %>/users/new" class="btn btn-success">Add User</a>
+  <a href="/dashboard/super_admin/application/<%= @application.id %>/users/export" class="btn btn-info">Export to CSV</a>
+</div>
+
+
+<br>
+<br>
+
+<%= render "/dashboard/shared/users/list" %>

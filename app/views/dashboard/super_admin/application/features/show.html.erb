@@ -1,0 +1,15 @@
+<% if flash[:notice] %>
+<div class="alert alert-danger"><%= flash[:notice] %></div>
+<% end %>
+
+<div class="btn-group pull-right" role="group">
+  <a href="/dashboard/super_admin/application/<%= @feature.application.id %>/features" class="btn btn-primary">Back to list feature</a>
+</div>
+
+<div class="clear"></div>
+<br>
+<br>
+
+<form action="/dashboard/super_admin/application/<%= @feature.application.id %>/features/<%= @feature.id %>/update" method="post"> 
+ <%= render "/dashboard/shared/features/show" %> 
+</form>

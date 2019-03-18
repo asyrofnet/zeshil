@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-md-12">
+    <% if flash[:success] %>
+      <div class="alert alert-success"><%= flash[:success] %></div>
+    <% end %>
+
+    <% if flash[:notice] %>
+      <div class="alert alert-warning"><%= flash[:notice] %></div>
+    <% end %>
+  </div>
+
+  <div class="btn-group pull-right" role="group">
+    <a href="/dashboard/super_admin/application/<%= @application.id %>" class="btn btn-primary">Back to application detail</a>
+  </div>
+
+</div>
+
+<div class="clear"></div>
+<br>
+<br>
+
+<div class="row">
+  <div class="col-md-12">
+
+    <form action="/dashboard/super_admin/application/<%= @application.id %>/provider_setting" method="post" class="form">
+      <%= render "/dashboard/shared/provider_settings/update" %> 
+    </form>
+  </div>
+</div>

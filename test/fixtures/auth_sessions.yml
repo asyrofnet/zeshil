@@ -1,0 +1,16 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+user1_session1:
+  id: 1
+  user_id: 1
+  jwt_token: <%= JWT.encode({user_id: 1, timestamp: Time.now}, ENV['JWT_KEY'], 'HS256') %>
+
+user2_session2:
+  id: 2 
+  user_id: 2
+  jwt_token: <%= JWT.encode({user_id: 2, timestamp: Time.now}, ENV['JWT_KEY'], 'HS256') %>
+
+user3_session3:
+  id: 3
+  user_id: 3
+  jwt_token: <%= JWT.encode({user_id: 3, timestamp: Time.now}, ENV['JWT_KEY'], 'HS256') %>

@@ -1,0 +1,45 @@
+<table class="table table-hover table-striped">
+  <thead>
+    <tr>
+      <th>#ID</th>
+      <th>Announcement Text</th>
+      <th>Annoucement Image URL</th>
+      <th>Is Active</th>
+      <th colspan="2" align="center">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @announcements.each do |a| %>
+    <tr>
+      <td><%= a.id %></td>
+      <td><%= a.text_content %></td>
+      <td><%= a.announcement_image_url %></td>
+      <td>
+        <% if (a.is_active == TRUE) %>
+        <span class="label label-success"><%= a.is_active %></span>
+        <% else %>
+        <span class="label label-danger"><%= a.is_active %></span>
+        <% end %>
+      </td>
+      <td>
+        <div class="btn-group" role="group">
+          <% if @path_segments[2] == "admin" %>
+          	<a href="/dashboard/admin/announcements/<%= a.id %>" class="btn btn-default">Edit</a>
+          <% elsif @path_segments[2] == "super_admin" %>
+          	<a href="/dashboard/super_admin/application/<%= @application.id %>/announcements/<%= a.id %>" class="btn btn-default">Edit</a>
+          <% end %>
+        </div>
+      </td>
+      <td>
+        <div class="btn-group" role="group">
+          <% if @path_segments[2] == "admin" %>
+	        <a href="/dashboard/admin/announcements/<%= a.id %>/delete" class="btn btn-default" onclick="return confirm('Are you sure want to delete this announcement?')">Delete</a>
+          <% elsif @path_segments[2] == "super_admin" %>
+          	<a href="/dashboard/super_admin/application/<%= @application.id %>/announcements/<%= a.id %>/delete" class="btn btn-default" onclick="return confirm('Are you sure want to delete this announcement?')">Delete</a>
+          <% end %>
+        </div>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

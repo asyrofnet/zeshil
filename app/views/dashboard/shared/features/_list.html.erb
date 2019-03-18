@@ -1,0 +1,41 @@
+<table class="table table-hover table-striped">
+  <thead>
+    <tr>
+      <th>#ID</th>
+      <th>Feature Id</th>
+      <th>Feature Name</th>
+      <th>Description</th>
+      <th>Is Rolled Out</th>
+      <th colspan="2" align="center">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @features.each do |f| %>
+    <tr>
+      <td><%= f.id %></td>
+      <td><%= f.feature_id %></td>
+      <td><%= f.feature_name %></td>
+      <td><%= f.description %></td>
+      <td><%= f.is_rolled_out %></td>
+      <td>
+        <div class="btn-group" role="group">
+          <% if @path_segments[2] == "admin" %>
+            <a href="/dashboard/admin/features/<%= f.id %>" class="btn btn-default">Edit</a>
+          <% elsif @path_segments[2] == "super_admin" %>
+            <a href="/dashboard/super_admin/application/<%= @application.id %>/features/<%= f.id %>" class="btn btn-default">Edit</a>
+          <% end %>
+        </div>
+      </td>
+      <td>
+        <div class="btn-group" role="group">
+          <% if @path_segments[2] == "admin" %>
+          <a href="/dashboard/admin/features/<%= f.id %>/delete" class="btn btn-default" onclick="return confirm('Are you sure want to delete this feature?')">Delete</a>
+          <% elsif @path_segments[2] == "super_admin" %>
+            <a href="/dashboard/super_admin/application/<%= @application.id %>/features/<%= f.id %>/delete" class="btn btn-default" onclick="return confirm('Are you sure want to delete this feature?')">Delete</a>
+          <% end %>
+        </div>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

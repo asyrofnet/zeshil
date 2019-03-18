@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+comment1:
+  id: 1
+  user_id: 2 
+  post_id: 1
+  content: "Comment 1"
+
+comment2:
+  id: 2
+  user_id: 1 
+  post_id: 1
+  content: "Comment 2"

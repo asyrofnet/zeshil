@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Qisme Engine</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="container">
+
+        <% if flash[:notice] %>
+          <div class="alert alert-danger"><%= flash[:notice] %></div>
+        <% end %>
+
+        <form method="post" action="/dashboard/admin/auth_email">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <h2>Please sign in</h2>
+          <div class="form-group">
+            <label for="appId">Application</label>
+            <input type="text" name="app_id" class="form-control" id="appId" readonly required value="<%= @application.app_id %>" >
+          </div>
+          <div class="form-group">
+            <label for="inputEmail">Email</label>
+            <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email" required >
+            <br>
+            <div id="getPasscodeByEmail" class="input-group-addon">
+              <div id="getPasscodeByEmailAlert" class="alert alert-danger" role="alert"></div>
+              <a href="#" id="getPasscodeByEmailAction" class="btn btn-small btn-success">Get Passcode</a>
+            </div>
+
+          </div>
+          <div class="form-group">
+            <label for="inputPasscode">Passcode</label>
+            <input type="password" name="passcode" id="inputPasscode" class="form-control" placeholder="Passcode" required>
+          </div>
+
+          <div class="form-group">
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+          </div>
+        </form>
+
+        <div class="form-group panel panel-info">
+          <div class="panel-body" style="text-align:center;">Using phone_number to sign in? <a href="/admin/<%= @application.app_id %>">go here</a></div>
+        </div>
+
+      </div> <!-- /container -->
+    </div>
+
+    <!-- get passcode by Email -->
+    <script>
+      $('#getPasscodeByEmailAlert').hide();
+
+      $('#getPasscodeByEmailAction').click(function (e) {
+        e.preventDefault();
+        $('#getPasscodeByEmailAlert').hide();
+
+        let appId = $('#appId').val();
+        let email = $('#inputEmail').val();
+        let data = {
+          user: {
+            app_id: appId,
+            email: email
+          }
+        }
+
+        let request = $.ajax({
+          url: "/api/v1/admin/auth_email",
+          method: "POST",
+          data,
+        });
+
+        request.done(function( msg ) {
+          console.log(msg)
+        });
+
+        request.fail(function( jqXHR, textStatus ) {
+          let error = JSON.parse(jqXHR.responseText);
+
+          $('#getPasscodeByEmailAlert').empty();
+          $('#getPasscodeByEmailAlert').show();
+          $('#getPasscodeByEmailAlert').html(error.error.message);
+        });
+      })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "Qisme Engine API",
+  "version": "1.0.0",
+  "description": "API Documentation for Qisme Application",
+  "title": "Qisme Engine API",
+  "url" : "https://qisme.qiscus.com",
+  "sampleUrl": "https://qisme-stag.qiscus.com",
+  "template": {
+    "withCompare": true,
+    "withGenerator": true
+  }
+}

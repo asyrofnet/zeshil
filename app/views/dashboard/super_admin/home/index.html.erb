@@ -1,0 +1,45 @@
+<% if flash[:success] %>
+  <div class="alert alert-success"><%= flash[:success] %></div>
+<% end %>
+
+<% if flash[:notice] %>
+  <div class="alert alert-warning"><%= flash[:notice] %></div>
+<% end %>
+
+
+<div class="btn-group" role="group">
+  <a href="/dashboard/super_admin/application/new" class="btn btn-primary">Add Application</a>
+</div>
+
+<table class="table table-hover table-striped">
+  <thead>
+    <tr>
+      <th>#ID</th>
+      <th>App ID</th>
+      <th>App Name</th>
+      <th>User Count</th>
+      <th>SMS Sender</th>
+      <th>Description</th>
+      <th>Created at</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @application.each do |app| %>
+    <tr>
+      <td><%= app.id %></td>
+      <td><%= app.app_id %></td>
+      <td><%= app.app_name %></td>
+      <td><%= app.users.count %></td>
+      <td><%= app.sms_sender %></td>
+      <td><%= app.description %></td>
+      <td><%= app.created_at %></td>
+      <td>
+        <div class="btn-group" role="group">
+          <a href="/dashboard/super_admin/application/<%= app.id %>" class="btn btn-default">Show</a>
+        </div>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

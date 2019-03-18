@@ -1,0 +1,16 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Platform</th>
+      <th>Latest Version</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @mobile_apps_version.each do |mobile_version| %>
+    <tr>
+      <td><%= mobile_version.platform.titleize %></td>
+      <td><%= mobile_version.version %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

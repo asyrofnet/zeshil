@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Qisme Engine</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="container">
+
+        <% if flash[:notice] %>
+          <div class="alert alert-danger"><%= flash[:notice] %></div>
+        <% end %>
+
+        <form method="post" action="/dashboard/auth">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <h2>Please sign in</h2>
+          <input type="hidden" name="app_id" value="super">
+          <div class="form-group">
+            <label for="inputUsername">Username  </label>
+            <input type="username" name="username" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+
+          </div>
+          <div class="form-group">
+            <label for="inputPasscode">Password</label>
+            <input type="password" name="passcode" id="inputPasscode" class="form-control" placeholder="Passcode" required>
+          </div>
+          <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+
+      </div> <!-- /container -->
+    </div>
+  </body>
+</html>

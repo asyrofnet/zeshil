@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="col-md-12">
+    <% if flash[:success] %>
+      <div class="alert alert-success"><%= flash[:success] %></div>
+    <% end %>
+
+    <% if flash[:notice] %>
+      <div class="alert alert-warning"><%= flash[:notice] %></div>
+    <% end %>
+
+
+    <div class="btn-group" role="group">
+      <a href="/dashboard/super_admin/application" class="btn btn-sm btn-primary">Back to list application</a>
+      <a href="/dashboard/super_admin/application/<%= @application.id %>/edit" class="btn btn-sm btn-warning">Update this application</a>
+      <a href="/dashboard/super_admin/application/<%= @application.id %>/users?page=1" class="btn btn-sm btn-success">Users</a>
+      <a href="/dashboard/super_admin/application/<%= @application.id %>/mobile_version" class="btn btn-sm btn-success">Mobile Version</a>
+      <a href="/dashboard/super_admin/application/<%= @application.id %>/announcements" class="btn btn-sm btn-info">Announcements</a>
+      <a href="/dashboard/super_admin/application/<%= @application.id %>/features" class="btn btn-sm btn-info">Features</a>
+      <a href="/dashboard/super_admin/application/<%= @application.id %>/custom_menus" class="btn btn-sm btn-info">Custom Menus</a>
+      <a href="/dashboard/super_admin/application/<%= @application.id %>/feature_flag" class="btn btn-sm btn-danger">Feature Flag</a>
+      <a href="/dashboard/super_admin/application/<%= @application.id %>/provider_setting" class="btn btn-sm btn-danger">Provider Setting</a>
+      <a href="/dashboard/super_admin/application/<%= @application.id %>/broadcasts" class="btn btn-sm btn-danger">Broadcast</a>
+      <a href="/dashboard/super_admin/application/<%= @application.id %>/user_dedicated_passcodes" class="btn btn-sm btn-danger">Dedicated Passcode</a>
+    </div>
+
+    <h2><%= @application.app_name %></h2>
+    <h3>Application SDK ID: <strong><%= @application.app_id %></strong></h3>
+    <h3>SDK Secret Key: <strong><%= @application.qiscus_sdk_secret %></strong></h3>
+    <h3>SMS Sender: <strong><%= @application.sms_sender %></strong></h3>
+    <h3>Auto Add Friend: <strong><%= @application.is_auto_friend %></strong></h3>
+    <h3><%= button_to "Make All Users as Contact", {action: "make_all_users_as_contact"}, {class: 'btn btn-primary'} %></h3>
+    <p>
+      <%= @application.description %>
+    </p>
+  </div>
+</div>
+
+<div class="clear"></div>
+<br>
+<br>
+
+<%= render "/dashboard/shared/applications/show" %>

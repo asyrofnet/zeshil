@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Qisme Engine</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/2.3.0/flatpickr.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/2.3.0/flatpickr.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <% if !session[:current_user_id].nil? %>
+            <a class="navbar-brand" href="#"><%= @current_admin.application.app_name || 'Dashboard' %></a>
+          <% end %>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <% if !session[:current_user_id].nil? %>
+              <li><a href="/dashboard/admin/home">Home</a></li>
+              <li><a href="/dashboard/admin/users">User</a></li>
+              <li><a href="/dashboard/admin/mobile_versions">Mobile Version</a></li>
+              <li><a href="/dashboard/admin/announcements">Announcements</a></li>
+              <li><a href="/dashboard/admin/features">Features</a></li>
+              <li><a href="/dashboard/admin/feature_flag">Feature Flag</a></li>
+              <li><a href="/dashboard/admin/broadcasts">Broadcast</a></li>
+              <% custom_menu = CustomMenu.where(application_id: @current_admin.application.id) %>
+              <% custom_menu.each do |m| %>
+              <li><a href="<%= m.url %>"><%= m.caption.titlecase %></a></li>
+              <% end %>
+            <% end %>
+
+
+            <li class="dropdown">
+              <% if !session[:current_user_id].nil? %>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Profile <span class="caret"></span></a>
+              <% end %>
+
+              <% if !session[:current_user_id].nil? %>
+                <ul class="dropdown-menu">
+                  <li><a href="/dashboard/admin/auth/logout">Logout</a></li>
+                </ul>
+              <% end %>
+            </li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="clear"></div>
+    <div style="height: 70px; width: 100%;"></div>
+    <div class="clear"></div>
+
+    <div class="container-fluid">
+      <div class="container">
+      <%= yield %>
+      </div>
+    </div>
+
+    <script>
+      flatpickr(".datepicker", {});
+    </script>
+  </body>
+</html>

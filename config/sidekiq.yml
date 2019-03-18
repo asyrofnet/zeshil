@@ -1,0 +1,19 @@
+:verbose: true
+:concurrency: 5
+
+# Set timeout to 8 on Heroku, longer if you manage your own systems.
+:timeout: 8
+
+# you can override concurrency based on environment
+production:
+  :concurrency: 10
+staging:
+  :concurrency: 5
+
+# Sidekiq job priority
+:queues:
+  - [bot_post_comment, 5]  # for post comment to bot
+  - [send_apns, 2] # send apns with sidekiq
+  - [push_notifications, 2] # generate PN payload and send to android
+  - [default, 1] # for contact sync smarter, reset chat room cache
+  - [mailers, 1] # for sending passcode

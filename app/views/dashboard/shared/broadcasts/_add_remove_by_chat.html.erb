@@ -1,0 +1,41 @@
+<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <div class="col-md-3">
+    <div class="form-group">
+        <label for="senderUserId">Sender User (Only Official)</label>
+        <select name="sender_user_id" class="form-control" onchange="showUsersByChat(event)" required>
+          <option value="" disabled selected>Select Sender User</option>
+          <% @official_users.each do | official_user | %>
+            <option value="<%= official_user.id %>">
+              <%= official_user.fullname.titlecase %>
+            </option>
+          <% end %>
+        </select>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="form-group">
+      <label for="targetUserIds">Target User ID (Without Official)</label>
+      <textarea name="target_user_ids" id="target_user_ids" cols="120" rows="4" class="form-control" placeholder="Target User ID"
+        readonly></textarea>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="form-group">
+      <label for="message">Message</label>
+      <textarea required name="message" rows="4" placeholder="Message" class="form-control"></textarea>
+    </div>
+  </div>
+
+  <div class="col-md-12 pull-right">
+    <div class="btn-group pull-right" role="group">
+      <button class="btn btn-warning" type="reset" onclick="resetTargetUserId()">Reset</button>
+      <button class="btn btn-info" type="button" onclick="allUsersAsTargets()">All Users as Target</button>
+      <button type="submit" class="btn btn-success" name="broadcast_action" value="to_multiple_user">Send Broadcast</button>
+      <br>
+      <br>
+      <br>
+      <br>
+    </div>
+  </div>

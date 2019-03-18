@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+qisme:
+  id: 1
+  app_id: 'qisme'
+  app_name: 'Qisme Application'
+  description: 'Description Qisme Application'
+  qiscus_sdk_url: 'http://qisme.qiscus.com'
+  qiscus_sdk_secret: 'qisme-123'
+
+kiwari:
+  id: 2
+  app_id: 'kiwari'
+  app_name: 'Kiwari Application'
+  description: 'Description Kiwari Application'
+  qiscus_sdk_url: 'http://kiwari.qiscus.com'
+  qiscus_sdk_secret: 'kiwari-123'

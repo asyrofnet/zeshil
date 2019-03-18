@@ -1,0 +1,14 @@
+<% if flash[:notice] %>
+  <div class="alert alert-danger"><%= flash[:notice] %></div>
+<% end %>
+
+<div class="btn-group pull-right" role="group">
+  <a href="/dashboard/admin/announcements" class="btn btn-primary">Back to list announcements</a>
+</div>
+<div class="clear"></div>
+<br>
+<br>
+
+<form action="/dashboard/admin/announcements" method="post">
+ <%= render "/dashboard/shared/announcements/new" %> 
+</form>

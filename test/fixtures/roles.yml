@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+role1:
+  id: 1
+  name: "Admin"
+
+role2:
+  id: 2
+  name: "Member"
+
+role3:
+  id: 3
+  name: "Official Account"
+
+role4:
+  id: 4
+  name: "Helpdesk"

@@ -1,0 +1,26 @@
+<legend>Update Version (to force update)</legend>
+<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+<div class="form-group"> 
+	<div class="col-xs-12">
+		<label for="platform"><h4>Platform</h4></label>
+		<select name="platform" class="form-control" required>
+			<option value="android">Android</option>
+			<option value="ios">IOS</option>
+		</select>
+	</div>
+</div>
+<div class="form-group">
+	<div class="col-xs-12">
+		<label for="version"><h4>Version</h4> (semantic versioning)</label>
+		<input class="form-control" name="version" id="version" placeholder="Version should follows semver, e.g: 2.1.0" type="text" required>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-xs-12">
+		<br>
+		<button class="btn btn-lg btn-success" type="submit"> Save</button>
+		<small>If you save, the data version above will be replaced</small>
+	</div>
+</div>
+</form>

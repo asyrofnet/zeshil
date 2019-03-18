@@ -1,0 +1,36 @@
+<div class="table-responsive">
+  <table class="table table-hover">
+    <tbody>
+      <% @auth_sessions.each do |auth_session| %>
+      <tr>
+        <td><!-- <i class="pull-right fa fa-edit"></i> -->
+          <% if @path_segments[2] == "admin" %>
+          <a onclick="return confirm('Are you sure want to revoke this access?');" href="/dashboard/admin/users/<%= @user.id %>/auth_sessions/<%= auth_session.id %>/delete" class="btn btn-sm btn-danger pull-right">Revoke access</a>
+          <% elsif @path_segments[2] == "super_admin" %>
+          <a onclick="return confirm('Are you sure want to revoke this access?');" href="/dashboard/super_admin/application/<%= @user.application_id %>/users/<%= @user.id %>/auth_sessions/<%= auth_session.id %>/delete" class="btn btn-sm btn-danger pull-right">Revoke access</a>
+          <% elsif @path_segments[2] == "user" %>
+          <a onclick="return confirm('Are you sure want to revoke this access?');" href="/dashboard/user/profile/<%= @user.id %>/auth_sessions/<%= auth_session.id %>/delete" class="btn btn-sm btn-danger pull-right">Revoke access</a>
+          <% end %>
+          <%= auth_session.updated_at.in_time_zone("Asia/Jakarta") %>
+          Login from <label class="badge badge-success"><%= auth_session.ip_address %></label>
+          <%= auth_session.user_agent %> <label class="badge"><%= auth_session.city %></label>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <nav aria-label="Page navigation">
+    <ul class="pagination pagination-lg pull-right">
+      <% i = 0 %>
+      <% while i < (@auth_sessions_total/25.to_f).ceil do  %>
+      <% i += 1 %>
+      <% if params[:page] == i.to_s %>
+      <li class="active"><a href="?page=<%= i %>"><%= i %></a></li>
+      <% else %>
+      <li><a href="?page=<%= i %>"><%= i %></a></li>
+      <% end %>
+      <% end %>
+    </ul>
+  </nav>
+</div>

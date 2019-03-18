@@ -1,0 +1,79 @@
+<% if flash[:success] %>
+<div class="alert alert-success"><%= flash[:success] %></div>
+<% end %>
+
+<% if flash[:notice] %>
+<div class="alert alert-warning"><%= flash[:notice] %></div>
+<% end %>
+
+<div class="btn-group pull-right" role="group">
+  <a href="/dashboard/admin/users" class="btn btn-primary">Back to list users</a>
+  <a href="/dashboard/admin/users/list_sessions" class="btn btn-warning">Back to list sessions</a>
+  <a href="/dashboard/admin/users/new" class="btn btn-success">Add new user</a>
+  <a href="/dashboard/admin/users/<%= @user.id %>/delete" class="btn btn-danger" onclick="return confirm('Are you sure want to delete this user?')">Delete user</a>
+</div>
+
+
+<hr>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-10"><h1><%= @user.fullname %></h1></div>
+    <div class="col-sm-2"><a href="<%= @user.avatar_url %>" class="pull-right"><img title="profile image" class="img-circle img-responsive" src="<%= @user.avatar_url %>"></a></div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3"><!--left col-->
+      <%= render "/dashboard/shared/users/sidebar-info" %>
+    </div><!--/col-3-->
+    <div class="col-sm-9">
+
+      <ul class="nav nav-tabs" id="myTab">
+        <li class="active"><a href="#home" data-toggle="tab">Home</a></li>
+        <li><a href="#profile" data-toggle="tab">Update Profile</a></li>
+        <li><a href="#feature" data-toggle="tab">Feature Flag</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane active" id="home">
+          <div class="table-responsive">
+            <!-- Table -->
+            <hr>
+            <div class="row">
+              <div class="col-md-4 col-md-offset-4 text-center">
+                <ul class="pagination" id="myPager"></ul>
+              </div>
+            </div>
+          </div><!--/table-resp-->
+
+          <hr>
+          <form action="/dashboard/admin/users/<%= @user.id %>/auth_sessions" method="post">
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            <div class="btn-group pull-right" role="group">
+              <button class="btn btn-primary" type="subumit"> Create New Access</button>
+              <% if !@auth_sessions.empty? %>
+              <a href="/dashboard/admin/users/<%= @user.id %>/auth_sessions/delete_all" class="btn btn-danger" onclick="return confirm('Are you sure want to revoke all access?');">Revoke All Access</a>
+              <% end %>
+            </div>
+          </form>
+          <h4>Recent Activity</h4>
+          <%= render "/dashboard/shared/users/list-activity" %>
+        </div><!--/tab-pane-->
+
+        <div class="tab-pane" id="profile">
+          <hr>
+          <form class="form" action="/dashboard/admin/users/<%= @user.id %>/update" method="post" enctype="multipart/form-data">
+            <%= render "/dashboard/shared/users/profile" %>
+          </form>
+        </div> <!--/tab-pane-->
+
+        <div class="tab-pane" id="feature">
+          <hr>
+          <form class="form" action="/dashboard/admin/users/<%= @user.id %>/update_features" method="post" enctype="multipart/form-data">
+            <%= render "/dashboard/shared/users/feature-flag" %>
+          </form>
+        </div><!--/tab-pane-->
+
+      </div><!--/tab-content-->
+
+    </div><!--/col-9-->
+  </div><!--/row-->
+</div> <!-- /container -->

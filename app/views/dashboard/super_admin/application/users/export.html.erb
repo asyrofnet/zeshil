@@ -1,0 +1,28 @@
+<% if flash[:success] %>
+  <div class="alert alert-success"><%= flash[:success] %></div>
+<% end %>
+
+<% if flash[:notice] %>
+  <div class="alert alert-warning"><%= flash[:notice] %></div>
+<% end %>
+
+<div class="btn-group pull-right" role="group">
+  <a href="/dashboard/super_admin/application/<%= @application.id %>/users/" class="btn btn-primary">Back to list user</a>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <form class="form" action="/dashboard/super_admin/application/<%= @application.id %>/users/post_export" method="post" enctype="multipart/form-data">
+      <%= render "/dashboard/shared/users/export" %> 
+    </form>
+  </div>
+</div>
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>

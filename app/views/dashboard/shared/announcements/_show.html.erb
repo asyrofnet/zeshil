@@ -1,0 +1,28 @@
+<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+<div class="form-group">
+  <label for="textContent">Text Content</label>
+  <textarea name="text_content" class="form-control" id="textContent" placeholder="Text Content" required><%= @announcement.text_content %></textarea>
+</div>
+<div class="form-group">
+  <label for="announcementImageUrl">Announcement Image URL</label>
+  <input type="url" name="announcement_image_url" class="form-control" id="announcementImageUrl" placeholder="Announcement Image URL" value="<%= @announcement.announcement_image_url %>">
+</div>
+<div class="form-group">
+  <label for="">Is Active</label>
+  <select name="is_active" class="form-control">
+    <% if @announcement.is_active == true %>
+    <option value="">-</option>
+    <option value="true" selected="">true</option>
+    <option value="false">false</option>
+    <% elsif @announcement.is_active == false %>
+    <option value="">-</option>
+    <option value="true">true</option>
+    <option value="false" selected>false</option>
+    <% else %>
+    <option value="">-</option>
+    <option value="true">true</option>
+    <option value="false">false</option>
+    <% end %>
+  </select>
+</div>
+<button type="submit" class="btn btn-success">Save</button>

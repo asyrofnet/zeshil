@@ -1,0 +1,14 @@
+<% if flash[:success] %>
+<div class="alert alert-success"><%= flash[:success] %></div>
+<% end %>
+
+<% if flash[:notice] %>
+<div class="alert alert-warning"><%= flash[:notice] %></div>
+<% end %>
+
+<div class="btn-group pull-right" role="group">
+  <a href="/dashboard/admin/broadcasts" class="btn btn-success">Send Broadcasts</a>
+</div>
+<br><br>
+<div class="row">
+  <%= render "/dashboard/shared/broadcasts/list_status" %>

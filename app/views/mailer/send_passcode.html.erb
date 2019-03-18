@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Hi <%= @user.fullname %></h1>
+    <p>
+      Your passcode to login at <%= @user.application.app_name %> is:
+
+      <h3><%= @user.passcode %></h3>
+    </p>
+
+    <small>
+      Please keep in mind that your passcode may be changed every time you try to resend passcode and/or login. So if you receive more than one email contain different passcode, try to use the last one.
+    </small>
+  </body>
+</html>

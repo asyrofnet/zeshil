@@ -1,0 +1,14 @@
+<% if flash[:success] %>
+<div class="alert alert-success"><%= flash[:success] %></div>
+<% end %>
+
+<% if flash[:notice] %>
+<div class="alert alert-warning"><%= flash[:notice] %></div>
+<% end %>
+
+<br><br>
+<div class="row">
+  <form class="form" action="/dashboard/admin/feature_flag" method="post">
+    <%= render "/dashboard/shared/feature_flag/add-remove" %>
+  </form>
+  <%= render "/dashboard/admin/feature_flag/list" %>

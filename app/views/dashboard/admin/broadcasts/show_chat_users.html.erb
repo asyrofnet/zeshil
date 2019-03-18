@@ -1,0 +1,19 @@
+<% if flash[:success] %>
+<div class="alert alert-success"><%= flash[:success] %></div>
+<% end %>
+
+<% if flash[:notice] %>
+<div class="alert alert-warning"><%= flash[:notice] %></div>
+<% end %>
+
+<div class="btn-group pull-right" role="group">
+  <a href="/dashboard/admin/broadcasts" class="btn btn-success">Show all users in <%= @current_admin.application.app_name %></a>
+  <a href="/dashboard/admin/broadcasts/show_status" class="btn btn-warning">Broadcasts status</a>
+</div>
+
+<br><br>
+<div class="row">
+  <form class="form" action="/dashboard/admin/broadcasts" method="post">
+    <%= render "/dashboard/shared/broadcasts/add_remove_by_chat" %>
+  </form>
+  <%= render "/dashboard/admin/broadcasts/list_by_chat" %>

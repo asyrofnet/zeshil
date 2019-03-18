@@ -1,0 +1,84 @@
+<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+<div class="form-group">
+  <div class="col-xs-12">
+    <label for="fullname"><h4>Fullname</h4> (minimum 4 character)</label>
+    <input class="form-control" name="user[fullname]" id="fullname" placeholder="full name" type="text" required>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-xs-12">
+    <label for="email"><h4>Email</h4></label>
+    <input class="form-control" name="user[email]" id="email" placeholder="you@email.com" type="email" required>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-xs-12">
+    <label for="phone_number"><h4>Country Code</h4></label>
+    <input class="form-control" name="user[country_code]" id="country_code" placeholder="enter country code" type="text" required>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-xs-12">
+    <label for="phone_number"><h4>Phone</h4></label>
+    <input class="form-control" name="user[phone_number]" id="phone_number" placeholder="enter phone" type="text" required>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-xs-12">
+    <label for="gender"><h4>Gender</h4></label>
+    <select name="user[gender]" class="form-control" required>
+      <option value="male" selected>Male</option>
+      <option value="female">Female</option>
+    </select>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-xs-12">
+    <label><h4>Date of Birth</h4></label>
+    <input type="text" name="user[date_of_birth]" class="datepicker form-control">
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-xs-12">
+    <label><h4>Description</h4> <small>profile description (this is a profile status)</small></label>
+    <textarea name="user[description]" class="form-control"></textarea>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-xs-12">
+    <label><h4>Webhook callback URL</h4> <small>for official account only</small></label>
+    <input type="text" class="form-control" name="user[callback_url]" placeholder="http://example.com/callback/listeners"></input>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-xs-12">
+    <label><h4>User avatar</label>
+    <input type="file" name="user[avatar_file]"></input>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-xs-12">
+    <label>Roles (you can select multiple role)</label>
+    <select multiple name="user_roles[]" class="form-control" required>
+      <% Role.all.each do | role | %>
+      <option value="<%= role.id %>"><%= role.name %></option>
+      <% end %>
+    </select>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-xs-12">
+    <br>
+    <button class="btn btn-lg btn-success" type="submit"> Save</button>
+  </div>
+</div>

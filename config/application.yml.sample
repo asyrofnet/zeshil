@@ -1,0 +1,75 @@
+# Setting HTTP debug to show or not
+HTTP_DEBUG_LOG: "false"
+
+# SECRET KEY FOR JWT, please change it in production
+JWT_KEY: "vDY95GL7nP60+/wZEUAXYj53KfMAz4sRKpsRl8xGHuIy"
+
+# app name for new relic
+APP_NAME: 'Qisme'
+NEW_RELIC_LICENSE_KEY: '6360b672468b68827529bd68884431c8d4f06091'
+
+
+# Database connection
+APP_DATABASE_HOST: "127.0.0.1"
+APP_DATABASE_PORT: "5432"
+APP_DATABASE_USERNAME: "postgres"
+APP_DATABASE_PASSWORD: "postgres"
+APP_DATABASE_NAME: "qisme"
+APP_DATABASE_TEST_NAME: "qisme_test"
+
+# Cloudinary
+CLOUDINARY_API_KEY: '828523638445197'
+CLOUDINARY_API_SECRET: 'ZuOI02xrwabF8QxplR3-GbjvOZ0'
+CLOUDINARY_CLOUD_NAME: 'qiscus'
+
+# SMS Handling
+NEXMO_API_KEY: "9bd89304"
+NEXMO_API_SECRET: "d470067ad3b9bb71"
+TWILIO_SID_KEY: "AC1f0a135ab58088f504d06cac63477238"
+TWILIO_TOKEN_KEY: "7cf5dbe93359d02e572e62bd9fcefa0c"
+INFOBIP_USERNAME: "QiscusTekno"
+INFOBIP_PASSWORD: "Test1234"
+MAINAPI_CLIENT_ID: "PJQuc3aZy8I9YaE0v_SwXiFMvzEa"
+MAINAPI_CLIENT_SECRET: "bZy7FqUyDg5YB0LFEBdk82Cmqg4a"
+MAINAPI_GRANT_TYPE: "client_credentials"
+MAINAPI_USERNAME: "qiscus"
+MAINAPI_PASSWORD: "JP42N5"
+
+# Mailgun key
+EMAIL_SENDER: 'no-reply@qiscus.com'
+MAILGUN_API_KEY: 'key-9c5310bf4dc128bd10ae8f3322df6e27'
+MAILGUN_DOMAIN: 'mg.qiscus.com'
+
+# Sentry DSN for logging
+SENTRY_DSN: 'https://2137ee02c0f2482eaafc87d96c321adb:e6bfa29e5e9744c48061f663d418363b@sentry.qiscus.com/9'
+
+PAPERTRAIL_API_TOKEN: '4KiWlbhnOYtxHyasUufI'
+RACK_ENV: 'production'
+RAILS_ENV: 'production'
+RAILS_SERVE_STATIC_FILES: 'enabled'
+RAILS_LOG_TO_STDOUT: 'enabled'
+
+# Setting redis url for sidekiq
+REDIS_URL: 'redis://127.0.0.1:6379/0'
+
+# This is for caching to redis, mainly used in conversation list
+REDIS_CACHE: 'false'
+
+# for super admin login dashboard
+SUPER_ADMIN_USERNAME: 'admin'
+SUPER_ADMIN_PASSWORD: 'admin'
+
+# Sidekiq credential
+SIDEKIQ_USERNAME: "qisme"
+SIDEKIQ_PASSWORD: "qisme-123"
+
+# Qiscus SDK ADMIN
+QISCUS_SDK_ADMIN_URL: "https://admin-sdk.qiscus.com"
+QISCUS_SDK_ADMIN_TOKEN: "KVqEuNt5LoAkKpvTtLIw"
+
+# Call SDK
+CALL_SDK_KEY: "VjhIYXRKSEZWMHY0MHFCaTI1QU1aOXFllpQW10dUpqZg=="
+CALL_SDK_URL: "https://rtc-api.qiscus.com"
+
+# Chat SDK
+QISCUS_SDK_URL: "https://api.qiscus.com"

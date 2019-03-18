@@ -1,0 +1,37 @@
+<table class="table table-hover table-striped">
+  <thead>
+    <tr>
+      <th>#ID</th>
+      <th>Caption</th>
+      <th>URL</th>
+      <th colspan="2" align="center">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @custom_menus.each do |f| %>
+    <tr>
+      <td><%= f.id %></td>
+      <td><%= f.caption %></td>
+      <td><%= f.url %></td>
+      <td>
+        <div class="btn-group" role="group">
+          <% if @path_segments[2] == "admin" %>
+            <a href="/dashboard/admin/custom_menus/<%= f.id %>" class="btn btn-default">Edit</a>
+          <% elsif @path_segments[2] == "super_admin" %>
+            <a href="/dashboard/super_admin/application/<%= @application.id %>/custom_menus/<%= f.id %>" class="btn btn-default">Edit</a>
+          <% end %>
+        </div>
+      </td>
+      <td>
+        <div class="btn-group" role="group">
+          <% if @path_segments[2] == "admin" %>
+          <a href="/dashboard/admin/custom_menus/<%= f.id %>/delete" class="btn btn-default" onclick="return confirm('Are you sure want to delete this menu?')">Delete</a>
+          <% elsif @path_segments[2] == "super_admin" %>
+            <a href="/dashboard/super_admin/application/<%= @application.id %>/custom_menus/<%= f.id %>/delete" class="btn btn-default" onclick="return confirm('Are you sure want to delete this menu?')">Delete</a>
+          <% end %>
+        </div>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

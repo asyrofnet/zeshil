@@ -1,0 +1,94 @@
+<br>
+<div id="users-table">
+  <table class="table table-hover table-striped" id="chat-users">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>ID</th>
+        <th>Fullname</th>
+        <th>Phone number</th>
+        <th>Email</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%
+      i = 1
+      @users.each do |u|
+        %>
+        <tr>
+          <td><%= i %></td>
+          <td><%= u.id %></td>
+          <td><%= u.fullname.titlecase %></td>
+          <td><%= u.phone_number %></td>
+          <td><%= u.email %></td>
+          <td>
+            <div class="btn-group" role="group">
+              <button class="btn btn-default" onclick="addTargetUserId(<%= u.id %>)">Add</button>
+            </div>
+          </td>
+        </tr>
+        <%
+        i+=1
+      end
+      %>
+    </tbody>
+  </table>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#chat-users').DataTable({
+      "pageLength": 5,
+      "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+    });
+  } );
+
+  function addTargetUserId(target_user_id) {
+    var elem = document.getElementById("target_user_ids");
+    var text = "";
+
+    breakme: {
+      if(elem.innerHTML == "") {
+        // If elem is nil then add target_user_id without comma
+        text = target_user_id
+      }
+      else {
+        var temp_elem = new Array();
+        temp_elem = elem.innerHTML.split(",");
+
+        for (var i = 0; i < temp_elem.length; i++) {
+          if(temp_elem[i] == target_user_id) {
+            // If target_user_id already exist then show alert and break
+            alert("target_user_id already exist.");
+            break breakme;
+          }
+        };
+        // If elem not nil then add target_user_id with comma
+        text = "," + target_user_id
+      }
+    }
+
+    elem.innerHTML += text;
+  }
+
+  function resetTargetUserId() {
+    var elem = document.getElementById("target_user_ids");
+    elem.innerHTML = "";
+  }
+
+  function allUsersAsTargets() {
+    var elem = document.getElementById("target_user_ids");
+
+    <%
+    target_user_id = Array.new
+    i = 0
+    @users.each do |u|
+      target_user_id[i] = u.id
+      i += 1
+    end
+    %>
+
+    elem.innerHTML = <%= target_user_id %>;
+  }
+</script>

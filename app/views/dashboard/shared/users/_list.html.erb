@@ -1,0 +1,74 @@
+<form method="get">
+  <input type="hidden" name="search" value="true">
+  <div class="form-group">
+    <label for="phoneNumber">Phone number</label>
+    <input type="text" name="phone_number" class="form-control" id="phoneNumber" value="<%= params[:phone_number] %>" placeholder="Phone number">
+  </div>
+  <div class="form-group">
+    <label for="fullname">Fullname</label>
+    <input type="text" name="fullname" class="form-control" id="fullname" value="<%= params[:fullname] %>" placeholder="Fullname">
+  </div>
+  <button type="submit" class="btn btn-primary">Search</button>
+  <% if @path_segments[2] == "admin" %>
+  <a href="/dashboard/admin/users?page=1" class="btn btn-warning">Reset Search</a>
+  <% elsif @path_segments[2] == "super_admin" %>
+  <a href="/dashboard/super_admin/application/<%= @application.id %>/users?page=1" class="btn btn-warning">Reset Search</a>
+  <% end %>
+</form>
+
+<% if params[:search] != 'true' %>
+<div class="pull-right">
+  <%= paginate @users, views_prefix: 'dashboard/shared' %>
+</div>
+<% end %>
+
+<table class="table table-hover table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>ID</th>
+      <th>Fullname</th>
+      <th>Phone number</th>
+      <th>Email</th>
+      <th>Gender</th>
+      <th>DOB</th>
+      <th>Roles</th>
+      <th>Created at</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% idx = params[:page].to_i %>
+    <% idx = 1 if !params[:page].present? %>
+    <% idx = (idx + (24 * idx) - 25) + 1 %>
+    <% @users.each do |u| %>
+    <tr>
+      <td><%= ( idx || 1) %></td>
+      <td><%= u.id %></td>
+      <td><%= u.fullname %></td>
+      <td><%= u.phone_number %></td>
+      <td><%= u.email %></td>
+      <td><%= u.gender %></td>
+      <td><%= u.date_of_birth %></td>
+      <td><%= u.roles.pluck(:name).join(", ") %></td>
+      <td><%= u.created_at.in_time_zone("Asia/Jakarta") %></td>
+      <td>
+        <div class="btn-group" role="group">
+          <% if @path_segments[2] == "admin" %>
+            <a href="/dashboard/admin/users/<%= u.id %>" class="btn btn-default">Show</a>
+          <% elsif @path_segments[2] == "super_admin" %>
+            <a href="/dashboard/super_admin/application/<%= @application.id %>/users/<%= u.id %>" class="btn btn-default">Show</a>
+          <% end %>
+        </div>
+      </td>
+    </tr>
+    <% idx += 1 %>
+    <% end %>
+  </tbody>
+</table>
+
+<% if params[:search] != 'true' %>
+  <div class="pull-right">
+    <%= paginate @users, views_prefix: 'dashboard/shared' %>
+  </div>
+<% end %>

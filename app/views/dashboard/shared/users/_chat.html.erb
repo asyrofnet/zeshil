@@ -1,0 +1,116 @@
+<ul class="nav nav-tabs" id="myTab">
+  <li class="active"><a href="#group" data-toggle="tab">Group Chat Room <b>(<%= @chat_rooms.where(is_group_chat: true).count %>)</b></a></li>
+  <li><a href="#single" data-toggle="tab">Single Chat Room <b>(<%= @chat_rooms.where(is_group_chat: false).count %>)</b></a></li>
+  <li><a href="#posts" data-toggle="tab">Posts <b>(<%= @user.posts.count %>)</b></a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="group">
+    <% if @user.is_official %>
+      <% if @path_segments[2] == "admin" %>
+        <form action="/dashboard/admin/users/<%= @user.id %>/create_room_with_unique_id" method="POST">
+      <% elsif @path_segments[2] == "super_admin" %>
+        <form action="/dashboard/super_admin/application/<%= @user.application_id %>/users/<%= @user.id %>/create_room_with_unique_id" method="POST">
+      <% end %>
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <div class="btn-group pull-right" role="group">
+          <button class="btn btn-success btn-sm" type="subumit"> Create New Public Chat</button>
+        </div>
+      </form>
+    <% end %>
+    <hr>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <th>#</th>
+          <th>ID</th>
+          <th>Qiscus Room Id</th> 
+          <th>Chat Room Name</th>
+          <th>Is Public Chat</th>
+          <th>Created at</th>
+        </thead>
+        <tbody>
+          <% idx = 1 %>
+          <% @chat_rooms.where(is_group_chat: true).each do |chat_room| %>
+          <tr>
+            <td><%= idx %></td>
+            <td><%=  chat_room.id %></td>
+            <td><%=  chat_room.qiscus_room_id %></td>
+            <td><%=  chat_room.qiscus_room_name %></td>
+            <td><%=  chat_room.is_public_chat %></td>
+            <td><%=  chat_room.created_at.in_time_zone("Asia/Jakarta") %></td>
+          </tr>
+          <% idx += 1 %>
+          <% end %>
+        </tbody>
+      </table>
+
+    </div>
+  </div> <!--/tab-pane-->
+
+  <div class="tab-pane" id="single">
+    <hr>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <th>#</th>
+          <th>ID</th>
+          <th>Qiscus Room Id</th> 
+          <th>Chat Room Name</th>
+          <th>Created at</th>
+        </thead>
+        <tbody>
+          <% idx = 1 %>
+          <% @chat_rooms.where(is_group_chat: false).each do |chat_room| %>
+          <tr>
+            <td><%= idx %></td>
+            <td><%= chat_room.id %></td>
+            <td><%= chat_room.qiscus_room_id %></td>
+            <td>
+              <%=  
+                if chat_room.user_id == @user.id
+                  user_id = chat_room.target_user_id
+                else
+                  user_id = chat_room.user_id
+                end 
+                interlocutor = User.find(user_id)
+                (interlocutor.fullname != nil) ? interlocutor.fullname.to_s : interlocutor.phone_number
+              %>
+            </td>
+            <td><%= chat_room.created_at.in_time_zone("Asia/Jakarta") %></td>
+          </tr>
+          <% idx += 1 %>
+          <% end %>
+        </tbody>
+      </table>
+
+    </div>
+  </div> <!--/tab-pane-->
+
+  <div class="tab-pane" id="posts">
+    <hr>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <th>#</th>
+          <th>ID</th>
+          <th>Content</th> 
+          <th>Created at</th>
+        </thead>
+        <tbody>
+          <% idx = 1 %>
+          <% @user.posts.order(updated_at: :desc).each do |post| %>
+          <tr>
+            <td><%= idx %></td>
+            <td><%=  post.id %></td>
+            <td><%=  post.content %></td>
+            <td><%=  post.created_at.in_time_zone("Asia/Jakarta") %></td>
+          </tr>
+          <% idx += 1 %>
+          <% end %>
+        </tbody>
+      </table>
+
+    </div>
+  </div> <!--/tab-pane-->
+</div> <!--/tab-pane-->

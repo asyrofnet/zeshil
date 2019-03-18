@@ -1,0 +1,66 @@
+<br>
+<div id="users-table">
+  <div class="pull-right">
+    <%= paginate @broadcast_messages, views_prefix: 'dashboard/shared' %>
+  </div>
+
+  <table class="table table-hover table-striped" id="users">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Broadcast Sender</th>
+        <th>DateTime</th>
+        <th>Messages</th>
+        <th>Pending</th>
+        <th>Delivered</th>
+        <th>Read</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% idx = params[:page].to_i %>
+      <% idx = 1 if !params[:page].present? %>
+      <% idx = (idx + (9 * idx) - 10) + 1 %>
+      <% @broadcast_messages.each do |broadcast_message| %>
+      <%
+        # counting pending, delivered, and read
+        pending_count = broadcast_message.broadcast_receipt_histories.where(delivered_at: nil).where(read_at: nil).count
+        delivered_count = broadcast_message.broadcast_receipt_histories.where.not(delivered_at: nil).where(read_at: nil).count
+        read_count = broadcast_message.broadcast_receipt_histories.where.not(read_at: nil).count
+
+        # define url for superadmin and admin
+        if @path_segments[2] == "super_admin"
+          url = "/dashboard/super_admin/application/" + params[:application_id] + "/broadcasts/show_receipt_histories"
+        elsif @path_segments[2] == "admin"
+          url = "/dashboard/admin/broadcasts/show_receipt_histories"
+        end
+      %>
+      <tr>
+        <td><%= ( idx || 1) %></td>
+        <td><%= broadcast_message.user.fullname %></td>
+        <td><%= broadcast_message.created_at.in_time_zone("Asia/Jakarta") %></td>
+        <td><%= broadcast_message.message %></td>
+        <td>
+          <a href="<%= url %>?broadcast_message_id=<%= broadcast_message.id %>&status=pending">
+            <%= pending_count %>
+          </a>
+        </td>
+        <td>
+          <a href="<%= url %>?broadcast_message_id=<%= broadcast_message.id %>&status=delivered">
+            <%= delivered_count %>
+          </a>
+        </td>
+        <td>
+          <a href="<%= url %>?broadcast_message_id=<%= broadcast_message.id %>&status=read">
+            <%= read_count %>
+          </a>
+        </td>
+      </tr>
+      <% idx += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="pull-right">
+    <%= paginate @broadcast_messages, views_prefix: 'dashboard/shared' %>
+  </div>
+</div>

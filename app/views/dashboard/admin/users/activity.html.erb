@@ -1,0 +1,30 @@
+<% if flash[:success] %>
+<div class="alert alert-success"><%= flash[:success] %></div>
+<% end %>
+
+<% if flash[:notice] %>
+<div class="alert alert-warning"><%= flash[:notice] %></div>
+<% end %>
+
+<div class="btn-group pull-right" role="group">
+  <a href="/dashboard/admin/users/<%= @user.id %>" class="btn btn-primary">Back to detail user</a>
+</div>
+
+
+<hr>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-10"><h1>Detail Activity - <%= @user.fullname %></h1></div>
+    <div class="col-sm-2"><a href="<%= @user.avatar_url %>" class="pull-right"><img title="profile image" class="img-circle img-responsive" src="<%= @user.avatar_url %>"></a></div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3"><!--left col-->
+      <%= render "/dashboard/shared/users/sidebar-info" %> 
+    </div><!--/col-3-->
+    <div class="col-sm-9">
+      <%= render "/dashboard/shared/users/chat" %> 
+    </div><!--/tab-content-->
+
+  </div><!--/col-9-->
+</div><!--/row-->
+</div> <!-- /container -->

@@ -1,0 +1,113 @@
+<% if flash[:success] %>
+  <div class="alert alert-success"><%= flash[:success] %></div>
+<% end %>
+
+<% if flash[:notice] %>
+  <div class="alert alert-warning"><%= flash[:notice] %></div>
+<% end %>
+
+<div class="btn-group pull-right" role="group">
+  <a href="/dashboard/super_admin/application" class="btn btn-primary">Back to list application</a>
+  <a href="/dashboard/super_admin/application/<%= @application.id %>" class="btn btn-success">Back to application detail</a>
+</div>
+
+<div class="clear"></div>
+<br>
+<br>
+
+<form action="/dashboard/super_admin/application/<%= @application.id %>" method="post">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <div class="form-group">
+    <label for="appName">Application Name</label>
+    <input type="text" name="app_name" class="form-control" id="appName" value="<%= @application.app_name %>" placeholder="Application Name" required>
+  </div>
+  <div class="form-group">
+    <label for="appId">Application ID (in Qiscus SDK)</label>
+    <input type="text" disabled name="app_id" class="form-control" id="appId" value="<%= @application.app_id %>" placeholder="Application ID (in Qiscus SDK)" required>
+  </div>
+  <div class="form-group">
+    <label for="qiscusSecret">Qiscus SDK secret</label>
+    <input type="text" name="qiscus_sdk_secret" disabled class="form-control" id="qiscusSecret" value="<%= @application.qiscus_sdk_secret %>" placeholder="Qiscus SDK secret" required>
+  </div>
+  <div class="form-group">
+    <label for="desc">Description</label>
+    <textarea name="description" class="form-control" id="desc" placeholder="Description"><%= @application.description %></textarea>
+  </div>
+  <div class="form-group">
+    <label for="appName">SMS Sender</label>
+    <input type="text" name="sms_sender" class="form-control" id="smsSender" value="<%= @application.sms_sender %>" placeholder="SMS Sender" required>
+  </div>
+  <div class="form-group">
+    <label for="appName">Server Key</label>
+    <input type="text" name="server_key" class="form-control" id="serverKey" value="<%= @application.server_key %>" placeholder="Server Key" >
+  </div>
+  <div class="form-group">
+    <label for="appName">FCM Key</label>
+    <input type="text" name="fcm_key" class="form-control" id="fcmKey" value="<%= @application.fcm_key %>" placeholder="FCM Key" >
+  </div>
+  <div class="form-group">
+    <label for="appName">APNS Cert Dev</label>
+    <input type="text" name="apns_cert_dev" class="form-control" id="apnsCertDev" value="<%= @application.apns_cert_dev %>" placeholder="APNS Cert Dev" >
+  </div>
+  <div class="form-group">
+    <label for="appName">APNS Cert Prod</label>
+    <input type="text" name="apns_cert_prod" class="form-control" id="apnsCertProd" value="<%= @application.apns_cert_prod %>" placeholder="APNS Cert Prod" >
+  </div>
+  <div class="form-group">
+    <label for="appName">APNS Cert Topic</label>
+    <input type="text" name="apns_cert_topic" class="form-control" id="apnsCertTopic" value="<%= @application.apns_cert_topic %>" placeholder="APNS Cert Topic" >
+  </div>
+  <div class="form-group">
+    <label for="appName">APNS Cert Password</label>
+    <input type="text" name="apns_cert_password" class="form-control" id="apnsCertPassword" value="<%= @application.apns_cert_password %>" placeholder="APNS Cert Password" >
+  </div>
+  <div class="form-group">
+    <label for="">Auto Add Friend</label>
+    <select name="is_auto_friend" class="form-control" required>
+      <% if @application.is_auto_friend == TRUE %>
+        <option value="TRUE" selected>True</option>
+        <option value="FALSE">False</option>
+        <% else %>
+          <option value="TRUE">True</option>
+          <option value="FALSE" selected>False</option>
+          <% end %>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="">Send Message PN</label>
+    <select name="is_send_message_pn" class="form-control" required>
+      <% if @application.is_send_message_pn == TRUE %>
+        <option value="TRUE" selected>True</option>
+        <option value="FALSE">False</option>
+        <% else %>
+          <option value="TRUE">True</option>
+          <option value="FALSE" selected>False</option>
+          <% end %>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="">Send Call PN</label>
+    <select name="is_send_call_pn" class="form-control" required>
+      <% if @application.is_send_call_pn == TRUE %>
+        <option value="TRUE" selected>True</option>
+        <option value="FALSE">False</option>
+        <% else %>
+          <option value="TRUE">True</option>
+          <option value="FALSE" selected>False</option>
+          <% end %>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="">Coaching Module</label>
+    <select name="is_coaching_module_connected" class="form-control" required>
+      <% if @application.is_coaching_module_connected == TRUE %>
+        <option value="TRUE" selected>True</option>
+        <option value="FALSE">False</option>
+        <% else %>
+          <option value="TRUE">True</option>
+          <option value="FALSE" selected>False</option>
+          <% end %>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-success">Update</button>
+</form>
