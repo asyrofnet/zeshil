@@ -2,13 +2,13 @@
     "docs": [
         {
             "location": "/", 
-            "text": "Welcome to Qisme Documentation\n\n\nInfo\n\n\n\n\nRails version: 5.0.2\n\n\nRuby version: 2.4.0\n\n\nBASE URL PROD: \nhttp://qisme-engine.herokuapp.com\n\n\nBASE URL STAG: \nhttp://qisme-engine-stag.herokuapp.com\n\n\n\n\n\n\nAccessing protected resource\n\n\nTo access protected resources you can send \naccess_token\n via URL parameter or via \nAuthorization\n Header. Both this way will let you to access protected resources:\n\n\n\n\nVia Header token:\n\n\n\n\nGET /api/v1/me/ HTTP/1.1\nHost: qisme-engine.herokuapp.com\nAuthorization: Token token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ0aW1lc3RhbXAiOiIyMDE2LTEyLTIyIDA3OjU0OjI0ICswMDAwIn0.pomTKwTLZmvzqkXXtJ23l1KKgfLLLueXWK3BQf6RuOY\nCache-Control: no-cache\nPostman-Token: cf4cf2da-1857-3e39-5118-b3c76f5c6824\n\n\n\n\n\n\n\nVia URL parameter\n\n\n\n\nhttp://qisme-engine.herokuapp.com/api/v1/me?access_token=THE_ACCESS_TOKEN\n\n\nJSON Response\n\n\nAll end-point should return JSON, unless mentioned in specific route documentation. You must see JSON structure in each request before parsing it (in web or mobile client), because in some condition there are some changes (add or remove) JSON object and it is delitace task to update all JSON response example.", 
+            "text": "Welcome to Kiwari Documentation\n\n\nInfo\n\n\n\n\nRails version: 5.0.2\n\n\nRuby version: 2.4.0\n\n\nBASE URL PROD: \nhttp://qisme-engine.herokuapp.com\n\n\nBASE URL STAG: \nhttp://qisme-engine-stag.herokuapp.com\n\n\n\n\n\n\nAccessing protected resource\n\n\nTo access protected resources you can send \naccess_token\n via URL parameter or via \nAuthorization\n Header. Both this way will let you to access protected resources:\n\n\n\n\nVia Header token:\n\n\n\n\nGET /api/v1/me/ HTTP/1.1\nHost: qisme-engine.herokuapp.com\nAuthorization: Token token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ0aW1lc3RhbXAiOiIyMDE2LTEyLTIyIDA3OjU0OjI0ICswMDAwIn0.pomTKwTLZmvzqkXXtJ23l1KKgfLLLueXWK3BQf6RuOY\nCache-Control: no-cache\nPostman-Token: cf4cf2da-1857-3e39-5118-b3c76f5c6824\n\n\n\n\n\n\n\nVia URL parameter\n\n\n\n\nhttp://qisme-engine.herokuapp.com/api/v1/me?access_token=THE_ACCESS_TOKEN\n\n\nJSON Response\n\n\nAll end-point should return JSON, unless mentioned in specific route documentation. You must see JSON structure in each request before parsing it (in web or mobile client), because in some condition there are some changes (add or remove) JSON object and it is delitace task to update all JSON response example.", 
             "title": "Home"
         }, 
         {
             "location": "/#welcome-to-qisme-documentation", 
             "text": "", 
-            "title": "Welcome to Qisme Documentation"
+            "title": "Welcome to Kiwari Documentation"
         }, 
         {
             "location": "/#info", 

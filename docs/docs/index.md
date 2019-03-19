@@ -1,4 +1,4 @@
-# Welcome to Qisme Documentation
+# Welcome to Kiwari Documentation
 
 ## Info
 

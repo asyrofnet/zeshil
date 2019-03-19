@@ -24,7 +24,7 @@ services:
       - HTTP_DEBUG_LOG=false
       - DEBUG=true
       - JWT_KEY=vDY95GL7nP60+/wZEUAXYj53KfMAz4sRKpsRl8xGHuIy
-      - APP_NAME=Qisme
+      - APP_NAME=Kiwari
       - NEW_RELIC_LICENSE_KEY=6360b672468b68827529bd68884431c8d4f06091
       - DATABASE_URL=postgres://kiwariuser:k1wari123@kiwaridb.cfmh0iazztue.ap-southeast-1.rds.amazonaws.com:5432/kiwaridb
       - CLOUDINARY_API_KEY=828523638445197

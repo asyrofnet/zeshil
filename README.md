@@ -61,7 +61,7 @@ After that, you need to create your own application via rails console:
 ```
 params = {
   :app_id => 'qisme',
-  :app_name => 'Qisme Application',
+  :app_name => 'Kiwari Application',
   :app_description => '',
   :qiscus_sdk_url => 'http://qisme.qiscus.com',
   :qiscus_sdk_secret => 'qisme-123',
