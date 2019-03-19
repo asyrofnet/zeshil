@@ -2379,7 +2379,7 @@
             "type": "Number",
             "optional": false,
             "field": "id",
-            "description": "<p>Qisme chat room id</p>"
+            "description": "<p>Kiwari chat room id</p>"
           },
           {
             "group": "Parameter",
@@ -2422,7 +2422,7 @@
             "type": "Array",
             "optional": false,
             "field": "target_user_id[]",
-            "description": "<p>Array of user id in Qisme database</p>"
+            "description": "<p>Array of user id in Kiwari database</p>"
           },
           {
             "group": "Parameter",
@@ -2489,7 +2489,7 @@
             "type": "Number",
             "optional": false,
             "field": "target_user_id",
-            "description": "<p>User id in Qisme database</p>"
+            "description": "<p>User id in Kiwari database</p>"
           },
           {
             "group": "Parameter",
@@ -2627,7 +2627,7 @@
     "type": "post",
     "url": "/api/v1/chat/conversations/post_comment",
     "title": "Post Comment",
-    "description": "<p>Send message to SDK through Qisme engine</p>",
+    "description": "<p>Send message to SDK through Kiwari engine</p>",
     "name": "PostComment",
     "group": "Chat",
     "parameter": {

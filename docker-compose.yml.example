@@ -8,7 +8,7 @@ services:
     volumes:
       - 'redis:/data'
   api:
-    image: qisme_engine:latest
+    image: kiwari-engine:latest
     depends_on:
       - 'redis'
     restart: 'always'
@@ -20,49 +20,49 @@ services:
     ports:
       - '8000:3000'
     environment:
-      - SECRET_KEY_BASE=9d233a784142c748874a3744e372cfbec4ca5053256f922395759d7b1fa4ddc1a9902e706fc5145f2296cb8ffd47c6eefae913981e318d66e638faf3e5417690
+      - SECRET_KEY_BASE=xxxxx12345
       - HTTP_DEBUG_LOG=false
       - DEBUG=true
-      - JWT_KEY=vDY95GL7nP60+/wZEUAXYj53KfMAz4sRKpsRl8xGHuIy
-      - APP_NAME=Qisme
-      - NEW_RELIC_LICENSE_KEY=6360b672468b68827529bd68884431c8d4f06091
-      - DATABASE_URL=postgres://kiwariuser:k1wari123@kiwaridb.cfmh0iazztue.ap-southeast-1.rds.amazonaws.com:5432/kiwaridb
-      - CLOUDINARY_API_KEY=828523638445197
-      - CLOUDINARY_API_SECRET=ZuOI02xrwabF8QxplR3-GbjvOZ0
-      - CLOUDINARY_CLOUD_NAME=qiscus
-      - NEXMO_API_KEY=9bd89304
-      - NEXMO_API_SECRET=d470067ad3b9bb71
-      - TWILIO_SID_KEY=AC1f0a135ab58088f504d06cac63477238
-      - TWILIO_TOKEN_KEY=7cf5dbe93359d02e572e62bd9fcefa0c
-      - MAINAPI_CLIENT_ID=PJQuc3aZy8I9YaE0v_SwXiFMvzEa
-      - MAINAPI_CLIENT_SECRET=bZy7FqUyDg5YB0LFEBdk82Cmqg4a
-      - MAINAPI_GRANT_TYPE=client_credentials
-      - MAINAPI_USERNAME=qiscus
-      - MAINAPI_PASSWORD=JP42N5
-      - EMAIL_SENDER=no-reply@qiscus.com
-      - MAILGUN_API_KEY=key-9c5310bf4dc128bd10ae8f3322df6e27
-      - MAILGUN_DOMAIN=mg.qiscus.com
-      - SENTRY_DSN=https://55b3f63e7f874aa899636159bc6edf02:9f608e4a922b45bdbabf4757d6de3b6b@sentry.qiscus.com/10
+      - JWT_KEY=xxx
+      - APP_NAME=Kiwari
+      - NEW_RELIC_LICENSE_KEY=xxx123
+      - DATABASE_URL=postgres://xxxuser:xxx123@xxxdb:5432/xxxdb
+#     - CLOUDINARY_API_KEY=123567
+#     - CLOUDINARY_API_SECRET=xxx-yyy
+#     - CLOUDINARY_CLOUD_NAME=name
+      - NEXMO_API_KEY=123abc
+      - NEXMO_API_SECRET=xxx123
+      - TWILIO_SID_KEY=xxx123
+      - TWILIO_TOKEN_KEY=xxx123
+      - MAINAPI_CLIENT_ID=xxx123
+      - MAINAPI_CLIENT_SECRET=xxx123
+      - MAINAPI_GRANT_TYPE=xxx123
+      - MAINAPI_USERNAME=user
+      - MAINAPI_PASSWORD=pass
+      - EMAIL_SENDER=no-reply@domain.com
+      - MAILGUN_API_KEY=key-xxx123
+      - MAILGUN_DOMAIN=mg.domain.com
+      - SENTRY_DSN=https://xxx123:xxx123@sentry.domain.com/10
       - RACK_ENV=development
       - RAILS_ENV=development
       - RAILS_SERVE_STATIC_FILES=enabled
       - RAILS_LOG_TO_STDOUT=enabled
       - REDIS_URL=redis://redis:6379/0
       - REDIS_CACHE=true
-      - SUPER_ADMIN_USERNAME=admin
-      - SUPER_ADMIN_PASSWORD=admin
-      - SIDEKIQ_USERNAME=qisme
-      - SIDEKIQ_PASSWORD=qisme-123
-      - QISCUS_SDK_ADMIN_URL=https://admin-sdk.qiscus.com
-      - QISCUS_SDK_ADMIN_TOKEN=KVqEuNt5LoAkKpvTtLIw
-      - QISCUS_SDK_URL=https://api.qiscus.com
-      - CALL_SDK_KEY=VjhIYXRKSEZWMHY0MHFCaTI1QU1aOXFllpQW10dUpqZg==
-      - CALL_SDK_URL=https://rtc-api.qiscus.com
+      - SUPER_ADMIN_USERNAME=user
+      - SUPER_ADMIN_PASSWORD=pass
+      - SIDEKIQ_USERNAME=user
+      - SIDEKIQ_PASSWORD=pass
+      - QISCUS_SDK_ADMIN_URL=https://domain.com
+      - QISCUS_SDK_ADMIN_TOKEN=xxx
+      - QISCUS_SDK_URL=https://domain.com
+      - CALL_SDK_KEY=xxx123
+      - CALL_SDK_URL=https://rtc.domain.com
       - SMTP_USERNAME: "your_sendgrid_username"
       - SMTP_PASSWORD: "your_sendgrid_api_key"
       - SMTP_ADDRESS: "smtp.sendgrid.net"
-      - SMTP_DOMAIN: "qiscus.com"
-      - SMTP_EMAIL_FROM: "no-reply@qiscus.com"
+      - SMTP_DOMAIN: "domain.com"
+      - SMTP_EMAIL_FROM: "no-reply@domain.com"
   sidekiq:
     depends_on:
       - 'api'
@@ -73,12 +73,12 @@ services:
       - '.:/api'
     environment:
       - REDIS_URL=redis://redis:6379/0
-      - SENTRY_DSN=https://55b3f63e7f874aa899636159bc6edf02:9f608e4a922b45bdbabf4757d6de3b6b@sentry.qiscus.com/10
-      - DATABASE_URL=postgres://kiwariuser:k1wari123@kiwaridb.cfmh0iazztue.ap-southeast-1.rds.amazonaws.com:5432/kiwaridb
+      - SENTRY_DSN=https://xxx123:xxx123@sentry.domain.com/10
+      - DATABASE_URL=postgres://xxxuser:xxx123@xxxdb:5432/xxxdb
       - EMAIL_SENDER=no-reply@qiscus.com
-      - MAILGUN_API_KEY=key-9c5310bf4dc128bd10ae8f3322df6e27
-      - MAILGUN_DOMAIN=mg.qiscus.com
-      - QISCUS_SDK_URL=https://api.qiscus.com
+      - MAILGUN_API_KEY=key-xxx123
+      - MAILGUN_DOMAIN=mg.domain.com
+      - QISCUS_SDK_URL=https://api.domain.com
     links:
       - redis
       - api
