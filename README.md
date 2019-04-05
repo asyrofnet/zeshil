@@ -60,11 +60,11 @@ After that, you need to create your own application via rails console:
 
 ```
 params = {
-  :app_id => 'qisme',
+  :app_id => 'kiwari-engine',
   :app_name => 'Kiwari Application',
   :app_description => '',
-  :qiscus_sdk_url => 'http://qisme.qiscus.com',
-  :qiscus_sdk_secret => 'qisme-123',
+  :qiscus_sdk_url => 'http://kiwari-engine.qiscus.com',
+  :qiscus_sdk_secret => 'kiwari-engine-123',
   :sms_server => 'VERIFY',
   :secret_key => '',
   :fcm_key => ''
@@ -91,8 +91,8 @@ UserRole.create(user: u, role: Role.admin)
 ### Using Docker
 
 ```bash
-$ docker build -t qisme_engine .
-$ docker run -p 8000:3000 qisme_engine
+$ docker build -t kiwari_engine .
+$ docker run -p 8000:3000 kiwari_engine
 ```
 
 Then access in `localhost:8000`. It may not run properly since you have not configure all needed keys. Set to real value using `-e` argument in docker and it should running properly.
