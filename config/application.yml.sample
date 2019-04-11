@@ -2,7 +2,7 @@
 HTTP_DEBUG_LOG: "false"
 
 # SECRET KEY FOR JWT, please change it in production
-JWT_KEY: "xxxyyyzzz"
+JWT_KEY: "inisecret"
 
 # app name for new relic
 APP_NAME: 'Kiwari'
@@ -64,12 +64,12 @@ SIDEKIQ_USERNAME: "user"
 SIDEKIQ_PASSWORD: "pass"
 
 # Qiscus SDK ADMIN
-QISCUS_SDK_ADMIN_URL: "https://url.domain.com"
+QISCUS_SDK_ADMIN_URL: "https://admin-sdk.qiscus.com"
 QISCUS_SDK_ADMIN_TOKEN: "xxxyyyzzz"
 
 # Call SDK
 CALL_SDK_KEY: "xxxyyyzzz"
-CALL_SDK_URL: "https://rtc-api.domain.com"
+CALL_SDK_URL: "https://rtc-api.qiscus.com"
 
 # Chat SDK
-QISCUS_SDK_URL: "https://api.domain.com"
+QISCUS_SDK_URL: "https://api.qiscus.com"

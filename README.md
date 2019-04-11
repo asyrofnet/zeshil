@@ -50,6 +50,28 @@ Configuration, please make sure you have set this **ENVIRONMENT KEY**, for detai
 
 ## How to Run
 
+### Common
+
+* Clone this repository
+* Edit environment in `application.yml`
+
+```bash
+$ cd kiwari-engine
+$ cp config/application.yml.sample config/application.yml
+```
+* After edit `application.yml`, you need to run
+
+```bash
+$ bundle install
+$ rails db:migrate
+$ rails db:seed
+```
+
+* Start server using `rails s`
+* Open browser and go to `localhost:3000/superadmin`
+
+### Using Docker
+
 * Clone this repository
 * Build docker image
 
