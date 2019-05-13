@@ -1,12 +1,22 @@
-# README
+# Kiwari Engine
 
-* Ruby version 2.4.1
+Kiwari, The Indonesia's Instant Messaging App. This engine built with rails.
 
-* System dependencies
-  * Bundler version 1.14.6
-  * Rails 5.1.1
+## Requirement
 
-* Configuration, please make sure you have set this ENVIRONMENT KEY, for detailed key, please refer to application.yml.sample file.
+* Ruby 2.4.1
+* Bundler 1.14.6
+* Rais 5.1.1
+* Latest Docker with `docker-compose`
+* PostgreSQL 9.6
+* Redis
+
+## Environment Key
+
+Environment Variable that used by Kiwari Engine.
+
+Configuration, please make sure you have set this **ENVIRONMENT KEY**, for detailed key, please refer to [application.yml.sample](./config/application.yml.sample) file.
+
   * `JWT_KEY`
   * `CLOUDINARY_API_KEY`
   * `CLOUDINARY_API_SECRET`
@@ -38,25 +48,29 @@
   * `APP_DATABASE_NAME`
   * `APP_DATABASE_TEST_NAME`
 
+## How to Run
 
-* Database initialization
-  `rails db:migrate`
+### Common
 
-* Services
-  * Job queue using sidekiq please run `bundle exec sidekiq` in another service
+* Clone this repository
+* Edit environment in `application.yml`
 
-
-## Deployment instructions
-
-After you are set all environment variable, please run:
-
+```bash
+$ cd kiwari-engine
+$ cp config/application.yml.sample config/application.yml
 ```
-rails db:seed
+* After edit `application.yml`, you need to run
+
+```bash
+$ bundle install
+$ rails db:migrate
+$ rails db:seed
 ```
 
-for seeding initialising data.
+* Start server using `rails s`
+* Open browser and go to `localhost:3000/superadmin`
 
-After that, you need to create your own application via rails console:
+### Using Docker
 
 ```
 params = {
@@ -70,60 +84,68 @@ params = {
   :fcm_key => ''
 }
 
-Application.create(params)
+```bash
+$ cd kiwari-engine
+$ docker build -t kiwari-engine .
 ```
 
-Then if you want to register new user, you can post it via Postman or using CURL:
+* Run using `docker-compose`
 
-```
-curl -X POST -H "Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW" -F "user[phone_number]=+6281233541554" -F "user[app_id]=kiwari-stag" "{URL}/api/v1/auth/"
-```
-
-If you want to set a registered user as an admin, you can do via dashboard admin page or via console:
-
-```
-u = User.find_by(phone_number: "+6281233541554")
-UserRole.create(user: u, role: Role.admin)
+```bash
+$ cp docker-compose.yml.example docker-compose.yml
 ```
 
-## Running Using Docker
+edit `docker-compose.yml` file to meet your configuration, then run :
 
-### Using Docker
+```bash
+$ docker-compose up
+```
+
+* Now your kiwari-engine is up at `localhost:8000`
+* You can monitoring background processing using `web-ui` at `localhost:8000/sidekiq`
+
+## Data Initialization
+
+* Open your kiwari-engine via `docker exec`, init the migration and seed initialize the data
 
 ```bash
 $ docker build -t kiwari_engine .
 $ docker run -p 8000:3000 kiwari_engine
 ```
 
-Then access in `localhost:8000`. It may not run properly since you have not configure all needed keys. Set to real value using `-e` argument in docker and it should running properly.
+After that, you need to create your own application via rails console:
 
+```ruby
+params = {
+  :app_id => 'kiwari-local',
+  :app_name => 'Kiwari Local Application',
+  :app_description => 'Kiwari local description',
+  :qiscus_sdk_url => 'yourqiscussdkurl',
+  :qiscus_sdk_secret => 'yourqiscussdksecret',
+  :sms_server => 'VERIFY',
+  :secret_key => '',
+  :fcm_key => ''
+}
 
-### Using docker compose
-
-Or use docker compose for easy configuration. In staging mode, just copy `docker-compose.yml.example` to `docker-compose.yml`
-
-```bash
-$ cp docker-compose.yml.example docker-compose.yml
-
+Application.create(params)
 ```
 
-Then run:
+Then if you want to register new user, you can post it via Postman or using CURL:
 
 ```bash
-$ docker-compose up
+curl -X POST -H "Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW" -F "user[phone_number]=+6281233541554" -F "user[app_id]=kiwari-stag" "{URL}/api/v1/auth/"
 ```
 
-Access it in `localhost:8000`
+If you want to set a registered user as an admin, you can do via dashboard admin page or via console:
 
-
-### Connect to postgresql on docker host
-Run this sh file [postgres-docker-config.sh](https://gist.github.com/therusetiawan/e829600e740c0f2509ba494cfe01ba77)
-
-### Connect to redis on docker host
-Bind your docker0 ip address into redis config file (/etc/redis/redis.conf)
-```bash
-bind 172.17.0.1
+```ruby
+u = User.find_by(phone_number: "+6281233541554")
+UserRole.create(user: u, role: Role.admin)
 ```
+
+## Deployment
+
+_todo_
 
 ## Building Documentation
 
@@ -166,3 +188,6 @@ $ cd ..
 
 And now your documentation is up-to-date, don't forget to commit and push it into repo.
 
+## Troubleshooting
+
+_todo_

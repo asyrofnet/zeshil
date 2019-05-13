@@ -20,4 +20,8 @@ class Role < ActiveRecord::Base
     return Role.find_or_create_by(name: 'Helpdesk')
   end
 
+  def self.bot
+      return Role.find_or_create_by(name: 'Bot')
+  end
+
 end

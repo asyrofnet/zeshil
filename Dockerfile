@@ -1,4 +1,4 @@
-FROM ruby:2.4.1
+FROM ruby:2.4.1-stretch
 MAINTAINER Qiscus <contact.us@qiscus.com>
 
 # Create app directory

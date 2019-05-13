@@ -310,6 +310,8 @@ Rails.application.routes.draw do
           post :search_by_qiscus_email, on: :collection
           post :search_by_email, on: :collection
           post :search_by_all_field, on: :collection
+          post :search_bot, on: :collection
+          post :bot, on: :collection
         end
 
         scope module: :contacts, path: '/contacts' do
@@ -355,6 +357,14 @@ Rails.application.routes.draw do
 
         scope module: :webhooks, path: '/webhooks' do
           post '/bot-callback/:app_id', to: 'bot_callback#create'
+          resources :bot_builder, only: [] do
+            # post :check_username, on: :collection
+            # post :create_bot, on: :collection
+            # post :create_access_token, on: :collection
+            # post :update, on: :collection
+            # post :delete, on: :collection
+            post :handler, on: :collection
+          end
         end
 
         resources :posts, only: [:index, :create, :destroy, :show, :update]

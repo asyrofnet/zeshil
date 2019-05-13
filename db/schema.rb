@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180904025149) do
+ActiveRecord::Schema.define(version: 20190430065050) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,17 @@ ActiveRecord::Schema.define(version: 20180904025149) do
     t.decimal "longitude", precision: 10, scale: 6, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "bots", force: :cascade do |t|
+    t.string "username", null: false
+    t.string "password", null: false
+    t.string "description"
+    t.integer "user_id", null: false, comment: "detail of bot"
+    t.integer "creator_id", null: false, comment: "bot creator"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["username"], name: "index_bots_on_username"
   end
 
   create_table "broadcast_messages", force: :cascade do |t|
@@ -348,6 +359,8 @@ ActiveRecord::Schema.define(version: 20180904025149) do
 
   add_foreign_key "announcements", "applications", on_update: :cascade, on_delete: :cascade
   add_foreign_key "auth_sessions", "users", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "bots", "users", column: "creator_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "bots", "users", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_messages", "applications", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_messages", "users", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_receipt_histories", "broadcast_messages", on_update: :cascade, on_delete: :cascade

@@ -48,6 +48,7 @@ class User < ActiveRecord::Base
   has_many :call_logs
 
   has_one :user_dedicated_passcodes
+  has_one :bot
 
   # Hooks
   before_validation :strip_spaces
@@ -76,6 +77,10 @@ class User < ActiveRecord::Base
 
   def is_helpdesk
     self.roles.pluck(:name).include?('Helpdesk')
+  end
+
+  def is_bot
+    self.roles.pluck(:name).include?('Bot')
   end
 
   def additional_infos
@@ -177,7 +182,7 @@ class User < ActiveRecord::Base
       #   }
       # ],
       :except => [:passcode, :application_id, :qiscus_token, :lock_version],
-      :methods => [ :is_admin, :is_official, :additional_infos ]
+      :methods => [ :is_admin, :is_official, :is_bot, :additional_infos ]
     )
 
     # Overwrite json if has key webhook. This json use only in webhook payload
@@ -188,7 +193,7 @@ class User < ActiveRecord::Base
     elsif options.has_key?(:job)
       h = super(
         :except => [:passcode, :application_id, :qiscus_token, :lock_version, :updated_at, :created_at],
-        :methods => [ :is_admin, :is_official, :additional_infos ]
+        :methods => [ :is_admin, :is_official, :is_bot, :additional_infos ]
        )
       h["created_at"] = created_at.iso8601.to_s
       h["updated_at"] = updated_at.iso8601.to_s
