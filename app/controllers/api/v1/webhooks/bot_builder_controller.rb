@@ -47,7 +47,8 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
           exist_session["params"]["application_id"] = params[:chat_room][:application_id]
           exist_session["params"]["avatar_url"] = params[:message][:payload][:url]
           if !exist_session["params"]["avatar_url"].nil?
-            message = Bot.create_bot(exist_session["params"])
+            bot = Bot.create_profile(exist_session["params"], params[:from][:id])
+            message = bot[:message]
             response[:buttons] = ""
             response[:type] = "text"
             $redis.del(bot_session)
