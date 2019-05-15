@@ -516,7 +516,11 @@ class QiscusSdk
 
     res = request("POST", update_profile_url, params)
     token = res["results"]["user"]
-
+    if token.nil?
+      raise Exception.new("Qiscus token is null.")
+    else
+      return token
+    end
   end
 
   def broadcast(sender_email, emails, message, type = "text", payload = nil, extras = nil)
