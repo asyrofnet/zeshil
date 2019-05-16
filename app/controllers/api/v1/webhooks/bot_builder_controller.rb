@@ -7,7 +7,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
       def create_bot(exist_session, bot_session, send_now=false)
         response = {}
         if exist_session["state"] == nil
-          message = "masukkan username bot anda"
+          message = "masukkan username bot anda,\n#{Bot.message("format_username")}"
           exist_session["state"] = "fill_username"
 
         elsif exist_session["state"] == "fill_username"
@@ -19,12 +19,14 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
 
         elsif exist_session["state"] == "fill_fullname"
           exist_session["params"]["fullname"] = params[:message][:text]
-          message = "masukkan password bot anda"
+          message = "masukkan password bot anda\n#{Bot.message("format_password")}"
           exist_session["state"] = "fill_password"
 
         elsif exist_session["state"] == "fill_password"
           exist_session["params"]["password"] = params[:message][:text]
-          message = "masukkan konfirmasi password bot anda"
+          response = Bot.check_password_format(params[:message][:text])
+          message = response[:message]
+          send_now = response[:send_now]
           exist_session["state"] = "fill_confirm_password"
 
         elsif exist_session["state"] == "fill_confirm_password"

@@ -2,15 +2,49 @@ class Bot < ApplicationRecord
     has_one :user
     has_secure_password
 
+    def self.lowercase
+        lowercase = "abcdefghijklmnopqrstuvwxyz".split("")
+        return lowercase
+    end
+
+    def self.numbers
+        numbers = "0123456789".split("")
+        return numbers
+    end
+
+    def self.symbols
+        symbols = "_.".split("")
+        return symbols
+    end
+
     def self.check_username(params)
-        username = params["username"]
-        bot = Bot.where(username: username).first
-        if bot.nil?
-            payloads = {"message": "masukkan fullname bot anda", "send_now": false}
+        response = {}
+        username = params["username"] || "nil"
+
+        if ((username.split("") - Bot.lowercase - Bot.numbers - Bot.symbols) == []) && (username.split("").length >= 9)
+            bot = Bot.where(username: username).first
+            if bot.nil?
+                response = {"message": "masukkan fullname bot anda", "send_now": false}
+            else
+                response = {"message": "username #{username} sudah terpakai!\nmasukkan username lain!", "send_now": true}
+            end
         else
-            payloads = {"message": "username #{username} sudah terpakai!\n masukkan username lain!", "send_now": true}
+            response[:message] = "format username salah!\nharap ulangi.\n#{Bot.message("format_username")}"
+            response[:send_now] = true
         end
-        return payloads
+        return response
+    end
+
+    def self.check_password_format(password)
+        response = {}
+        if (password.include? " ") || (password.length < 5)
+            response[:send_now] = true
+            response[:message] = "format password salah!\nharap ulangi.\n#{Bot.message("format_password")}"
+        else
+            response[:send_now] = false
+            response[:message] = "masukkan konfirmasi password bot anda"
+        end
+        return response
     end
 
     def self.check_password(params, password_digest)
@@ -30,8 +64,8 @@ class Bot < ApplicationRecord
         avatar_url = params["avatar_url"]
         application = Application.where(id: application_id).first
         bot_phone_number = Bot.generate_bot_phone_number(12)
-        qiscus_email = "628782#{bot_phone_number}@#{application.app_id}.com"
-        phone_number = "+628782#{bot_phone_number}"
+        qiscus_email = "627872#{bot_phone_number}@#{application.app_id}.com"
+        phone_number = "+627872#{bot_phone_number}"
         email = "#{username}@#{application.app_id}.com"        
 
         bot = Bot.where(username: username).first
@@ -42,7 +76,7 @@ class Bot < ApplicationRecord
                 response[:user_save_success] = true
             end
             if response[:user_save_success] == true
-                qiscus_email = "userid_#{user.id}_628782#{bot_phone_number}@#{application.app_id}.com"
+                qiscus_email = "userid_#{user.id}_627872#{bot_phone_number}@#{application.app_id}.com"
                 qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
                 qiscus_token = qiscus_sdk.login_or_register_rest(qiscus_email, password, user.fullname, avatar_url)
                 user.update_attributes!(qiscus_email: qiscus_email, qiscus_token: qiscus_token)
@@ -53,7 +87,7 @@ class Bot < ApplicationRecord
                 end
                 if response[:bot_save_success] == true
                     token = Bot.create_token(bot.user_id)
-                    response[:message] = "bot telah dibuat, \n token anda : #{token}"
+                    response[:message] = "bot telah dibuat, \ntoken anda : \n#{token}"
                     response[:bot] = bot
                     response[:user] = user
                 else
@@ -82,7 +116,7 @@ class Bot < ApplicationRecord
             digit_loop = digit_loop - 1
             if digit_loop == 0
                 bot_phone_number = bot_phone_number.join("")
-                user = User.where(phone_number: "+628782#{bot_phone_number}").first
+                user = User.where(phone_number: "+627872#{bot_phone_number}").first
                 if !user.nil?
                     digit_loop = digits
                     bot_phone_number = []
@@ -191,6 +225,10 @@ class Bot < ApplicationRecord
             message = "apakah anda yakin?"
         elsif type == "upload"
             message = "silahkan unggah foto baru"
+        elsif type == "format_username"
+            message = "username hanya boleh berisikan :\n- huruf kecil\n- angka\n- underscore (_)\n- titik (.) \n- tanpa menggunakan spasi\n- minimal 5 digit"
+        elsif type == "format_password"
+            message = "- password minimal 5 digit\n- tanpa menggunakan spasi"
         end
         return message
     end
