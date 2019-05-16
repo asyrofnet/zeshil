@@ -64,8 +64,8 @@ class Bot < ApplicationRecord
         avatar_url = params["avatar_url"]
         application = Application.where(id: application_id).first
         bot_phone_number = Bot.generate_bot_phone_number(12)
-        qiscus_email = "628782#{bot_phone_number}@#{application.app_id}.com"
-        phone_number = "+628782#{bot_phone_number}"
+        qiscus_email = "627872#{bot_phone_number}@#{application.app_id}.com"
+        phone_number = "+627872#{bot_phone_number}"
         email = "#{username}@#{application.app_id}.com"        
 
         bot = Bot.where(username: username).first
@@ -76,7 +76,7 @@ class Bot < ApplicationRecord
                 response[:user_save_success] = true
             end
             if response[:user_save_success] == true
-                qiscus_email = "userid_#{user.id}_628782#{bot_phone_number}@#{application.app_id}.com"
+                qiscus_email = "userid_#{user.id}_627872#{bot_phone_number}@#{application.app_id}.com"
                 qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
                 qiscus_token = qiscus_sdk.login_or_register_rest(qiscus_email, password, user.fullname, avatar_url)
                 user.update_attributes!(qiscus_email: qiscus_email, qiscus_token: qiscus_token)
@@ -116,7 +116,7 @@ class Bot < ApplicationRecord
             digit_loop = digit_loop - 1
             if digit_loop == 0
                 bot_phone_number = bot_phone_number.join("")
-                user = User.where(phone_number: "+628782#{bot_phone_number}").first
+                user = User.where(phone_number: "+627872#{bot_phone_number}").first
                 if !user.nil?
                     digit_loop = digits
                     bot_phone_number = []
