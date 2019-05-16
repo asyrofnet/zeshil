@@ -69,13 +69,13 @@ ActiveRecord::Schema.define(version: 20190430065050) do
 
   create_table "bots", force: :cascade do |t|
     t.string "username", null: false
-    t.string "password", null: false
+    t.string "password_digest", null: false
     t.string "description"
     t.integer "user_id", null: false, comment: "detail of bot"
-    t.integer "creator_id", null: false, comment: "bot creator"
+    t.integer "user_id_creator", null: false, comment: "bot creator"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["username"], name: "index_bots_on_username"
+    t.index ["username"], name: "index_bots_on_username", unique: true
   end
 
   create_table "broadcast_messages", force: :cascade do |t|
@@ -359,7 +359,7 @@ ActiveRecord::Schema.define(version: 20190430065050) do
 
   add_foreign_key "announcements", "applications", on_update: :cascade, on_delete: :cascade
   add_foreign_key "auth_sessions", "users", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "bots", "users", column: "creator_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "bots", "users", column: "user_id_creator", on_update: :cascade, on_delete: :cascade
   add_foreign_key "bots", "users", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_messages", "applications", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_messages", "users", on_update: :cascade, on_delete: :cascade

@@ -47,7 +47,8 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
           exist_session["params"]["application_id"] = params[:chat_room][:application_id]
           exist_session["params"]["avatar_url"] = params[:message][:payload][:url]
           if !exist_session["params"]["avatar_url"].nil?
-            message = Bot.create_bot(exist_session["params"])
+            bot = Bot.create_profile(exist_session["params"], params[:from][:id])
+            message = bot[:message]
             response[:buttons] = ""
             response[:type] = "text"
             $redis.del(bot_session)
@@ -115,7 +116,8 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
             message = "masukkan password baru"
             exist_session["editable_bot"] = "password"
           elsif params[:message][:text] == "/edit_access_token"
-            message = "masukkan anda yakin akan ubah access_token? \nya\ntidak"
+            message = "anda yakin akan ubah access_token?"
+            response[:buttons] = {buttons: Bot.create_buttons({buttons: ["ya", "tidak", "/batal"]})}
             exist_session["editable_bot"] = "confirm_access_token"
           elsif params[:message][:text] == "/edit_description"
             message = "masukkan deskripsi baru"
@@ -362,6 +364,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
           if params[:message][:text] == "ya"
             response = Bot.delete_bot(exist_session["params"]["username"], params[:from][:id], bot_session)
             message = response[:message]
+            response[:type] = "text"
             send_now = response[:send_now]
           elsif params[:message][:text] == "tidak"
             $redis.del(bot_session)
@@ -454,7 +457,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
           p message = response[:message]
           p content = {"buttons" => response[:buttons]}
           p exist_session = response[:exist_session]
-          p type = "buttons"
+          p type = response[:type] || "buttons"
           if send_now == false
             $redis.set(bot_session, exist_session.to_json)
           end
