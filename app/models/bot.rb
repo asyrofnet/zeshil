@@ -37,18 +37,27 @@ class Bot < ApplicationRecord
         bot = Bot.where(username: username).first
         if bot.nil?
             user = User.new(fullname: fullname, description: description, qiscus_email: qiscus_email, application_id: application_id, qiscus_token: qiscus_token, phone_number: phone_number, email: email, avatar_url: avatar_url)
-            if (user.save!)
+            Bot.transaction do
+                user.save!
+                response[:user_save_success] = true
+            end
+            if response[:user_save_success] == true
                 qiscus_email = "userid_#{user.id}_628782#{bot_phone_number}@#{application.app_id}.com"
                 qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
                 qiscus_token = qiscus_sdk.login_or_register_rest(qiscus_email, password, user.fullname, avatar_url)
                 user.update_attributes!(qiscus_email: qiscus_email, qiscus_token: qiscus_token)
                 bot = Bot.new(username: username, user_id: user.id, user_id_creator: user_id_creator, password: password, description: description)
-                if (bot.save!)
+                Bot.transaction do
+                    bot.save!
+                    response[:bot_save_success] = true
+                end
+                if response[:bot_save_success] == true
                     token = Bot.create_token(bot.user_id)
                     response[:message] = "bot telah dibuat, \n token anda : #{token}"
                     response[:bot] = bot
                     response[:user] = user
                 else
+                    Bot.hard_delete(user)
                     response[:message] = "gagal menyimpan bot"
                 end
             else
@@ -58,6 +67,10 @@ class Bot < ApplicationRecord
             response[:message] = "username sudah terpakai!, harap masukkan username lain"
         end
         return response
+    end
+
+    def self.hard_delete(table)
+        table.delete
     end
 
     def self.generate_bot_phone_number(digits=12)
@@ -113,10 +126,11 @@ class Bot < ApplicationRecord
         bot = Bot.where(username: username, user_id_creator: user_id_creator).first
         user = nil
         if !bot.nil?
+            bot.destroy
             user = User.where(id: bot.user_id, deleted: false).first
         end
         if !user.nil?
-            user.update_attributes!(deleted: true)
+            user.destroy
             message = "bot berhasil dihapus"
             $redis.del(bot_session)
             send_now = true
@@ -214,16 +228,12 @@ class Bot < ApplicationRecord
     def self.create_contact(user1_id, user2_id)
         response = {}
         contact1 = Contact.new(user_id: user1_id, contact_id: user2_id)
-        if contact1.save!
-            contact2 = Contact.new(user_id: user2_id, contact_id: user1_id)
-            if contact2.save!
-                response[:message] = "berhasil menyimpan kontak"
-                response[:success] = true
-            else
-                response[:message] = "gagal menyimpan kontak"
-            end
-        else
-            response[:message] = "gagal menyimpan kontak"
+        contact2 = Contact.new(user_id: user2_id, contact_id: user1_id)
+        Contact.transaction do
+            contact1.save!
+            contact2.save!
+            response[:message] = "berhasil menyimpan kontak"
+            response[:success] = true
         end
         return response
     end
@@ -258,4 +268,8 @@ class Bot < ApplicationRecord
         return response
     end
 
+    def destroy
+        self.username = "userid_" + self.id.to_s + "_" + self.username + "_deleted_#{Time.now.to_i}"
+        self.save
+    end
 end

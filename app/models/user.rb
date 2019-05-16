@@ -401,8 +401,4 @@ class User < ActiveRecord::Base
     end
   end
 
-  def delete
-    self.destroy
-  end
-
 end
