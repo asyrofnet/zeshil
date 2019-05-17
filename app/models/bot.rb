@@ -219,8 +219,6 @@ class Bot < ApplicationRecord
             message = "silahkan tulis ulang"
         elsif type == "cancel"
             message = "tekan /cancel untuk membatalkan proses"
-        elsif type == "unknown"
-            message = "permintaan tidak diketahui"
         elsif type == "determination"
             message = "apakah anda yakin?"
         elsif type == "upload"
@@ -229,6 +227,8 @@ class Bot < ApplicationRecord
             message = "username hanya boleh berisikan :\n- huruf kecil\n- angka\n- underscore (_)\n- titik (.) \n- tanpa menggunakan spasi\n- minimal 5 digit"
         elsif type == "format_password"
             message = "- password minimal 5 digit\n- tanpa menggunakan spasi"
+        else
+            message = "permintaan tidak diketahui"
         end
         return message
     end

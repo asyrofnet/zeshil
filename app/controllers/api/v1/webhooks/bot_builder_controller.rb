@@ -115,7 +115,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
             message = "masukkan fullname baru"
             exist_session["editable_bot"] = "fullname"
           elsif params[:message][:text] == "/edit_password"
-            message = "masukkan password baru"
+            message = "masukkan password baru\n#{Bot.message("format_password")}"
             exist_session["editable_bot"] = "password"
           elsif params[:message][:text] == "/edit_access_token"
             message = "anda yakin akan ubah access_token?"
@@ -231,7 +231,9 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
             
           elsif exist_session["editable_bot"] == "password"
             exist_session["params"]["new_password"] = params[:message][:text]
-            message = "masukkan konfirmasi password"
+            response = Bot.check_password_format(params[:message][:text])
+            message = response[:message]
+            send_now = response[:send_now]
             exist_session["editable_bot"] = "confirm_password"
 
           elsif exist_session["editable_bot"] == "confirm_password"
