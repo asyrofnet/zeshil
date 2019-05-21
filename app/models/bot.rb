@@ -2,6 +2,73 @@ class Bot < ApplicationRecord
     has_one :user
     has_secure_password
 
+    def self.create_botbuilder(params={})
+        response = {}
+        username = params["username"] || "abah_bot"
+        fullname = params["fullname"] || "Abah Bot"
+        description = params["description"] || "dokumentasi : https://github.com/kiwari-engineering/bot-sdk-php"
+        qiscus_token = params["qiscus_token"] || "qiscus token"
+        application_id = params["application_id"] || 3
+        avatar_url = params["avatar_url"] || "https://d1edrlpyc25xu0.cloudfront.net/kiwari-stag/image/upload/F4xLTnAYtj/shutterstock_677646532-992x558.jpg"
+        application = Application.where(id: application_id).first
+        bot_phone_number = username
+        qiscus_email = "#{bot_phone_number}@#{application.app_id}.com"
+        phone_number = "#{bot_phone_number}"
+        email = "#{username}@#{application.app_id}.com"        
+
+        user = User.new(fullname: fullname, description: description, qiscus_email: qiscus_email, application_id: application_id, qiscus_token: qiscus_token, phone_number: phone_number, email: email, avatar_url: avatar_url)
+        Bot.transaction do
+            user.save!
+            response[:user_save_success] = true
+        end
+        if response[:user_save_success] == true
+            qiscus_email = "userid_#{user.id}_#{bot_phone_number}@#{application.app_id}.com"
+            qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
+            qiscus_token = qiscus_sdk.login_or_register_rest(qiscus_email, "password", user.fullname, avatar_url)
+            user.update_attributes!(qiscus_email: qiscus_email, qiscus_token: qiscus_token)
+            official = Bot.set_official_account(user)
+            if official[:success] == true
+                response[:message] = "successfully save bot builder!"
+                response[:success] = true
+            else
+                Bot.hard_delete(user)
+            end
+        end
+
+        response[:message] = response[:message] || "failed to save bot builder!"
+        response[:success] = response[:success] || false
+        return response
+    end
+
+    def self.phone_number_to_username
+        role = Role.where(name: "Bot").first
+        if !role.nil?
+            user_ids = UserRole.where(role_id: role.id).pluck(:user_id)
+            users = User.where(id: user_ids)
+            users.each do |user|
+                user.update_attributes!(phone_number: user.bot.username)
+            end
+        end
+    end
+
+    def self.set_official_account(user = nil)
+        response = {}
+        role = Role.where(name: "Official Account").first
+        if !role.nil?
+            role_id = role.id
+        else
+            role_id = 3
+        end
+        if !user.nil?
+            user_role = UserRole.new(user_id: user.id, role_id: role_id)
+            Bot.transaction do
+                user_role.save!
+                response[:success] = true
+            end
+        end
+        return response
+    end
+
     def self.lowercase
         lowercase = "abcdefghijklmnopqrstuvwxyz".split("")
         return lowercase
@@ -63,9 +130,9 @@ class Bot < ApplicationRecord
         application_id = params["application_id"]
         avatar_url = params["avatar_url"]
         application = Application.where(id: application_id).first
-        bot_phone_number = Bot.generate_bot_phone_number(12)
-        qiscus_email = "627872#{bot_phone_number}@#{application.app_id}.com"
-        phone_number = "+627872#{bot_phone_number}"
+        bot_phone_number = username
+        qiscus_email = "#{bot_phone_number}@#{application.app_id}.com"
+        phone_number = "#{bot_phone_number}"
         email = "#{username}@#{application.app_id}.com"        
 
         bot = Bot.where(username: username).first
@@ -76,7 +143,7 @@ class Bot < ApplicationRecord
                 response[:user_save_success] = true
             end
             if response[:user_save_success] == true
-                qiscus_email = "userid_#{user.id}_627872#{bot_phone_number}@#{application.app_id}.com"
+                qiscus_email = "userid_#{user.id}_#{bot_phone_number}@#{application.app_id}.com"
                 qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
                 qiscus_token = qiscus_sdk.login_or_register_rest(qiscus_email, password, user.fullname, avatar_url)
                 user.update_attributes!(qiscus_email: qiscus_email, qiscus_token: qiscus_token)
