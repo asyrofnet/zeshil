@@ -358,11 +358,6 @@ Rails.application.routes.draw do
         scope module: :webhooks, path: '/webhooks' do
           post '/bot-callback/:app_id', to: 'bot_callback#create'
           resources :bot_builder, only: [] do
-            # post :check_username, on: :collection
-            # post :create_bot, on: :collection
-            # post :create_access_token, on: :collection
-            # post :update, on: :collection
-            # post :delete, on: :collection
             post :handler, on: :collection
           end
         end

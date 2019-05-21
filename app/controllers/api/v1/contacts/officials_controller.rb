@@ -57,9 +57,12 @@ class Api::V1::Contacts::OfficialsController < ProtectedController
           .order(fullname: :asc)
           .as_json({:show_profile => false})
         
+        contact_id = @current_user.contacts.pluck(:contact_id)
+
         favored_status = @current_user.contacts.pluck(:contact_id, :is_favored)
         bot_contacts = bot_contacts.map do |e|
-          e.merge!('is_favored' => favored_status.to_h[ e["id"] ] )
+          is_contact = contact_id.include?(e["id"])
+          e.merge!('is_favored' => favored_status.to_h[ e["id"] ], 'is_contact' => is_contact )
         end
       end
 
