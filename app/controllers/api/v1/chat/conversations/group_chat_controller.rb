@@ -20,7 +20,11 @@ class Api::V1::Chat::Conversations::GroupChatController < ProtectedController
         raise Exception.new("Chat room with qiscus room id #{params[:qiscus_room_id]} is not found.")
       end
 
-      if chat_room.users.pluck(:id).to_a.include?(@current_user.id)
+      bot_id = User.find_bot_id
+      user_ids = chat_room.users.pluck(:id)
+      user_bot = UserRole.where(user_id: user_ids, role_id: bot_id).pluck(:user_id)
+
+      if user_ids.to_a.include?(@current_user.id)
 
         qiscus_sdk = QiscusSdk.new(@current_user.application.app_id, @current_user.application.qiscus_sdk_secret)
         sdk_info, chat_room_sdk_info = qiscus_sdk.get_rooms_info(@current_user.qiscus_email, [chat_room.qiscus_room_id])
@@ -42,6 +46,9 @@ class Api::V1::Chat::Conversations::GroupChatController < ProtectedController
 
           is_favored = (favored_status.to_h[ user["id"] ] == nil) ? false : favored_status.to_h[ user["id"] ]
           user.merge!('is_favored' => is_favored)
+
+          is_bot = user_bot - [user['id']] != user_bot
+          user.merge!('is_bot' => is_bot)
         end
 
         # for mapping is_pin_chat

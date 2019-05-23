@@ -79,6 +79,11 @@ class User < ActiveRecord::Base
     self.roles.pluck(:name).include?('Helpdesk')
   end
 
+  def self.find_bot_id
+    bot_id = Role.where(name: "Bot").first.id
+    return bot_id
+  end
+
   def is_bot
     self.roles.pluck(:name).include?('Bot')
   end
