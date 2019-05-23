@@ -80,7 +80,12 @@ class User < ActiveRecord::Base
   end
 
   def self.find_bot_id
-    bot_id = Role.where(name: "Bot").first.id
+    bot = Role.where(name: "Bot").first
+    if bot.nil?
+      bot_id = nil
+    else
+      bot_id = bot.id
+    end
     return bot_id
   end
 
