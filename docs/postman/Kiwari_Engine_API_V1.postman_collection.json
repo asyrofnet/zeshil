@@ -1,0 +1,1735 @@
+{
+	"info": {
+		"_postman_id": "d1025897-36a6-49d3-a2bb-ba8c6cb50bdb",
+		"name": "Kiwari Engine API V1",
+		"description": "Kiwari Engine API V1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/admin",
+			"item": [
+				{
+					"name": "/applications",
+					"item": [
+						{
+							"name": "/applications",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "access_token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "text"
+										},
+										{
+											"key": "app_id",
+											"value": "{{APP_ID}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/v1/admin/applications",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"applications"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "/applications related",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "b2deef30-8830-4262-a5bc-2042f037d020",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "c4fc7edb-1ce6-4e0a-bd0e-55c2c5bc12e6",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/auth",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/auth?app_id={{app_id}}&phone_number={{phone_number}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"auth"
+									],
+									"query": [
+										{
+											"key": "app_id",
+											"value": "{{app_id}}"
+										},
+										{
+											"key": "phone_number",
+											"value": "{{phone_number}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/auth"
+							},
+							"response": []
+						},
+						{
+							"name": "resend_passcode",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/auth/resend?app_id={{app_id}}&phone_number={{phone_number}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"auth",
+										"resend"
+									],
+									"query": [
+										{
+											"key": "app_id",
+											"value": "{{app_id}}"
+										},
+										{
+											"key": "phone_number",
+											"value": "{{phone_number}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/auth/resend"
+							},
+							"response": []
+						},
+						{
+							"name": "verify",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/auth/verify?app_id={{app_id}}&phone_number={{phone_number}}&passcode={{passcode}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"auth",
+										"verify"
+									],
+									"query": [
+										{
+											"key": "app_id",
+											"value": "{{app_id}}"
+										},
+										{
+											"key": "phone_number",
+											"value": "{{phone_number}}"
+										},
+										{
+											"key": "passcode",
+											"value": "{{passcode}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/auth/verify"
+							},
+							"response": []
+						}
+					],
+					"description": "/auth related",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/calls",
+					"item": [
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/calls?access_token={{access_token}}&user_id={{user_id}}&page={{page}}&limit={{limit}}&call_participant ={{call_participant }}&start_date ={{start_date }}&end_date ={{end_date }}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"calls"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "user_id",
+											"value": "{{user_id}}"
+										},
+										{
+											"key": "page",
+											"value": "{{page}}"
+										},
+										{
+											"key": "limit",
+											"value": "{{limit}}"
+										},
+										{
+											"key": "call_participant ",
+											"value": "{{call_participant }}"
+										},
+										{
+											"key": "start_date ",
+											"value": "{{start_date }}"
+										},
+										{
+											"key": "end_date ",
+											"value": "{{end_date }}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/calls"
+							},
+							"response": []
+						}
+					],
+					"description": "/calls related\n",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/chat_rooms",
+					"item": [
+						{
+							"name": "change_group_name",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/chat_rooms/:id/change_group_name?access_token={{access_token}}&group_chat_name={{group_chat_name}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"chat_rooms",
+										":id",
+										"change_group_name"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "group_chat_name",
+											"value": "{{group_chat_name}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{chat_room_id}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/chat_rooms/:id/change_group_name"
+							},
+							"response": []
+						},
+						{
+							"name": "delete_all_participants",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/chat_rooms/delete_all_participants?qiscus_room_id[]={{qiscus_room_id[]}}&access_token={{access_token}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"chat_rooms",
+										"delete_all_participants"
+									],
+									"query": [
+										{
+											"key": "qiscus_room_id[]",
+											"value": "{{qiscus_room_id[]}}"
+										},
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/chat_rooms/delete_all_participants"
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/chat_rooms?access_token={{access_token}}&qiscus_room_name={{qiscus_room_name}}&group_chat_name={{group_chat_name}}&page ={{page}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"chat_rooms"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "qiscus_room_name",
+											"value": "{{qiscus_room_name}}"
+										},
+										{
+											"key": "group_chat_name",
+											"value": "{{group_chat_name}}"
+										},
+										{
+											"key": "page ",
+											"value": "{{page}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/chat_rooms"
+							},
+							"response": []
+						},
+						{
+							"name": "show",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/chat_rooms/:id?access_token={{access_token}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"chat_rooms",
+										":id"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{chat_room_id}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/chat_rooms/:id"
+							},
+							"response": []
+						}
+					],
+					"description": "/chat_rooms related",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/contacts",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/contacts?access_token={{access_token}}&user_id={{user_id}}&contact_id[]={{contact_id[]}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"contacts"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "user_id",
+											"value": "{{user_id}}"
+										},
+										{
+											"key": "contact_id[]",
+											"value": "{{contact_id[]}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/contacts"
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/contacts?access_token={{access_token}}&user_id={{user_id}}&contact_id[]={{contact_id[]}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"contacts"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "user_id",
+											"value": "{{user_id}}"
+										},
+										{
+											"key": "contact_id[]",
+											"value": "{{contact_id[]}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/contacts"
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/contacts?access_token={{access_token}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"contacts"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/contacts"
+							},
+							"response": []
+						}
+					],
+					"description": "/contacts related",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/roles",
+					"item": [
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/roles?access_token={{access_token}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"roles"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/roles"
+							},
+							"response": []
+						}
+					],
+					"description": "/roles related\n",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/statistics",
+					"item": [
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/statistics?access_token={[access_token}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"statistics"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{[access_token}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/statistics"
+							},
+							"response": []
+						}
+					],
+					"description": "/statistics related",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/users",
+					"item": [
+						{
+							"name": "/roles",
+							"item": [
+								{
+									"name": "create",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "https://{{BASE_URL}}/api/v1/admin/users/:id/roles?access_token={{access_token}}&role_id[]={{role_id[]}}",
+											"protocol": "https",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"admin",
+												"users",
+												":id",
+												"roles"
+											],
+											"query": [
+												{
+													"key": "access_token",
+													"value": "{{access_token}}"
+												},
+												{
+													"key": "role_id[]",
+													"value": "{{role_id[]}}"
+												}
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "{{role_id}}"
+												}
+											]
+										},
+										"description": "https://qisme.qiscus.com/api/v1/admin/users/:id/roles"
+									},
+									"response": []
+								},
+								{
+									"name": "index",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "https://{{BASE_URL}}/api/v1/admin/users/:id/roles?access_token={{access_token}}",
+											"protocol": "https",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"admin",
+												"users",
+												":id",
+												"roles"
+											],
+											"query": [
+												{
+													"key": "access_token",
+													"value": "{{access_token}}"
+												}
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "{{role_id}}"
+												}
+											]
+										},
+										"description": "https://qisme.qiscus.com/api/v1/admin/users/:id/roles"
+									},
+									"response": []
+								},
+								{
+									"name": "delete",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "https://{{BASE_URL}}/api/v1/admin/users/:id/roles?access_token={{access_token}}&role_id[]={{role_id[]}}",
+											"protocol": "https",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"admin",
+												"users",
+												":id",
+												"roles"
+											],
+											"query": [
+												{
+													"key": "access_token",
+													"value": "{{access_token}}"
+												},
+												{
+													"key": "role_id[]",
+													"value": "{{role_id[]}}"
+												}
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "{{role_id}}"
+												}
+											]
+										},
+										"description": "https://qisme.qiscus.com/api/v1/admin/users/:id/roles"
+									},
+									"response": []
+								}
+							],
+							"description": "/roles related",
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "/sessions",
+							"item": [
+								{
+									"name": "delete",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "https://{{BASE_URL}}/api/v1/admin/users/:user_id/sessions/:session_id?access_token={{access_token}}",
+											"protocol": "https",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"admin",
+												"users",
+												":user_id",
+												"sessions",
+												":session_id"
+											],
+											"query": [
+												{
+													"key": "access_token",
+													"value": "{{access_token}}"
+												}
+											],
+											"variable": [
+												{
+													"key": "user_id",
+													"value": "{{user_id}}"
+												},
+												{
+													"key": "session_id",
+													"value": "{{session_id}}"
+												}
+											]
+										},
+										"description": "https://qisme.qiscus.com/api/v1/admin/users/:user_id/sessions/:session_id"
+									},
+									"response": []
+								},
+								{
+									"name": "flush_session",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "https://{{BASE_URL}}/api/v1/admin/users/:user_id/flush_sessions?access_token={{access_token}}",
+											"protocol": "https",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"admin",
+												"users",
+												":user_id",
+												"flush_sessions"
+											],
+											"query": [
+												{
+													"key": "access_token",
+													"value": "{{access_token}}"
+												}
+											],
+											"variable": [
+												{
+													"key": "user_id",
+													"value": "{{user_id}}"
+												}
+											]
+										},
+										"description": "https://qisme.qiscus.com/api/v1/admin/users/:user_id/sessions/:session_id"
+									},
+									"response": []
+								},
+								{
+									"name": "index",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "https://{{BASE_URL}}/api/v1/admin/users/:user_id/sessions?access_token={{access_token}}&page ={{page }}",
+											"protocol": "https",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"admin",
+												"users",
+												":user_id",
+												"sessions"
+											],
+											"query": [
+												{
+													"key": "access_token",
+													"value": "{{access_token}}"
+												},
+												{
+													"key": "page ",
+													"value": "{{page }}"
+												}
+											],
+											"variable": [
+												{
+													"key": "user_id",
+													"value": "{{user_id}}"
+												}
+											]
+										},
+										"description": "https://{{BASE_URL}}/api/v1/admin/users/:user_id/sessions"
+									},
+									"response": []
+								}
+							],
+							"description": "/sessions related",
+							"_postman_isSubFolder": true
+						}
+					],
+					"description": "/users related",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/users_controller",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/users?access_token={{access_token}}&user[phone_number]={{user[phone_number]}}&user[email]={{user[email]}}&user[fullname]={{user[fullname]}}&user[gender]={{user[gender]}}&user[date_of_birth]={{user[date_of_birth]}}&user[is_public]={{user[is_public]}}&user[description]={{user[description]}}&user[callback_url]={{user[callback_url]}}&user[role_id]={{user[role_id]}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "user[phone_number]",
+											"value": "{{user[phone_number]}}"
+										},
+										{
+											"key": "user[email]",
+											"value": "{{user[email]}}"
+										},
+										{
+											"key": "user[fullname]",
+											"value": "{{user[fullname]}}"
+										},
+										{
+											"key": "user[gender]",
+											"value": "{{user[gender]}}"
+										},
+										{
+											"key": "user[date_of_birth]",
+											"value": "{{user[date_of_birth]}}"
+										},
+										{
+											"key": "user[is_public]",
+											"value": "{{user[is_public]}}"
+										},
+										{
+											"key": "user[description]",
+											"value": "{{user[description]}}"
+										},
+										{
+											"key": "user[callback_url]",
+											"value": "{{user[callback_url]}}"
+										},
+										{
+											"key": "user[role_id]",
+											"value": "{{user[role_id]}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/users"
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/users/:id?=&access_token={{access_token}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										":id"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": ""
+										},
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{user_id}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/users/:id"
+							},
+							"response": []
+						},
+						{
+							"name": "delete_temporary_user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/users/:id?access_token={{access_token}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										":id"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{user_id}}"
+										}
+									]
+								},
+								"description": "https://qisme.qiscus.com/api/v1/admin/users/import_template"
+							},
+							"response": []
+						},
+						{
+							"name": "import_user",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/users/import?access_token={{access_token}}&raw_file={{raw_file}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										"import"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "raw_file",
+											"value": "{{raw_file}}"
+										}
+									]
+								},
+								"description": "https://{{BASE_URL}}/api/v1/admin/users/import"
+							},
+							"response": []
+						},
+						{
+							"name": "official_all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/users/officials_all?access_token={[access_token}}&email={{email}}&fullname={{fullname}}&phone_number={{phone_number}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										"officials_all"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{[access_token}}"
+										},
+										{
+											"key": "email",
+											"value": "{{email}}"
+										},
+										{
+											"key": "fullname",
+											"value": "{{fullname}}"
+										},
+										{
+											"key": "phone_number",
+											"value": "{{phone_number}}"
+										}
+									]
+								},
+								"description": "https://{{BASE_URL}}/api/v1/admin/users/officials_all"
+							},
+							"response": []
+						},
+						{
+							"name": "official_user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/users/officials?access_token={{access_token}}&email={{email}}&fullname={{fullname}}&phone_number={{phone_number}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										"officials"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "email",
+											"value": "{{email}}"
+										},
+										{
+											"key": "fullname",
+											"value": "{{fullname}}"
+										},
+										{
+											"key": "phone_number",
+											"value": "{{phone_number}}"
+										}
+									]
+								},
+								"description": "https://{{BASE_URL}}/api/v1/admin/users/officials"
+							},
+							"response": []
+						},
+						{
+							"name": "all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/users/all?access_token={[access_token}}&email={{email}}&fullname={{fullname}}&phone_number={[phone_number}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										"all"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{[access_token}}"
+										},
+										{
+											"key": "email",
+											"value": "{{email}}"
+										},
+										{
+											"key": "fullname",
+											"value": "{{fullname}}"
+										},
+										{
+											"key": "phone_number",
+											"value": "{[phone_number}}"
+										}
+									]
+								},
+								"description": "https://{{BASE_URL}}/api/v1/admin/users/all"
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/users?access_token={{access_token}}&email={{email}}&fullname={{fullname}}&phone_number={{phone_number}}&page ={{page}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "email",
+											"value": "{{email}}"
+										},
+										{
+											"key": "fullname",
+											"value": "{{fullname}}"
+										},
+										{
+											"key": "phone_number",
+											"value": "{{phone_number}}"
+										},
+										{
+											"key": "page ",
+											"value": "{{page}}"
+										}
+									]
+								},
+								"description": "https://{{BASE_URL}}/api/v1/admin/users"
+							},
+							"response": []
+						},
+						{
+							"name": "show_chat_rooms",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/users/:id/chat_rooms?access_token={{access_token}}&page={{page}}&limit={{limit}}&start_date ={{start_date }}&end_date ={{end_date }}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										":id",
+										"chat_rooms"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "page",
+											"value": "{{page}}"
+										},
+										{
+											"key": "limit",
+											"value": "{{limit}}"
+										},
+										{
+											"key": "start_date ",
+											"value": "{{start_date }}"
+										},
+										{
+											"key": "end_date ",
+											"value": "{{end_date }}"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{chat_room_id}}"
+										}
+									]
+								},
+								"description": "https://{{BASE_URL}}/api/v1/admin/users/:id/chat_rooms"
+							},
+							"response": []
+						},
+						{
+							"name": "show_contact",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/users/:id/contacts?access_token={{access_token}}&email={{email}}&fullname={{fullname}}&phone_number={{phone_number}}&page ={{page}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										":id",
+										"contacts"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "email",
+											"value": "{{email}}"
+										},
+										{
+											"key": "fullname",
+											"value": "{{fullname}}"
+										},
+										{
+											"key": "phone_number",
+											"value": "{{phone_number}}"
+										},
+										{
+											"key": "page ",
+											"value": "{{page}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{contact_id}}"
+										}
+									]
+								},
+								"description": "https://{{BASE_URL}}/api/v1/admin/users/:id/contacts"
+							},
+							"response": []
+						},
+						{
+							"name": "update_avatar",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/users/:id/update_avatar?access_token={{access_token}}&avatar_file={{avatar_file}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										":id",
+										"update_avatar"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "avatar_file",
+											"value": "{{avatar_file}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{avatar_id}}"
+										}
+									]
+								},
+								"description": "https://{{BASE_URL}}/api/v1/admin/users/:id/update_avatar"
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://{{BASE_URL}}/api/v1/admin/users/:id?access_token={{access_token}}&user[phone_number]={{user[phone_number]}}&user[fullname]={{user[fullname]}}&user[email]={{user[email]}}&user[gender]={{user[gender]}}&user[date_of_birth]={{user[date_of_birth]}}&user[is_public]={{user[is_public]}}&user[description]={{user[description]}}&user[avatar_file]={{user[avatar_file]}}&user[callback_url]={{user[callback_url]}}&user[role_id]={{user[role_id]}}",
+									"protocol": "https",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										":id"
+									],
+									"query": [
+										{
+											"key": "access_token",
+											"value": "{{access_token}}"
+										},
+										{
+											"key": "user[phone_number]",
+											"value": "{{user[phone_number]}}"
+										},
+										{
+											"key": "user[fullname]",
+											"value": "{{user[fullname]}}"
+										},
+										{
+											"key": "user[email]",
+											"value": "{{user[email]}}"
+										},
+										{
+											"key": "user[gender]",
+											"value": "{{user[gender]}}"
+										},
+										{
+											"key": "user[date_of_birth]",
+											"value": "{{user[date_of_birth]}}"
+										},
+										{
+											"key": "user[is_public]",
+											"value": "{{user[is_public]}}"
+										},
+										{
+											"key": "user[description]",
+											"value": "{{user[description]}}"
+										},
+										{
+											"key": "user[avatar_file]",
+											"value": "{{user[avatar_file]}}"
+										},
+										{
+											"key": "user[callback_url]",
+											"value": "{{user[callback_url]}}"
+										},
+										{
+											"key": "user[role_id]",
+											"value": "{{user[role_id]}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								},
+								"description": "https://{{BASE_URL}}/api/v1/admin/users/:id"
+							},
+							"response": []
+						}
+					],
+					"description": "https://qisme.qiscus.com/api/v1/admin/users",
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "/admin related",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4e4e39e9-f384-475e-942a-e8a62d2f4657",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "22ef9734-587f-4b0c-aaac-12d6b7a7e6fe",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "/announcement",
+			"item": [],
+			"description": "/announcement related"
+		},
+		{
+			"name": "/auth",
+			"item": [],
+			"description": "/auth related"
+		},
+		{
+			"name": "/auth_email",
+			"item": [],
+			"description": "/auth_email related"
+		},
+		{
+			"name": "/auth_email_nonce",
+			"item": [],
+			"description": "/auth_email_nonce related",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "dc586355-7bc5-45c4-acc1-b155493510af",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5de06a92-788e-49c0-a0af-53f431356a62",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "/auth_nonce",
+			"item": [],
+			"description": "/auth_nonce related",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c2e8c35e-70f2-4c44-8c54-36dbcbee63ee",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7da58882-8ee3-4a31-8d95-1255704c6f7d",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "/chat",
+			"item": [],
+			"description": "/chat related"
+		},
+		{
+			"name": "/calls",
+			"item": [],
+			"description": "/calls related"
+		},
+		{
+			"name": "/contacts",
+			"item": [],
+			"description": "/contacts related"
+		},
+		{
+			"name": "/files",
+			"item": [],
+			"description": "/files related"
+		},
+		{
+			"name": "/passcode",
+			"item": [],
+			"description": "/passcode related"
+		},
+		{
+			"name": "/posts",
+			"item": [],
+			"description": "/posts related"
+		},
+		{
+			"name": "/me",
+			"item": [],
+			"description": "/me related"
+		},
+		{
+			"name": "/push_notifications",
+			"item": [],
+			"description": "/push_notifications related"
+		},
+		{
+			"name": "/rest",
+			"item": [],
+			"description": "/rest related"
+		},
+		{
+			"name": "/users",
+			"item": [],
+			"description": "/users related"
+		},
+		{
+			"name": "/utilities",
+			"item": [],
+			"description": "/utilities related"
+		},
+		{
+			"name": "/webooks",
+			"item": [
+				{
+					"name": "/bot_builder",
+					"item": [
+						{
+							"name": "handler",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token\": \"tokensaya\",\n    \"from\": {\n        \"id\": 29,\n        \"phone_number\": \"+62868199998888\",\n        \"fullname\": \"Taufan Stag\",\n        \"qiscus_email\": \"userid_29_62868199998888@kiwari-stag.com\",\n        \"qiscus_id\": 40626067\n    },\n    \"my_account\": {\n        \"id\": 82,\n        \"phone_number\": \"+62868199996666\",\n        \"fullname\": \"BOT BUILDER LOCAL FM\",\n        \"qiscus_email\": \"userid_82_62868199996666@kiwari-stag.com\"\n    },\n    \"chat_room\": {\n        \"id\": 121,\n        \"qiscus_room_name\": \"Group Chat Name\",\n        \"qiscus_room_id\": 2456640,\n        \"is_group_chat\": false,\n        \"created_at\": \"2019-05-15T04:36:51.577Z\",\n        \"updated_at\": \"2019-05-15T04:36:51.577Z\",\n        \"application_id\": 1,\n        \"group_avatar_url\": \"\",\n        \"is_official_chat\": false,\n        \"target_user_id\": 82,\n        \"is_public_chat\": false,\n        \"is_channel\": false,\n        \"users\": [\n            {\n                \"id\": 82,\n                \"phone_number\": \"+62868199996666\",\n                \"fullname\": \"BOT BUILDER LOCAL FM\",\n                \"qiscus_email\": \"userid_82_62868199996666@kiwari-stag.com\",\n                \"qiscus_id\": 40679384\n            },\n            {\n                \"id\": 29,\n                \"phone_number\": \"+62868199998888\",\n                \"fullname\": \"Taufan Stag\",\n                \"qiscus_email\": \"userid_29_62868199998888@kiwari-stag.com\",\n                \"qiscus_id\": 40626067\n            }\n        ],\n        \"chat_name\": \"Group Chat Name\",\n        \"chat_avatar_url\": \"\"\n    },\n    \"message\": {\n        \"payload\": {},\n        \"text\": \"/bantuan\",\n        \"type\": \"text\"\n    }\n}"
+								},
+								"url": {
+									"raw": "{{url}}/api/v1/webhooks/bot_builder/handler",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"webhooks",
+										"bot_builder",
+										"handler"
+									]
+								},
+								"description": "handler untuk bot builder"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "webhooks untuk v1"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "c229d2bc-8682-467d-9879-831d4cca28f1",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "7c1d5eae-d159-4215-87d7-581c15581eba",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
