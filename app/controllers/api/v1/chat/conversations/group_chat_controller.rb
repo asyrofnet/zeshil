@@ -22,7 +22,7 @@ class Api::V1::Chat::Conversations::GroupChatController < ProtectedController
 
       bot_id = User.find_bot_id
       user_ids = chat_room.users.pluck(:id)
-      user_bot = UserRole.where(user_id: user_ids, role_id: bot_id).pluck(:user_id)
+      user_bot = User.find_user_bot(user_ids, bot_id)
 
       if user_ids.to_a.include?(@current_user.id)
 

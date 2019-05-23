@@ -89,6 +89,16 @@ class User < ActiveRecord::Base
     return bot_id
   end
 
+  def self.find_user_bot(user_ids, bot_id)
+    user_bot = UserRole.where(user_id: user_ids, role_id: bot_id)
+    if !user_bot.nil?
+      user_bot = user_bot.pluck(:user_id)
+    else
+      user_bot = []
+    end
+    return user_bot
+  end
+
   def is_bot
     self.roles.pluck(:name).include?('Bot')
   end
