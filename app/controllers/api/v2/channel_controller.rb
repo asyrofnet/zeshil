@@ -5,9 +5,9 @@ class Api::V2::ChannelController < ApplicationController
 
   def generate_invite_url
     begin
-      params[:qiscus_email] = "userid_2_6286817281728@kiwari-stag.com"
-      invite_url = "kiwari.me/?qiscus_email=#{params[:qiscus_email]}"
-      message = "invite url anda :\n#{invite_url} "
+      # params[:username] = "channel_qiscus"
+      invite_url = "kiwari.me/?username=#{params[:username]}"
+      message = "invite url anda :\n#{invite_url}"
 
       topic_id =  2456640
       qiscus_token = "D4cAi4F0NctKh8ljtko5"
@@ -33,28 +33,43 @@ class Api::V2::ChannelController < ApplicationController
     begin
       success = false
       username = params[:id]
-      location = "http://www.yahoo.com"
-      # cuman sekarang belum pakai username channelnya, kalau sudah diimplementasi, apakah harus ubah create channel dengan username juga?
+
+      if request.user_agent.downcase.match(/android/)
+        @os = "android"
+      elsif request.user_agent.downcase.match(/iphone/)
+        @os = "iphone"
+      elsif request.user_agent.downcase.match(/mac|windows|linux/)
+        @os = "desktop"
+      end
+
+      location = "https://kiwari.chat/"
       message = "channel #{username} tidak ditemukan"
       additional_info = UserAdditionalInfo.where(key: "username", value: username).first
       if !additional_info.nil?
-        p "additional info ketemu"
+        p "additional info found"
         user_id = additional_info.user_id
         user = User.find(user_id)
         if !user.nil?
-          p "user ketemu"
+          p "user found"
           role_ids = user.role_ids
           official_id = [Role.find_official]
           is_official = (role_ids - official_id != role_ids)
           if is_official == true
-            p "official account ketemu"
+            p "official account found"
             chat_room = ChatRoom.where(user_id: user_id).first
             if !chat_room.nil?
-              p "chat room ketemu"
+              p "chat room found"
               is_channel = chat_room.is_channel == true
               if is_channel == true
-                # location = "http://www.google.com"
-                location = "https://play.google.com/store/apps/details?id=com.qiscus.kiwari&referrer=#{username}"
+                room_id = chat_room.qiscus_room_id
+                if @os == "android"
+                  # location = "https://play.google.com/store/apps/details?id=com.qiscus.kiwari&referrer=#{room_id}"
+                  location = "market://details?id=com.qiscus.kiwari&referrer=#{room_id}"
+                elsif @os == "iphone"
+                  location = "itms://itunes.apple.com/us/app/kiwari&referral=#{room_id}"
+                else
+                  location = "https://web.kiwari.chat/app"
+                end
                 success = true
                 message = "channel #{username} ditemukan"              
               end
@@ -62,10 +77,7 @@ class Api::V2::ChannelController < ApplicationController
           end
         end
       end
-      # render json: {
-      #   success: success,
-      #   message: message
-      # }
+
       if success == true
         redirect_back fallback_location: location
       else
