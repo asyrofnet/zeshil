@@ -384,6 +384,12 @@ class Dashboard::Admin::UsersController < AdminController
                 additional_info.value = new_user_credential["username"]
                 additional_info.user_id = user.id
                 additional_info.save!
+
+                invite_url = UserAdditionalInfo.new
+                invite_url.key = "invite_url"
+                invite_url.value = "kiwari.me/#{new_user_credential["username"]}"
+                invite_url.user_id = user.id
+                invite_url.save!
               end
             end
           end
