@@ -1,7 +1,15 @@
 <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
 <div class="form-group">
   <div class="col-xs-12">
-    <label for="fullname"><h4>Fullname</h4> (minimum 4 character)</label>
+    <label for="username"><h4>Username</h4> (only for Official Account, minimum 5 characters, unique, no space, no symbols)</label>
+    <input class="form-control" name="user[username]" id="username" placeholder="username" type="text" required>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-xs-12">
+    <label for="fullname"><h4>Fullname</h4> (minimum 4 characters)</label>
     <input class="form-control" name="user[fullname]" id="fullname" placeholder="full name" type="text" required>
   </div>
 </div>

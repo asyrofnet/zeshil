@@ -358,6 +358,13 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
           # render json: {new_user_credential: new_user_credential} and return
 
           # using class initiation to avoid user send another params (i.e fullname and it is saved)
+          official_role_id = [Role.official.id.to_s]
+          username_valid = UserAdditionalInfo.check_username(new_user_credential["username"])
+          
+          if (params[:user_roles] - official_role_id != params[:user_roles]) && (username_valid[:success] != true)
+            raise Exception.new("username is invalid!")
+          end
+
           user = User.new
           user.phone_number = new_user_credential["phone_number"]
           user.fullname = new_user_credential["fullname"]
@@ -377,7 +384,17 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
           end
 
           user.roles = Role.where("id IN (?)", params[:user_roles].to_a)
-          user.save!
+          ActiveRecord::Base.transaction do
+            if (user.save!) && (params[:user_roles] - official_role_id != params[:user_roles])
+              if username_valid[:success] == true
+                additional_info = UserAdditionalInfo.new
+                additional_info.key = "username"
+                additional_info.value = new_user_credential["username"]
+                additional_info.user_id = user.id
+                additional_info.save!
+              end
+            end
+          end
 
           # Backend no need to register user in SDK (but if it's okay even it is happen (for easy debugging when trying qisus chat room))
           # add user id to email to ensure that email is really unique
