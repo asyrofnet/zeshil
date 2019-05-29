@@ -5,12 +5,14 @@ class Dashboard::Admin::UsersController < AdminController
   def index
     begin
       @application = ::Application.find(@current_admin.application.id)
-      @users = @application.users.includes(:roles).order(created_at: :desc)
+      @users = @application.users.includes(:roles).order(created_at: :desc).includes(:user_additional_infos)
       @users_count = @users.count
 
       if params[:search].present?
         @users = @users.where("LOWER(phone_number) LIKE ?", "%#{params['phone_number'].downcase}%") if params[:phone_number].present?
         @users = @users.where("LOWER(fullname) LIKE ?", "%#{params['fullname'].downcase}%") if params[:fullname].present?
+        user_ids = UserAdditionalInfo.where(key: "username").where("LOWER(value) LIKE ?", "%#{params['username'].downcase}%").pluck(:user_id) if params[:username].present?
+        @users = @users.where(id: user_ids) if params[:username].present?
       else
         @users = @users.page(params[:page])
       end
@@ -543,7 +545,8 @@ class Dashboard::Admin::UsersController < AdminController
             application_id: @user.application.id,
             group_avatar_url: chat_avatar_url,
             is_official_chat: false,
-            is_public_chat: true
+            is_public_chat: true,
+            is_channel: true
           )
 
           chat_room.save!

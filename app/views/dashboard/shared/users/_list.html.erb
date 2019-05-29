@@ -8,6 +8,11 @@
     <label for="fullname">Fullname</label>
     <input type="text" name="fullname" class="form-control" id="fullname" value="<%= params[:fullname] %>" placeholder="Fullname">
   </div>
+
+  <div class="form-group">
+    <label for="username">Username</label>
+    <input type="text" name="username" class="form-control" id="username" value="<%= params[:username] %>" placeholder="Username">
+  </div>
   <button type="submit" class="btn btn-primary">Search</button>
   <% if @path_segments[2] == "admin" %>
   <a href="/dashboard/admin/users?page=1" class="btn btn-warning">Reset Search</a>
@@ -27,6 +32,7 @@
     <tr>
       <th>#</th>
       <th>ID</th>
+      <th>Username</th>
       <th>Fullname</th>
       <th>Phone number</th>
       <th>Email</th>
@@ -41,17 +47,25 @@
     <% idx = params[:page].to_i %>
     <% idx = 1 if !params[:page].present? %>
     <% idx = (idx + (24 * idx) - 25) + 1 %>
-    <% @users.each do |u| %>
+    <% @users.each do |u| 
+      username = u.additional_infos.select {|e| e == "username"}["username"] || "-"
+      %>
+      
     <tr>
       <td><%= ( idx || 1) %></td>
       <td><%= u.id %></td>
-      <td><%= u.fullname %></td>
-      <td><%= u.phone_number %></td>
-      <td><%= u.email %></td>
-      <td><%= u.gender %></td>
-      <td><%= u.date_of_birth %></td>
-      <td><%= u.roles.pluck(:name).join(", ") %></td>
-      <td><%= u.created_at.in_time_zone("Asia/Jakarta") %></td>
+      <td><%= username %></td>
+      <td><%= u.fullname || "-" %></td>
+      <td><%= u.phone_number || "-" %></td>
+      <td><%= u.email || "-" %></td>
+      <td><%= u.gender || "-" %></td>
+      <td><%= u.date_of_birth || "-" %></td>
+      <td><%= roles = u.roles.pluck(:name)
+        if roles.empty?
+          roles = ["-"]
+        end
+        roles.join(", ") %></td>
+      <td><%= u.created_at.in_time_zone("Asia/Jakarta") || "-" %></td>
       <td>
         <div class="btn-group" role="group">
           <% if @path_segments[2] == "admin" %>

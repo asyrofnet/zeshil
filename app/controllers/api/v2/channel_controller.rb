@@ -36,13 +36,13 @@ class Api::V2::ChannelController < ApplicationController
 
       if request.user_agent.downcase.match(/android/)
         @os = "android"
-      elsif request.user_agent.downcase.match(/iphone/)
-        @os = "iphone"
+      elsif request.user_agent.downcase.match(/iphone|ipad/)
+        @os = "ios"
       elsif request.user_agent.downcase.match(/mac|windows|linux/)
         @os = "desktop"
       end
 
-      location = "https://kiwari.chat/"
+      location = "https://kiwari.chat"
       message = "channel #{username} tidak ditemukan"
       additional_info = UserAdditionalInfo.where(key: "username", value: username).first
       if !additional_info.nil?
@@ -56,36 +56,26 @@ class Api::V2::ChannelController < ApplicationController
           is_official = (role_ids - official_id != role_ids)
           if is_official == true
             p "official account found"
-            chat_room = ChatRoom.where(user_id: user_id).first
+            chat_room = ChatRoom.where(user_id: user_id, is_channel: true).first
             if !chat_room.nil?
               p "chat room found"
-              is_channel = chat_room.is_channel == true
-              if is_channel == true
-                room_id = chat_room.qiscus_room_id
-                if @os == "android"
-                  # location = "https://play.google.com/store/apps/details?id=com.qiscus.kiwari&referrer=#{room_id}"
-                  location = "market://details?id=com.qiscus.kiwari&referrer=#{room_id}"
-                elsif @os == "iphone"
-                  location = "itms://itunes.apple.com/us/app/kiwari&referral=#{room_id}"
-                else
-                  location = "https://web.kiwari.chat/app"
-                end
-                success = true
-                message = "channel #{username} ditemukan"              
+              room_id = chat_room.qiscus_room_id
+              if @os == "android"
+                # location = "https://play.google.com/store/apps/details?id=com.qiscus.kiwari&referrer=#{room_id}"
+                bundle_id = ENV['ANDROID_BUNDLE_ID'] || "com.qiscus.kiwari"
+                location = "market://details?id=#{bundle_id}&referrer=#{room_id}"
+              elsif @os == "ios"
+                bundle_id = ENV['IOS_BUNDLE_ID'] || "id1212085223?mt=8"
+                location = "itms://itunes.apple.com/us/app/kiwari/#{bundle_id}&referral=#{room_id}"
               end
+              success = true
+              message = "channel #{username} ditemukan"              
             end
           end
         end
       end
 
-      if success == true
-        redirect_back fallback_location: location
-      else
-              render json: {
-              success: success,
-              message: message
-            }
-      end
+      redirect_back fallback_location: location
 
     rescue Exception => e
       render json: {
