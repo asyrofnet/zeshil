@@ -8,6 +8,7 @@
     <% end %>
  -->  </li>
   <li class="list-group-item text-right"><span class="pull-left"><strong>Joined</strong></span> <%= @user.created_at.in_time_zone("Asia/Jakarta") %></li>
+  <li class="list-group-item text-right"><span class="pull-left"><strong>Username</strong></span> <%= @user.additional_infos.select {|e| e == "username"}["username"] || "-" %></li>
   <li class="list-group-item text-right"><span class="pull-left"><strong>Gender</strong></span> <%= @user.gender || '-' %></li>
 
   <% if @auth_sessions.empty? %>

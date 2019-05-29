@@ -27,4 +27,15 @@ class UserAdditionalInfo < ActiveRecord::Base
     end
   end
 
+  def self.check_username(username="nil", leng=5)
+    response = {}
+    if ((username.split("") - Bot.lowercase - Bot.numbers - Bot.symbols) == []) && (username.split("").length >= leng)
+      additional_info = UserAdditionalInfo.where(key: "username", value: username).first
+      if additional_info.nil?
+        response[:success] = true
+      end
+    end
+    return response
+  end
+
 end

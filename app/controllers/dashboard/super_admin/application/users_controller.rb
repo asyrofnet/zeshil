@@ -6,12 +6,14 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
   def index
     begin
       @application = ::Application.find(params[:application_id])
-      @users = @application.users.includes(:roles).order(created_at: :desc)
+      @users = @application.users.includes(:roles).order(created_at: :desc).includes(:user_additional_infos)
       @users_count = @users.count
 
       if params[:search].present?
         @users = @users.where("LOWER(phone_number) LIKE ?", "%#{params['phone_number'].downcase}%") if params[:phone_number].present?
         @users = @users.where("LOWER(fullname) LIKE ?", "%#{params['fullname'].downcase}%") if params[:fullname].present?
+        user_ids = UserAdditionalInfo.where(key: "username").where("LOWER(value) LIKE ?", "%#{params['username'].downcase}%").pluck(:user_id) if params[:username].present?
+        @users = @users.where(id: user_ids) if params[:username].present?
       else
         @users = @users.page(params[:page])
       end
@@ -358,6 +360,13 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
           # render json: {new_user_credential: new_user_credential} and return
 
           # using class initiation to avoid user send another params (i.e fullname and it is saved)
+          official_role_id = [Role.official.id.to_s]
+          username_valid = UserAdditionalInfo.check_username(new_user_credential["username"])
+          
+          if (params[:user_roles] - official_role_id != params[:user_roles]) && (username_valid[:success] != true)
+            raise Exception.new("username is invalid!")
+          end
+
           user = User.new
           user.phone_number = new_user_credential["phone_number"]
           user.fullname = new_user_credential["fullname"]
@@ -377,7 +386,23 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
           end
 
           user.roles = Role.where("id IN (?)", params[:user_roles].to_a)
-          user.save!
+          ActiveRecord::Base.transaction do
+            if (user.save!) && (params[:user_roles] - official_role_id != params[:user_roles])
+              if username_valid[:success] == true
+                additional_info = UserAdditionalInfo.new
+                additional_info.key = "username"
+                additional_info.value = new_user_credential["username"]
+                additional_info.user_id = user.id
+                additional_info.save!
+
+                invite_url = UserAdditionalInfo.new
+                invite_url.key = "invite_url"
+                invite_url.value = "kiwari.me/#{new_user_credential["username"]}"
+                invite_url.user_id = user.id
+                invite_url.save!
+              end
+            end
+          end
 
           # Backend no need to register user in SDK (but if it's okay even it is happen (for easy debugging when trying qisus chat room))
           # add user id to email to ensure that email is really unique
@@ -529,7 +554,8 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
             application_id: @user.application.id,
             group_avatar_url: chat_avatar_url,
             is_official_chat: false,
-            is_public_chat: true
+            is_public_chat: true,
+            is_channel: true
           )
 
           chat_room.save!

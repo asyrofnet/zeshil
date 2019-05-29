@@ -24,4 +24,14 @@ class Role < ActiveRecord::Base
       return Role.find_or_create_by(name: 'Bot')
   end
 
+  def self.find_official
+    official = Role.where(name: "Official Account").first
+    if !official.nil?
+      official_id = official.id
+    else
+      off_id = nil
+    end
+    return official_id
+  end
+
 end

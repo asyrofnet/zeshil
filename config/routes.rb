@@ -401,7 +401,11 @@ Rails.application.routes.draw do
         end
 
         resources :users, only: [:index, :show]
-
+      end
+      scope module: :v2, path: '/v2' do
+        resources :channel, only: [:show] do
+          post :generate_invite_url, on: :collection
+        end
       end
     end
   end

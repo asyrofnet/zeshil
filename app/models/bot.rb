@@ -3,6 +3,8 @@ class Bot < ApplicationRecord
     has_secure_password
 
     def self.create_botbuilder(params={})
+        #stag: Bot.create_botbuilder(params={"application_id" => 1})
+        #prod: Bot.create_botbuilder(params={"application_id" => 3})
         response = {}
         username = params["username"] || "abah_bot"
         fullname = params["fullname"] || "Abah Bot"
@@ -84,11 +86,11 @@ class Bot < ApplicationRecord
         return symbols
     end
 
-    def self.check_username(params)
+    def self.check_username(params, leng=9)
         response = {}
         username = params["username"] || "nil"
 
-        if ((username.split("") - Bot.lowercase - Bot.numbers - Bot.symbols) == []) && (username.split("").length >= 9)
+        if ((username.split("") - Bot.lowercase - Bot.numbers - Bot.symbols) == []) && (username.split("").length >= leng)
             bot = Bot.where(username: username).first
             if bot.nil?
                 response = {"message": "masukkan fullname bot anda", "send_now": false}
