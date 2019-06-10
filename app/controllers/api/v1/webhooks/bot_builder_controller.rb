@@ -140,11 +140,10 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
             exist_session["params"]["qiscus_token"] = params[:token]
             exist_session["params"]["application_id"] = params[:chat_room][:application_id]
             attributes = {:"avatar_url" => params[:message][:payload][:url]}
-            p exist_session["params"]["user"]["id"]
-            p user = {:"id" => exist_session["params"]["user"]["id"]}
+            exist_session["params"]["user"]["id"]
+            user = {:"id" => exist_session["params"]["user"]["id"]}
             if !params[:message][:payload][:url].nil?
-              p message = Bot.update_user(user, attributes)
-              p "update user"
+              message = Bot.update_user(user, attributes)
               response[:buttons] = ""
               response[:type] = "text"
               $redis.del(bot_session)
@@ -385,7 +384,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
       end
 
       bot_session = "#{params[:from][:qiscus_email]}"
-      p exist_session = $redis.get(bot_session)
+      exist_session = $redis.get(bot_session)
       send_now = false
       
       if exist_session.nil?
@@ -400,29 +399,29 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
       if send_now == false
         if exist_session["command"] == nil
           if params[:message][:text] == "/createbot"
-            p exist_session["command"] = "create bot"
+            exist_session["command"] = "create bot"
 
           elsif params[:message][:text] == "/editbot"
-            p exist_session["command"] = "edit bot"
+            exist_session["command"] = "edit bot"
 
           elsif params[:message][:text] == "/deletebot"
-            p exist_session["command"] = "delete bot"
+            exist_session["command"] = "delete bot"
 
           elsif params[:message][:text] == "/listbot"
-            p response = list_bot(params)
-            p content = {"buttons"=>response[:buttons]}
-            p message = response[:message]
-            p type = "buttons"
+            response = list_bot(params)
+            content = {"buttons"=>response[:buttons]}
+            message = response[:message]
+            type = "buttons"
             exist_session["command"] = "show bot"
             exist_session["state"] = "fill_username"
             $redis.set(bot_session, exist_session.to_json)
             send_now = true
 
           elsif params[:message][:text] == "/showbot"
-            p exist_session["command"] = "show bot"
+            exist_session["command"] = "show bot"
 
           elsif params[:message][:text] == "/editbot"
-            p exist_session["command"] = "edit bot"
+            exist_session["command"] = "edit bot"
           end
         end
       end
@@ -430,7 +429,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
       #help and cancel
       if send_now == false
         if params[:message][:text] == "/bantuan"
-          p message = "berikut perintah yang tersedia :"
+          message = "berikut perintah yang tersedia :"
           menu = ["/createbot", "/editbot", "/listbot", "/deletebot"]
           content = {:"buttons" => Bot.create_buttons({buttons: menu})}
           type = "buttons"
@@ -439,49 +438,49 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
           $redis.del(bot_session)
           exist_session = nil
           send_now = true
-          p message = "permintaan dibatalkan."
+          message = "permintaan dibatalkan."
         end
       end
 
       #commands CRUD
       if send_now == false
         if exist_session["command"] == "create bot"
-          p response = create_bot(exist_session, bot_session, send_now)
-          p send_now = response[:send_now]
-          p message = response[:message]
-          p exist_session = response[:exist_session]
-          p content = response[:buttons] || {:"buttons" => Bot.create_buttons({buttons: ["/batal"]})}
-          p type = response[:type] || "buttons"
+          response = create_bot(exist_session, bot_session, send_now)
+          send_now = response[:send_now]
+          message = response[:message]
+          exist_session = response[:exist_session]
+          content = response[:buttons] || {:"buttons" => Bot.create_buttons({buttons: ["/batal"]})}
+          type = response[:type] || "buttons"
           if send_now == false
             $redis.set(bot_session, exist_session.to_json)
           end
         elsif exist_session["command"] == "delete bot"
-          p response = delete_bot(exist_session, bot_session, params, send_now)
-          p send_now = response[:send_now]
-          p message = response[:message]
-          p content = {"buttons" => response[:buttons]}
-          p exist_session = response[:exist_session]
-          p type = response[:type] || "buttons"
+          response = delete_bot(exist_session, bot_session, params, send_now)
+          send_now = response[:send_now]
+          message = response[:message]
+          content = {"buttons" => response[:buttons]}
+          exist_session = response[:exist_session]
+          type = response[:type] || "buttons"
           if send_now == false
             $redis.set(bot_session, exist_session.to_json)
           end
         elsif exist_session["command"] == "show bot"
-          p response = show_bot(exist_session, bot_session)
-          p send_now = response[:send_now]
-          p message = response[:message]
-          p type = response[:type] || "text"
-          p content = response[:payload] || ""
-          p exist_session = response[:exist_session]
+          response = show_bot(exist_session, bot_session)
+          send_now = response[:send_now]
+          message = response[:message]
+          type = response[:type] || "text"
+          content = response[:payload] || ""
+          exist_session = response[:exist_session]
           if send_now == false
             $redis.set(bot_session, exist_session.to_json)
           end
         elsif exist_session["command"] == "edit bot"
-          p response = edit_bot(exist_session, bot_session)
-          p send_now = response[:send_now]
-          p message = response[:message]
-          p exist_session = response[:exist_session]
-          p content = response[:buttons] || {:"buttons" => Bot.create_buttons({buttons: ["/batal"]})}
-          p type = response[:type] || "buttons"
+          response = edit_bot(exist_session, bot_session)
+          send_now = response[:send_now]
+          message = response[:message]
+          exist_session = response[:exist_session]
+          content = response[:buttons] || {:"buttons" => Bot.create_buttons({buttons: ["/batal"]})}
+          type = response[:type] || "buttons"
           if send_now == false
             $redis.set(bot_session, exist_session.to_json)
           end
@@ -489,23 +488,18 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
       end
 
       if message.nil?
-        p message = Bot.message("unknown")
-        p type = "buttons"
-        p content = {"buttons" => [Bot.create_button({:label => "/bantuan"})]}
+        message = Bot.message("unknown")
+        type = "buttons"
+        content = {"buttons" => [Bot.create_button({:label => "/bantuan"})]}
       end
-
-      render json: {
-          success: true,
-          message: message
-        }
 
       application = Application.where(id: params[:chat_room][:application_id]).first
       if !application.nil?
         app_id = application.app_id
         qiscus_sdk_secret = application.qiscus_sdk_secret
       else
-        app_id = "kiwari-prod"
-        qiscus_sdk_secret = "kiwari-prod-123"
+        app_id = ""
+        qiscus_sdk_secret = ""
       end
       qiscus_sdk = QiscusSdk.new(app_id, qiscus_sdk_secret)
 
@@ -513,13 +507,18 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
       if !account.nil?
         qiscus_token = account.qiscus_token
       else
-        qiscus_token = "MfY5mVUwlk3vemwV5Tm7"
+        qiscus_token = ""
       end
       topic_id = params[:chat_room][:qiscus_room_id]
       comment = message
       type =  type || "text"
       content = content.to_json || "".to_json
       comments = qiscus_sdk.post_comment(qiscus_token, topic_id, comment, type, content)
+
+      render json: {
+        success: true,
+        message: comments
+      }
     rescue Exception => e
       raise Exception.new(e.message)
     end

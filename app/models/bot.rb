@@ -1,5 +1,5 @@
 class Bot < ApplicationRecord
-    has_one :user
+    belongs_to :user
     has_secure_password
 
     def self.create_botbuilder(params={})
@@ -58,8 +58,6 @@ class Bot < ApplicationRecord
         role = Role.where(name: "Official Account").first
         if !role.nil?
             role_id = role.id
-        else
-            role_id = 3
         end
         if !user.nil?
             user_role = UserRole.new(user_id: user.id, role_id: role_id)
