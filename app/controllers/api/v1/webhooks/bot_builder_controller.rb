@@ -498,8 +498,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
         app_id = application.app_id
         qiscus_sdk_secret = application.qiscus_sdk_secret
       else
-        app_id = ""
-        qiscus_sdk_secret = ""
+        raise Exception.new("application is invalid!")
       end
       qiscus_sdk = QiscusSdk.new(app_id, qiscus_sdk_secret)
 
@@ -507,7 +506,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
       if !account.nil?
         qiscus_token = account.qiscus_token
       else
-        qiscus_token = ""
+        raise Exception.new("qiscus_token is invalid!")
       end
       topic_id = params[:chat_room][:qiscus_room_id]
       comment = message
@@ -520,7 +519,11 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
         message: comments
       }
     rescue Exception => e
-      raise Exception.new(e.message)
+      render json: {
+        error: {
+          message: e.message
+        }
+      }, status: 422 and return
     end
   end
 
