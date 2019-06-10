@@ -4,34 +4,24 @@ require 'uri'
 class Api::V2::ChannelController < ApplicationController
   def show
     begin
-      success = false
       username = params[:id]
+      @os = Format.get_os_request(request)
 
-      if request.user_agent.downcase.match(/android/)
-        @os = "android"
-      elsif request.user_agent.downcase.match(/iphone|ipad/)
-        @os = "ios"
-      elsif request.user_agent.downcase.match(/mac|windows|linux/)
-        @os = "desktop"
-      end
-
+      success = false
       location = "https://kiwari.chat"
       message = "channel #{username} tidak ditemukan"
+
       additional_info = UserAdditionalInfo.where(key: "username", value: username).first
       if !additional_info.nil?
-        p "additional info found"
         user_id = additional_info.user_id
         user = User.find(user_id)
         if !user.nil?
-          p "user found"
           role_ids = user.role_ids
           official_id = [Role.find_official]
           is_official = (role_ids - official_id != role_ids)
           if is_official == true
-            p "official account found"
             chat_room = ChatRoom.where(user_id: user_id, is_channel: true).first
             if !chat_room.nil?
-              p "chat room found"
               room_id = chat_room.qiscus_room_id
               if @os == "android"
                 bundle_id = ENV['ANDROID_BUNDLE_ID'] || "com.qiscus.kiwari"
@@ -48,6 +38,47 @@ class Api::V2::ChannelController < ApplicationController
       end
 
       redirect_back fallback_location: location
+
+    rescue Exception => e
+      render json: {
+        error: {
+          message: e.message
+        }
+      }, status: 422 and return
+    end
+  end
+
+  def username_to_room_id
+    begin
+      username = params[:username]
+      room_id = nil
+      success = false
+      message = "channel #{username} tidak ditemukan"
+      additional_info = UserAdditionalInfo.where(key: "username", value: username).first
+      if !additional_info.nil?
+        user_id = additional_info.user_id
+        user = User.find(user_id)
+        if !user.nil?
+          role_ids = user.role_ids
+          official_id = [Role.find_official]
+          is_official = (role_ids - official_id != role_ids)
+          if is_official == true
+            chat_room = ChatRoom.where(user_id: user_id, is_channel: true).first
+            if !chat_room.nil?
+              room_id = chat_room.qiscus_room_id
+              success = true
+              message = "channel #{username} ditemukan"              
+            end
+          end
+        end
+      end
+
+      render json: {
+        message: message,
+        success: success,
+        room_id: room_id,
+        chat_room: chat_room
+      }
 
     rescue Exception => e
       render json: {

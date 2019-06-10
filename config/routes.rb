@@ -404,7 +404,7 @@ Rails.application.routes.draw do
       end
       scope module: :v2, path: '/v2' do
         resources :channel, only: [:show] do
-          post :generate_invite_url, on: :collection
+          get :username_to_room_id, on: :collection
         end
       end
     end
