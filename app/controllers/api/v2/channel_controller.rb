@@ -65,6 +65,9 @@ class Api::V2::ChannelController < ApplicationController
           if is_official == true
             chat_room = ChatRoom.where(user_id: user_id, is_channel: true).first
             if !chat_room.nil?
+              app_id = user.application.app_id
+              qiscus_email = user.qiscus_email
+              unique_id = "#{app_id}##{qiscus_email}##{app_id}"
               room_id = chat_room.qiscus_room_id
               success = true
               message = "channel #{username} ditemukan"              
@@ -77,6 +80,7 @@ class Api::V2::ChannelController < ApplicationController
         message: message,
         success: success,
         room_id: room_id,
+        unique_id: unique_id,
         chat_room: chat_room
       }
 
