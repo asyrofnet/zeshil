@@ -2,7 +2,7 @@ require 'jwt'
 require 'uri'
 
 class Api::V2::ChannelController < ProtectedController
-  before_action :authorize_admin, only: [:username_to_room_id]
+  before_action :authorize_user, only: [:username_to_room_id]
 
   def show
     begin
