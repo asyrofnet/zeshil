@@ -63,3 +63,19 @@ user4:
   qiscus_token: 'IaF7RqdC5xj96lfO8umL'
   qiscus_email: 'userid_4_6285643123456@qisme.com'
   description: 'User 4 Description' 
+
+user99:
+  id: 99
+  phone_number: '+62881234567913'
+  passcode: null
+  fullname: 'User 99'
+  email: 'user5@gmail.com'
+  gender: 'male'
+  date_of_birth: '1991-07-01'
+  avatar_url: 'https://res.cloudinary.com/qiscus/image/upload/NITXR7pLhz/avatar4.jpg'
+  application_id: '1'
+  is_public: 'false'
+  verification_attempts: '0'
+  qiscus_token: 'IaF7RqdC5xj96lfO8umL'
+  qiscus_email: 'userid_5_6285643123456@qisme.com'
+  description: 'User 99 Description' 

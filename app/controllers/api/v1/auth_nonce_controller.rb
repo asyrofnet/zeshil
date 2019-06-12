@@ -350,10 +350,7 @@ class Api::V1::AuthNonceController < ApplicationController
           # AuthSession.where("updated_at < ? AND user_id = ?", release_date, user.id).destroy_all
 
           email_sdk = user.qiscus_email
-          username = user.fullname
-          if username.nil?
-            username = params[:user][:phone_number]
-          end
+          
           avatar_url = user.avatar_url
 
           payload = {
