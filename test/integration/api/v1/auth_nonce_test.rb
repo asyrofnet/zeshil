@@ -61,16 +61,22 @@ class API::V1::AuthNonceTest < ActionDispatch::IntegrationTest
     response_data = JSON.parse(response.body)
   end
 
-  test "success to login for user with empty passcode" do
+  test "success to login for user with empty passcode and avatar and fullname and send to qiscus if 8681" do
     application = applications(:qisme)
     user = users(:user99)
+    role_official_user = Role.official
+    contact_count = Contact.count
+
     code = "9999"
+
+    avatar = "https://d1edrlpyc25xu0.cloudfront.net/image/upload/t5XWp2PBRt/1510641299-default_user_avatar.png"
+
     SmsVerification.expects(:request)
     SmsVerification.expects(:generate_code).returns(code)
     qiscus_sdk = mock()
     qiscus_sdk.expects(:login_or_register_rest).returns('qiscus-token')
     QiscusSdk.expects(:new).returns(qiscus_sdk)
-
+    SendToQiscus.expects(:send_message) #send to kiwari qiscus
     post "/api/v1/auth_nonce",
          params: {:user=> {:app_id => application.app_id,:phone_number => user.phone_number}},
          headers: {}
@@ -79,6 +85,8 @@ class API::V1::AuthNonceTest < ActionDispatch::IntegrationTest
     assert_equal Mime[:json], response.content_type
     response_data = JSON.parse(response.body)
     assert_equal code, User.find(99).reload.passcode
+    assert_equal avatar, User.find(99).reload.avatar_url
+    assert_equal contact_count, Contact.count-1 #because new contact is created
   end
 
 
@@ -174,6 +182,20 @@ class API::V1::AuthNonceTest < ActionDispatch::IntegrationTest
   test "success to resend passcode" do
     application = applications(:qisme)
     user = users(:user1)
+
+    SmsVerification.expects(:request)
+
+    post "/api/v1/auth_nonce/resend_passcode",
+         params: {:user=> {:app_id => application.app_id,:phone_number => user.phone_number}},
+         headers: {}
+
+    assert_equal 200, response.status
+    assert_equal Mime[:json], response.content_type
+  end
+
+  test "success to resend passcode even if nil" do
+    application = applications(:qisme)
+    user = users(:user99)
 
     SmsVerification.expects(:request)
 
