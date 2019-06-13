@@ -231,6 +231,18 @@ class Bot < ApplicationRecord
             user = User.where(id: bot.user_id, deleted: false).first
         end
         if !user.nil?
+            user_has_group = user.chat_rooms.find_by(is_group_chat: true).present?
+
+            if user_has_group
+              # remove user from groups
+              status, error = ChatRoom.remove_participant_from_groups(user)
+    
+              if !error.nil?
+                raise Exception.new(error)
+              end
+            end
+    
+            # destroy user
             user.destroy
             message = "bot berhasil dihapus"
             $redis.del(bot_session)
