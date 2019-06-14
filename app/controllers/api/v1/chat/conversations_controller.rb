@@ -587,7 +587,8 @@ class Api::V1::Chat::ConversationsController < ProtectedController
           )
 
           chat_room.save!
-
+          #create is channel true info for user
+          UserAdditionalInfo.create_or_update_user_additional_info([target_user_id], "is_channel", "true")
           chat_user = ChatUser.new
           chat_user.chat_room_id = chat_room.id
           chat_user.user_id = @current_user.id

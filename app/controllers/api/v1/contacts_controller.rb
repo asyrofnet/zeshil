@@ -45,7 +45,7 @@ class Api::V1::ContactsController < ProtectedController
 
         show = params[:show]
         if show == 'all'
-          contacts = User.includes([:roles, :application]).where("users.application_id = ?", @current_user.application_id)
+          contacts = User.includes([:roles, :application,:user_additional_infos]).where("users.application_id = ?", @current_user.application_id)
           contacts = contacts.where.not(fullname: nil).where.not(fullname: "") # only show contact who has complete their profile (fullname not nil)
           contacts = contacts.order(fullname: :asc)
 
@@ -81,7 +81,7 @@ class Api::V1::ContactsController < ProtectedController
           contact_id = @current_user.contacts
             .where(sql, Role.official.id, Role.bot.id)
             .pluck(:contact_id)
-          contacts = User.includes([:roles, :application]).where("users.application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
+          contacts = User.includes([:roles, :application,:user_additional_infos]).where("users.application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
           contacts = contacts.where.not(fullname: nil).where.not(fullname: "") # only show contact who has complete their profile (fullname not nil)
           contacts = contacts.order(fullname: :asc)
 
@@ -108,7 +108,7 @@ class Api::V1::ContactsController < ProtectedController
         elsif show == 'official'
           # show contact except official account
           contact_id = @current_user.contacts.where("contacts.contact_id IN (select user_id from user_roles where role_id = ?)", Role.official.id).pluck(:contact_id)
-          contacts = User.includes([:roles, :application]).where("users.application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
+          contacts = User.includes([:roles, :application,:user_additional_infos]).where("users.application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
           contacts = contacts.where.not(fullname: nil).where.not(fullname: "") # only show contact who has complete their profile (fullname not nil)
           contacts = contacts.order(fullname: :asc)
 
@@ -166,7 +166,7 @@ class Api::V1::ContactsController < ProtectedController
         else
           # for backward compatible, limit = total
           contact_id = @current_user.contacts.pluck(:contact_id)
-          contacts = User.includes([:roles, :application]).where("users.id IN (?)", contact_id)
+          contacts = User.includes([:roles, :application, :user_additional_infos]).where("users.id IN (?)", contact_id)
           contacts = contacts.where.not(fullname: nil).where.not(fullname: "") # only show contact who has complete their profile (fullname not nil)
           contacts = contacts.order(fullname: :asc)
           total = contacts.count
@@ -175,7 +175,7 @@ class Api::V1::ContactsController < ProtectedController
           if only.present? && only != ""
             if only == 'official'
               contact_id = @current_user.contacts.where("contact_id IN (select user_id from user_roles where role_id = ?)", Role.official.id).pluck(:contact_id)
-              contacts = User.includes([:roles, :application]).where("application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
+              contacts = User.includes([:roles, :application, :user_additional_infos]).where("application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
               contacts = contacts.where.not(fullname: nil).where.not(fullname: "") # only show contact who has complete their profile (fullname not nil)
               contacts = contacts.order(fullname: :asc)
               total = contacts.count
@@ -189,7 +189,7 @@ class Api::V1::ContactsController < ProtectedController
           if exclude.present? && exclude != ""
             if exclude == 'official'
               contact_id = @current_user.contacts.where.not("contact_id IN (select user_id from user_roles where role_id = ?)", Role.official.id).pluck(:contact_id)
-              contacts = User.includes([:roles, :application]).where("application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
+              contacts = User.includes([:roles, :application, :user_additional_infos]).where("application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
               contacts = contacts.where.not(fullname: nil).where.not(fullname: "") # only show contact who has complete their profile (fullname not nil)
               contacts = contacts.order(fullname: :asc)
               total = contacts.count
@@ -691,7 +691,7 @@ class Api::V1::ContactsController < ProtectedController
           user_ids = user_ids - not_contact_ids
 
           # show the users detail that has been substracted before
-          users = User.includes([:roles, :application]).where("users.application_id = ?", @current_user.application_id).where("users.id IN (?)", user_ids)
+          users = User.includes([:roles, :application, :user_additional_infos]).where("users.application_id = ?", @current_user.application_id).where("users.id IN (?)", user_ids)
 
         elsif show == 'not_contact'
           # show @current_user that's not_contact, excluding @current_user and official users
@@ -702,7 +702,7 @@ class Api::V1::ContactsController < ProtectedController
           user_ids = user_ids - contact_ids
 
           # show the users detail that has been substracted before
-          users = User.includes([:roles, :application]).where("users.application_id = ?", @current_user.application_id).where("users.id IN (?)", user_ids)
+          users = User.includes([:roles, :application, :user_additional_infos]).where("users.application_id = ?", @current_user.application_id).where("users.id IN (?)", user_ids)
 
         else
           # show all users

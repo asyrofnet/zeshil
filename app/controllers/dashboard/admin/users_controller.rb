@@ -550,7 +550,7 @@ class Dashboard::Admin::UsersController < AdminController
           )
 
           chat_room.save!
-
+          
           chat_user = ChatUser.new
           chat_user.chat_room_id = chat_room.id
           chat_user.user_id = @user.id
@@ -563,8 +563,10 @@ class Dashboard::Admin::UsersController < AdminController
           qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
           qiscus_sdk.post_system_event_message(system_event_type, qiscus_room_id, @user.qiscus_email, [], chat_name)
         end
+        #create is channel true info for user
+        UserAdditionalInfo.create_or_update_user_additional_info([@user.id], "is_channel", "true")
       end
-
+      
       flash[:success] = "New public chat created!"
       redirect_to "/dashboard/admin/users/#{@user.id}/activity"
 
