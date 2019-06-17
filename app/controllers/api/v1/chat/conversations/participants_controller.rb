@@ -164,14 +164,11 @@ class Api::V1::Chat::Conversations::ParticipantsController < ProtectedController
       end
 
       # Backend need to post system event message after add group participants
-      # Contact sync smarter after add group participants. It's only temporary to increase the number of contact
       if !new_participant_emails.empty?
         system_event_type = "add_member"
         qiscus_sdk = QiscusSdk.new(@current_user.application.app_id, @current_user.application.qiscus_sdk_secret)
         qiscus_sdk.post_system_event_message(system_event_type, @chat_room.qiscus_room_id.to_i, @current_user.qiscus_email, new_participant_emails, "")
 
-        group_participant_ids = chat_room.users.pluck(:id).to_a
-        ContactSyncSmarterWorker.perform_later(new_participant_ids, group_participant_ids, @current_user.application.id)
       end
 
       chat_room = ChatRoom.includes(

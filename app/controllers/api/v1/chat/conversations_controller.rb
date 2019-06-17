@@ -439,11 +439,6 @@ class Api::V1::Chat::ConversationsController < ProtectedController
             system_event_type = "create_room"
             qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
             qiscus_sdk.post_system_event_message(system_event_type, qiscus_room_id, @current_user.qiscus_email, [], chat_name)
-
-            # Contact sync smarter after create new group with participants. It's only temporary to increase the number of contact
-            group_participant_ids = target_user.pluck(:id).to_a + [@current_user.id]
-            new_participant_ids = group_participant_ids
-            ContactSyncSmarterWorker.perform_later(new_participant_ids, group_participant_ids, @current_user.application.id)
           end
         else
           # if exist then return error with warning that qiscus room id has been inserted before
@@ -611,10 +606,6 @@ class Api::V1::Chat::ConversationsController < ProtectedController
             qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
             qiscus_sdk.post_system_event_message(system_event_type, qiscus_room_id, @current_user.qiscus_email, [], chat_name)
 
-            # Contact sync smarter after create new group with participants. It's only temporary to increase the number of contact
-            group_participant_ids = target_user.pluck(:id).to_a + [@current_user.id]
-            new_participant_ids = group_participant_ids
-            ContactSyncSmarterWorker.perform_later(new_participant_ids, group_participant_ids, @current_user.application.id)
           end
         else
           # if exist then return error with warning that qiscus room id has been inserted before
@@ -1147,9 +1138,6 @@ class Api::V1::Chat::ConversationsController < ProtectedController
           qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
           qiscus_sdk.post_system_event_message(system_event_type, qiscus_room_id, @current_user.qiscus_email, [], chat_name)
 
-          # Contact sync smarter after participant joined chat room. It's only temporary to increase the number of contact
-          # group_participant_ids = chat_room.users.pluck(:id).to_a
-          ContactSyncSmarterWorker.perform_later(@current_user.id, group_participant_ids, @current_user.application.id)
         end
       end
 
