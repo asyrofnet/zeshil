@@ -31,11 +31,12 @@ class ContactSyncSmarterWorker < ActiveJob::Base
               new_contacts.push({:user_id => current_user.id, :contact_id => id})
               new_contacts_pn.push([current_user.id, id]) # only for push notification
             end
-
+=begin
             # now, make sure that they are friends, if A add B, then A must be in B's contact too
             if Contact.find_by(user_id: id, contact_id: current_user.id).nil?
               new_contacts.push({:user_id => id, :contact_id => current_user.id})
             end
+=end            
           end
 
           # add new contact

@@ -167,11 +167,12 @@ class Api::V1::Admin::ContactsController < ProtectedController
           if Contact.find_by(user_id: user.id, contact_id: id).nil?
             new_contacts.push({:user_id => user.id, :contact_id => id})
           end
-
+=begin
           # now, make sure that they are friends, if A add B, then A must be in B's contact too
           if Contact.find_by(user_id: id, contact_id: user.id).nil?
             new_contacts.push({:user_id => id, :contact_id => user.id})
           end
+=end          
         end
 
         # add new contact
