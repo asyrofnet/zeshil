@@ -406,6 +406,9 @@ Rails.application.routes.draw do
         resources :channel, only: [:show] do
           get :username_to_room_id, on: :collection
         end
+        scope module: :contacts, path: '/contacts' do
+          resources :sync, only: [:create]
+        end
       end
     end
   end

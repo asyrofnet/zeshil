@@ -310,7 +310,7 @@ class Api::V1::ContactsController < ProtectedController
         else
           raise Exception.new("User already in your contact.")
         end
-
+=begin
         # make added contact as adder's contact
         # if A add B as contact, A will be added as contact to B. A (add)-> B = A <-> B
         # delete this block
@@ -323,7 +323,7 @@ class Api::V1::ContactsController < ProtectedController
           added_contact.save
         end
         # till this block to remove dependent contact invitation
-
+=end
         # get the user detail
         user = User.find(contact.contact_id)
         user = user.as_contact_json({:show_profile => false})
@@ -870,7 +870,7 @@ class Api::V1::ContactsController < ProtectedController
         else
           raise Exception.new("User already in your contact.")
         end
-
+=begin
         # make added contact as adder's contact
         # if A add B as contact, A will be added as contact to B. A (add)-> B = A <-> B
         # delete this block
@@ -883,7 +883,7 @@ class Api::V1::ContactsController < ProtectedController
           added_contact.save
         end
         # till this block to remove dependent contact invitation
-
+=end
         # get the user detail
         user = User.find(contact.contact_id)
         bot = Bot.where(user_id: user.id).first

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190430065050) do
+ActiveRecord::Schema.define(version: 20190618030651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,6 +167,8 @@ ActiveRecord::Schema.define(version: 20190430065050) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_favored", default: false, null: false
+    t.string "contact_name"
+    t.boolean "is_active", default: true
     t.index ["user_id", "contact_id"], name: "index_contacts_on_user_id_and_contact_id", unique: true
   end
 
