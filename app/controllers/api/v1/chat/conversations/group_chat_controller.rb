@@ -24,7 +24,7 @@ class Api::V1::Chat::Conversations::GroupChatController < ProtectedController
       user_ids = chat_room.users.pluck(:id)
       user_bot = User.find_user_bot(user_ids, bot_id)
 
-      if user_ids.to_a.include?(@current_user.id)
+      if chat_room.is_public_chat || chat_room.is_channel ||  user_ids.to_a.include?(@current_user.id)
 
         qiscus_sdk = QiscusSdk.new(@current_user.application.app_id, @current_user.application.qiscus_sdk_secret)
         sdk_info, chat_room_sdk_info = qiscus_sdk.get_rooms_info(@current_user.qiscus_email, [chat_room.qiscus_room_id])
