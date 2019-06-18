@@ -1,5 +1,5 @@
 class Api::V2::Contacts::SyncController < ProtectedController
-    #before_action :authorize_user
+    before_action :authorize_user
   
     # =begin
     # @apiVersion 2.0.0
@@ -16,7 +16,6 @@ class Api::V2::Contacts::SyncController < ProtectedController
     # =end
     def create
       begin
-        @current_user = User.first
         if !params[:contact].present?
           render json: {
             data: []
