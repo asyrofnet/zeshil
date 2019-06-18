@@ -117,7 +117,9 @@ class Api::V2::Contacts::SyncController < ProtectedController
               contact = Contact.find_by(user_id: @current_user.id, contact_id: id)
               phone = User.find(id).phone_number
               if !contact.nil?
-                contact.update!(contact_name: phone_books[phone],is_active:true)
+                if (contact.contact_name != phone_books[phone]) || (!contact.is_active)
+                  contact.update!(contact_name: phone_books[phone],is_active:true)
+                end
               end
             end
 
