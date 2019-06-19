@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190618030651) do
+ActiveRecord::Schema.define(version: 20190619044406) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(version: 20190618030651) do
     t.integer "target_user_id", default: 0
     t.boolean "is_public_chat", default: false, null: false
     t.boolean "is_channel", default: false
+    t.integer "chat_users_count", default: 0
     t.index ["qiscus_room_id", "application_id"], name: "index_chat_rooms_on_qiscus_room_id_and_application_id", unique: true
   end
 

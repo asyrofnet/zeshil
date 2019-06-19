@@ -409,6 +409,7 @@ Rails.application.routes.draw do
         scope module: :contacts, path: '/contacts' do
           resources :sync, only: [:create]
         end
+        resources :contacts, only: [:index]
       end
     end
   end
