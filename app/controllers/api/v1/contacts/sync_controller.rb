@@ -101,7 +101,7 @@ class Api::V1::Contacts::SyncController < ProtectedController
 
           # add new contact
           Contact.create(new_contacts)
-=
+
           # send push new contact notification
           if !new_contacts_pn.empty?
             ContactPushNotificationJob.perform_later(new_contacts_pn)
