@@ -78,16 +78,7 @@ class API::V1::ContactsTest< ActionDispatch::IntegrationTest
     assert_equal 200, response.status
     assert_equal Mime[:json], response.content_type
 
-    # User3 get contact list to ensure that user1 in his contact
-    get "/api/v1/contacts",
-      params: {:exclude=> 'official'},
-      headers: { 'Authorization' => token_header(session3.jwt_token) }
-
-    assert_equal 200, response.status
-    assert_equal Mime[:json], response.content_type
-
-    response_data = JSON.parse(response.body)
-    assert_equal user1.id, response_data['data'][0]['id']
+    
   end
 
   # test to delete user
