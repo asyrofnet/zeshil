@@ -1,5 +1,5 @@
 class Api::V2::ContactsController < ProtectedController
-    #before_action :authorize_user
+    before_action :authorize_user
   
     # =begin
     # @apiVersion 1.0.0
@@ -18,7 +18,6 @@ class Api::V2::ContactsController < ProtectedController
     # =end
     def index
       begin
-        @current_user = User.last
         total_page = 0
         total = 0
         contacts = nil
