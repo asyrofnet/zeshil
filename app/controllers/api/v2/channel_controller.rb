@@ -13,7 +13,7 @@ class Api::V2::ChannelController < ProtectedController
       location = "https://kiwari.chat"
       message = "channel #{username} tidak ditemukan"
 
-      additional_info = UserAdditionalInfo.where(key: "username", value: username).first
+      additional_info = UserAdditionalInfo.where(key: UserAdditionalInfo::USERNAME_KEY, value: username).first
       if !additional_info.nil?
         user_id = additional_info.user_id
         user = User.find(user_id)
@@ -56,7 +56,7 @@ class Api::V2::ChannelController < ProtectedController
       room_id = nil
       success = false
       message = "channel #{username} tidak ditemukan"
-      additional_info = UserAdditionalInfo.where(key: "username", value: username).first
+      additional_info = UserAdditionalInfo.where(key: UserAdditionalInfo::USERNAME_KEY, value: username).first
       if !additional_info.nil?
         user_id = additional_info.user_id
         user = User.find(user_id)

@@ -31,7 +31,7 @@ class ChatUser < ActiveRecord::Base
      owner = chat_room.user
      subscriber_count = chat_room.chat_users_count.to_s
      if chat_room.is_channel
-       UserAdditionalInfo.create_or_update_user_additional_info([owner.id], "subscriber", subscriber_count)
+       UserAdditionalInfo.create_or_update_user_additional_info([owner.id], UserAdditionalInfo::SUBSCRIBER_KEY, subscriber_count)
      end
   end
 

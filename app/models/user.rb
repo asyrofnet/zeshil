@@ -190,7 +190,7 @@ class User < ActiveRecord::Base
   # json manipulation
   def as_json(options={})
     the_infos = additional_infos
-    is_channel = additional_infos["is_channel"] == "true"
+    is_channel = additional_infos[UserAdditionalInfo::IS_CHANNEL_KEY] == "true"
     h = super(
       # :include => [
       #   {
@@ -207,7 +207,7 @@ class User < ActiveRecord::Base
       :methods => [ :is_admin, :is_official, :is_bot, :additional_infos ],
       
     )
-    h["is_channel"] = is_channel
+    h[UserAdditionalInfo::IS_CHANNEL_KEY] = is_channel
     # Overwrite json if has key webhook. This json use only in webhook payload
     if options.has_key?(:webhook)
       h = super(
