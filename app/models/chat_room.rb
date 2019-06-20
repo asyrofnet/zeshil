@@ -117,7 +117,6 @@ class ChatRoom < ActiveRecord::Base
           :except => [:user_id, :group_chat_name, :target_user_id]
       )
       h["users"] = h["admins"].dup
-      h.delete("admins")
     end
 
     # Overwrite json if has webhook key. This json use only in webhook payload
