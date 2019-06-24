@@ -11,7 +11,7 @@ class Dashboard::Admin::UsersController < AdminController
       if params[:search].present?
         @users = @users.where("LOWER(phone_number) LIKE ?", "%#{params['phone_number'].downcase}%") if params[:phone_number].present?
         @users = @users.where("LOWER(fullname) LIKE ?", "%#{params['fullname'].downcase}%") if params[:fullname].present?
-        user_ids = UserAdditionalInfo.where(key: "username").where("LOWER(value) LIKE ?", "%#{params['username'].downcase}%").pluck(:user_id) if params[:username].present?
+        user_ids = UserAdditionalInfo.where(key: UserAdditionalInfo::USERNAME_KEY).where("LOWER(value) LIKE ?", "%#{params['username'].downcase}%").pluck(:user_id) if params[:username].present?
         @users = @users.where(id: user_ids) if params[:username].present?
       else
         @users = @users.page(params[:page])
@@ -382,13 +382,13 @@ class Dashboard::Admin::UsersController < AdminController
             if (user.save!) && (params[:user_roles] - official_role_id != params[:user_roles])
               if username_valid[:success] == true
                 additional_info = UserAdditionalInfo.new
-                additional_info.key = "username"
+                additional_info.key = UserAdditionalInfo::USERNAME_KEY
                 additional_info.value = new_user_credential["username"]
                 additional_info.user_id = user.id
                 additional_info.save!
 
                 invite_url = UserAdditionalInfo.new
-                invite_url.key = "invite_url"
+                invite_url.key = UserAdditionalInfo::INVITE_URL_KEY
                 invite_url.value = "kiwari.me/#{new_user_credential["username"]}"
                 invite_url.user_id = user.id
                 invite_url.save!
@@ -564,7 +564,7 @@ class Dashboard::Admin::UsersController < AdminController
           qiscus_sdk.post_system_event_message(system_event_type, qiscus_room_id, @user.qiscus_email, [], chat_name)
         end
         #create is channel true info for user
-        UserAdditionalInfo.create_or_update_user_additional_info([@user.id], "is_channel", "true")
+        UserAdditionalInfo.create_or_update_user_additional_info([@user.id], UserAdditionalInfo::IS_CHANNEL_KEY, "true")
       end
       
       flash[:success] = "New public chat created!"

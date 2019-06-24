@@ -410,7 +410,7 @@ class Api::V1::Chat::Conversations::ParticipantsController < ProtectedController
 
         # backend need to post system event message before user leave group
         # post system event message only for group chat that is not public chat
-        if chat_room.is_public_chat == false
+        if chat_room.is_public_chat == false &&  chat_room.is_channel == false
           system_event_type = "left_room"
           qiscus_sdk.post_system_event_message(system_event_type, chat_room.qiscus_room_id.to_i, @current_user.qiscus_email, [], "")
         end

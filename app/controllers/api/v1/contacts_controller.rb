@@ -79,6 +79,7 @@ class Api::V1::ContactsController < ProtectedController
           )
           SQL
           contact_id = @current_user.contacts
+            .where(is_active: true)
             .where(sql, Role.official.id, Role.bot.id)
             .pluck(:contact_id)
           contacts = User.includes([:roles, :application,:user_additional_infos]).where("users.application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
@@ -107,7 +108,7 @@ class Api::V1::ContactsController < ProtectedController
 
         elsif show == 'official'
           # show contact except official account
-          contact_id = @current_user.contacts.where("contacts.contact_id IN (select user_id from user_roles where role_id = ?)", Role.official.id).pluck(:contact_id)
+          contact_id = @current_user.contacts.where(is_active: true).where("contacts.contact_id IN (select user_id from user_roles where role_id = ?)", Role.official.id).pluck(:contact_id)
           contacts = User.includes([:roles, :application,:user_additional_infos]).where("users.application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
           contacts = contacts.where.not(fullname: nil).where.not(fullname: "") # only show contact who has complete their profile (fullname not nil)
           contacts = contacts.order(fullname: :asc)
@@ -136,7 +137,7 @@ class Api::V1::ContactsController < ProtectedController
           # show all users in the apps except official users and @current_user
           all_users_ids = User.where(application_id: @current_user.application_id).where.not("id IN (select user_id from user_roles where role_id = ?)", Role.official.id).where.not(id: @current_user.id).pluck(:id)
           # show user contact
-          contact_ids = @current_user.contacts.where("contacts.contact_id NOT IN (select user_id from user_roles where role_id = ?)", Role.official.id).pluck(:contact_id)
+          contact_ids = @current_user.contacts.where(is_active: true).where("contacts.contact_id NOT IN (select user_id from user_roles where role_id = ?)", Role.official.id).pluck(:contact_id)
           contact_ids = all_users_ids - contact_ids
 
           contacts = User.where(id: contact_ids, application_id: @current_user.application_id)
@@ -165,7 +166,7 @@ class Api::V1::ContactsController < ProtectedController
 
         else
           # for backward compatible, limit = total
-          contact_id = @current_user.contacts.pluck(:contact_id)
+          contact_id = @current_user.contacts.where(is_active: true).pluck(:contact_id)
           contacts = User.includes([:roles, :application, :user_additional_infos]).where("users.id IN (?)", contact_id)
           contacts = contacts.where.not(fullname: nil).where.not(fullname: "") # only show contact who has complete their profile (fullname not nil)
           contacts = contacts.order(fullname: :asc)
@@ -174,7 +175,7 @@ class Api::V1::ContactsController < ProtectedController
           only = params[:only]
           if only.present? && only != ""
             if only == 'official'
-              contact_id = @current_user.contacts.where("contact_id IN (select user_id from user_roles where role_id = ?)", Role.official.id).pluck(:contact_id)
+              contact_id = @current_user.contacts.where(is_active: true).where("contact_id IN (select user_id from user_roles where role_id = ?)", Role.official.id).pluck(:contact_id)
               contacts = User.includes([:roles, :application, :user_additional_infos]).where("application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
               contacts = contacts.where.not(fullname: nil).where.not(fullname: "") # only show contact who has complete their profile (fullname not nil)
               contacts = contacts.order(fullname: :asc)
@@ -188,7 +189,7 @@ class Api::V1::ContactsController < ProtectedController
           exclude = params[:exclude]
           if exclude.present? && exclude != ""
             if exclude == 'official'
-              contact_id = @current_user.contacts.where.not("contact_id IN (select user_id from user_roles where role_id = ?)", Role.official.id).pluck(:contact_id)
+              contact_id = @current_user.contacts.where(is_active: true).where.not("contact_id IN (select user_id from user_roles where role_id = ?)", Role.official.id).pluck(:contact_id)
               contacts = User.includes([:roles, :application, :user_additional_infos]).where("application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
               contacts = contacts.where.not(fullname: nil).where.not(fullname: "") # only show contact who has complete their profile (fullname not nil)
               contacts = contacts.order(fullname: :asc)
@@ -225,12 +226,19 @@ class Api::V1::ContactsController < ProtectedController
         contacts = contacts.map(&:as_contact_json)
 
         contact_id = @current_user.contacts.pluck(:contact_id)
+        
         favored_status = @current_user.contacts.pluck(:contact_id, :is_favored)
+        phone_book = @current_user.contacts.pluck(:contact_id, :contact_name)
         contacts = contacts.map do |e|
           # is contact is always true since this will only load contact of this user
           is_contact = contact_id.include?(e["id"])
           is_favored = favored_status.to_h[ e["id"] ] == nil ? false : favored_status.to_h[ e["id"] ]
+          contact_name = phone_book.to_h[ e["id"] ]
+          if contact_name.present?
+            e.merge!("fullname" => contact_name )
+          end
           e.merge!('is_favored' => is_favored, 'is_contact' => is_contact )
+          
         end
 
       end
@@ -310,7 +318,7 @@ class Api::V1::ContactsController < ProtectedController
         else
           raise Exception.new("User already in your contact.")
         end
-
+=begin
         # make added contact as adder's contact
         # if A add B as contact, A will be added as contact to B. A (add)-> B = A <-> B
         # delete this block
@@ -323,7 +331,7 @@ class Api::V1::ContactsController < ProtectedController
           added_contact.save
         end
         # till this block to remove dependent contact invitation
-
+=end
         # get the user detail
         user = User.find(contact.contact_id)
         user = user.as_contact_json({:show_profile => false})
@@ -870,7 +878,7 @@ class Api::V1::ContactsController < ProtectedController
         else
           raise Exception.new("User already in your contact.")
         end
-
+=begin
         # make added contact as adder's contact
         # if A add B as contact, A will be added as contact to B. A (add)-> B = A <-> B
         # delete this block
@@ -883,7 +891,7 @@ class Api::V1::ContactsController < ProtectedController
           added_contact.save
         end
         # till this block to remove dependent contact invitation
-
+=end
         # get the user detail
         user = User.find(contact.contact_id)
         bot = Bot.where(user_id: user.id).first

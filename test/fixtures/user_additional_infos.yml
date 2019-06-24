@@ -1,0 +1,8 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+useroa_username:
+  user_id: 11
+  key: "username"
+  value: "channel"
+
+
