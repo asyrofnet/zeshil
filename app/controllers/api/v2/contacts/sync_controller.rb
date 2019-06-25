@@ -8,7 +8,7 @@ class Api::V2::Contacts::SyncController < ProtectedController
     # client (mobile) will post an array of phone number,
     # qisme engine will return all contact included added contact
     #
-    # @apiName SyncPhoneContactV2
+    # @apiName SyncPhoneContact.V2
     # @apiGroup Contact
     #
     # @apiParam {String} access_token User access token

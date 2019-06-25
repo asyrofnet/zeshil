@@ -4,6 +4,15 @@ require 'uri'
 class Api::V2::ChannelController < ProtectedController
   before_action :authorize_user, only: [:username_to_room_id]
 
+    # =begin
+    # @apiVersion 2.0.0
+    # @api {get} /api/v2/channel Channel Deeplink
+    # @apiName Channel Deeplink
+    # @apiDescription Request deeplink from username
+    # @apiGroup Channel
+    #
+    # @apiParam {String} id The username of the accouunt
+    # =end
   def show
     begin
       username = params[:id]
@@ -49,6 +58,15 @@ class Api::V2::ChannelController < ProtectedController
       }, status: 422 and return
     end
   end
+
+    # =begin
+    # @apiVersion 2.0.0
+    # @api {get} /api/v2/channel/username_to_room_id Username To Room
+    # @apiName GetRoomByUsername
+    # @apiGroup Channel
+    #
+    # @apiParam {String} username The username of the channel
+    # =end  
 
   def username_to_room_id
     begin

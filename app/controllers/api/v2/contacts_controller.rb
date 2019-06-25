@@ -2,9 +2,9 @@ class Api::V2::ContactsController < ProtectedController
     before_action :authorize_user
   
     # =begin
-    # @apiVersion 1.0.0
-    # @api {get} /api/v1/contacts Contact List
-    # @apiName ContactList
+    # @apiVersion 2.0.0
+    # @api {get} /api/v2/contacts Contact List
+    # @apiName ContactList.V2
     # @apiGroup Contact
     #
     # @apiParam {String} access_token User access token
