@@ -3,12 +3,12 @@ class Api::V2::Contacts::SyncController < ProtectedController
   
     # =begin
     # @apiVersion 2.0.0
-    # @api {post} /api/v1/contacts/sync Sync Contact From Phone Book
+    # @api {post} /api/v2/contacts/sync Sync Contact V2
     # @apiDescription sync all phone number in user phone contact to be contact in qisme application
     # client (mobile) will post an array of phone number,
     # qisme engine will return all contact included added contact
     #
-    # @apiName SyncPhoneContact.V2
+    # @apiName SyncPhoneContactV2
     # @apiGroup Contact
     #
     # @apiParam {String} access_token User access token

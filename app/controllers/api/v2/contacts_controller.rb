@@ -3,8 +3,8 @@ class Api::V2::ContactsController < ProtectedController
   
     # =begin
     # @apiVersion 2.0.0
-    # @api {get} /api/v2/contacts Contact List
-    # @apiName ContactList.V2
+    # @api {get} /api/v2/contacts Contact List V2
+    # @apiName ContactListV2
     # @apiGroup Contact
     #
     # @apiParam {String} access_token User access token

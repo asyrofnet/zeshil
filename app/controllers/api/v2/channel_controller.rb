@@ -6,9 +6,9 @@ class Api::V2::ChannelController < ProtectedController
 
     # =begin
     # @apiVersion 2.0.0
-    # @api {get} /api/v2/channel Channel Deeplink
+    # @api {get} /api/v2/channel/:id Channel Deeplink V2
     # @apiName Channel Deeplink
-    # @apiDescription Request deeplink from username
+    # @apiDescription Request deeplink from username, change the ID in url below. It would return undefined because redirect
     # @apiGroup Channel
     #
     # @apiParam {String} id The username of the accouunt
@@ -61,10 +61,11 @@ class Api::V2::ChannelController < ProtectedController
 
     # =begin
     # @apiVersion 2.0.0
-    # @api {get} /api/v2/channel/username_to_room_id Username To Room
+    # @api {get} /api/v2/channel/username_to_room_id Username To Room V2
     # @apiName GetRoomByUsername
     # @apiGroup Channel
     #
+    # @apiParam {String} access_token User access token    
     # @apiParam {String} username The username of the channel
     # =end  
 
