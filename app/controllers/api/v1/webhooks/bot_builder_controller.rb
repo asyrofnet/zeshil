@@ -1,7 +1,7 @@
 require 'uri'
 
 class Api::V1::Webhooks::BotBuilderController < ApplicationController
-
+  SessionLength = 24.hour.to_i
   def handler
     begin
       def create_bot(exist_session, bot_session, send_now=false)
@@ -391,6 +391,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
         payload = {}
         payload["params"] = {}
         $redis.set(bot_session, payload.to_json)
+        $redis.expire(bot_session, SessionLength)
       end
 
       exist_session = JSON.parse($redis.get(bot_session)) 
@@ -415,6 +416,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
             exist_session["command"] = "show bot"
             exist_session["state"] = "fill_username"
             $redis.set(bot_session, exist_session.to_json)
+            $redis.expire(bot_session, SessionLength)
             send_now = true
 
           elsif params[:message][:text] == "/showbot"
@@ -453,6 +455,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
           type = response[:type] || "buttons"
           if send_now == false
             $redis.set(bot_session, exist_session.to_json)
+            $redis.expire(bot_session, SessionLength)
           end
         elsif exist_session["command"] == "delete bot"
           response = delete_bot(exist_session, bot_session, params, send_now)
@@ -463,6 +466,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
           type = response[:type] || "buttons"
           if send_now == false
             $redis.set(bot_session, exist_session.to_json)
+            $redis.expire(bot_session, SessionLength)
           end
         elsif exist_session["command"] == "show bot"
           response = show_bot(exist_session, bot_session)
@@ -473,6 +477,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
           exist_session = response[:exist_session]
           if send_now == false
             $redis.set(bot_session, exist_session.to_json)
+            $redis.expire(bot_session, SessionLength)
           end
         elsif exist_session["command"] == "edit bot"
           response = edit_bot(exist_session, bot_session)
@@ -483,6 +488,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
           type = response[:type] || "buttons"
           if send_now == false
             $redis.set(bot_session, exist_session.to_json)
+            $redis.expire(bot_session, SessionLength)
           end
         end
       end
