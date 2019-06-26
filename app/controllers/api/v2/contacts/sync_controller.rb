@@ -104,8 +104,12 @@ class Api::V2::Contacts::SyncController < ProtectedController
             
             # now looking for user where not in contact
             already_been_in_contacts = @current_user.contacts.where("contacts.contact_id IN (?)", users).pluck(:contact_id)
-            protected_ids_from_deactivate = already_been_in_contacts + all_official_ids
-            #DEACTIVATE CURRENT USER CONTACTS EXCEPT THE ONE ON QUERY AND OFFICIAL
+            bot_ids = []
+            if Role.bot.present?
+              bot_ids = UserRole.where(role: Role.bot).pluck(:user_id)
+            end
+            protected_ids_from_deactivate = already_been_in_contacts + all_official_ids+ bot_ids
+            #DEACTIVATE CURRENT USER CONTACTS EXCEPT THE ONE ON QUERY AND OFFICIAL AND BOT
             @current_user.contacts.where.not("contacts.contact_id IN (?)", protected_ids_from_deactivate).update_all(is_active:false)
 
             # contact to be added is only user where not in contact list
