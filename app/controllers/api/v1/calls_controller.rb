@@ -1,6 +1,10 @@
 class Api::V1::CallsController < ProtectedController
   before_action :authorize_user
-
+  EVENT_INCOMING = "incoming"
+  EVENT_ACCEPT = "accept"
+  EVENT_END = "end"
+  EVENT_CANCEL = "cancel"
+  EVENT_REJECT = "reject"
   # =begin
   # @apiVersion 1.0.0
   # @api {post} /api/v1/calls System event message for call
@@ -169,17 +173,17 @@ class Api::V1::CallsController < ProtectedController
 
       # Define system_event_type to be stored in payload
       system_event_type = "call"
-
+      
       # define message because its has 5 call_event ('incoming', 'accept', 'end', 'cancel', 'reject')
-      if call_event == 'incoming'
+      if call_event == EVENT_INCOMING
         message = "#{caller_user.fullname} call #{callee_user.fullname}"
-      elsif call_event == 'accept'
+      elsif call_event == EVENT_ACCEPT
         message = "#{callee_user.fullname} accept call from #{caller_user.fullname}"
-      elsif call_event == 'end'
+      elsif call_event == EVENT_END
         message = "#{user2.fullname} end call to #{user1.fullname}"
-      elsif call_event == 'cancel'
+      elsif call_event == EVENT_CANCEL
         message = "#{caller_user.fullname} cancel call to #{callee_user.fullname}"
-      elsif call_event == 'reject'
+      elsif call_event == EVENT_REJECT
         message = "#{callee_user.fullname} reject call from #{caller_user.fullname}"
       end
 
@@ -236,9 +240,9 @@ class Api::V1::CallsController < ProtectedController
       type = "custom"
       qiscus_token = @current_user.qiscus_token
       topic_id = qiscus_room_id
-
-      # post system event message for incoming call_event
-      if call_event == "incoming"
+      posted_event = [EVENT_INCOMING,EVENT_CANCEL,EVENT_REJECT]
+      # post system event message for incoming,cancel and reject call_event
+      if posted_event.include? call_event
         qiscus_sdk.post_system_event_message(type, topic_id, "", [], "", payload.to_json, message, extras)
       end
 
