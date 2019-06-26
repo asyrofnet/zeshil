@@ -268,6 +268,109 @@ class Api::V2::ContactsController < ProtectedController
         }, status: 422 and return
       end
     end
+
+    # =begin
+    # @apiVersion 2.0.0
+    # @api {get} /api/v2/contacts/discover Discover V2
+    # @apiName DiscoverV2
+    # @apiDescription get account for Discover. Use this if dev need different API
+    # @apiGroup Contact
+    #
+    # @apiParam {String} access_token User access token
+    # @apiParam {Number} page Page number
+    # @apiParam {Number} limit Limit
+    # =end
+    def discover
+      total_page = 0
+      total = 0
+      contacts = nil
+      limit = params[:limit]
+      page = params[:page]
+      ActiveRecord::Base.transaction do
+        sql = <<-SQL
+            contacts.contact_id IN (
+              SELECT user_id 
+              FROM user_roles 
+              WHERE role_id = ? OR role_id = ?
+            )
+            SQL
+            contact_id = @current_user.contacts
+              .where(sql, Role.official.id, Role.bot.id)
+              .pluck(:contact_id)
+            contacts = User.includes([:roles, :application,:user_additional_infos]).where("users.application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
+            contacts = contacts.order(fullname: :asc)
+  
+            total = contacts.count
+  
+            # pagination only when exist
+            if page.present?
+              contacts = contacts.page(page)
+            end
+  
+            # if limit and page present, then use kaminari pagination
+            if limit.present? && page.present?
+              contacts = contacts.per(limit)
+            # else use limit from ActiveRecord
+            elsif limit.present?
+              contacts = contacts.limit(limit)
+            else
+              limit = 25
+              contacts = contacts.limit(25)
+            end
+  
+            total_page = (total / limit.to_f).ceil
+
+            contacts = contacts.map(&:as_contact_json)
+  
+          contact_id = @current_user.contacts.pluck(:contact_id)
+          
+          favored_status = @current_user.contacts.pluck(:contact_id, :is_favored)
+          phone_book = @current_user.contacts.pluck(:contact_id, :contact_name)
+          contacts = contacts.map do |e|
+            # is contact is always true since this will only load contact of this user
+            is_contact = contact_id.include?(e["id"])
+            is_favored = favored_status.to_h[ e["id"] ] == nil ? false : favored_status.to_h[ e["id"] ]
+            contact_name = phone_book.to_h[ e["id"] ]
+            if contact_name.present?
+              e.merge!("fullname" => contact_name )
+            end
+            e.merge!('is_favored' => is_favored, 'is_contact' => is_contact )
+            
+          end
+      end
+
+      render json: {
+          meta: {
+            limit: limit.to_i,
+            page: page == nil || page.to_i < 0 ? 0 : page.to_i,
+            total_page: total_page,
+            total: total,
+          },
+          data: contacts
+        }
+  
+      rescue ActiveRecord::RecordInvalid => e
+        msg = ""
+        e.record.errors.map do |k, v|
+          key = k.to_s.humanize
+          msg = msg + "#{key} #{v}, "
+        end
+  
+        msg = msg.chomp(", ") + "."
+        render json: {
+          error: {
+            message: msg
+          }
+        }, status: 422 and return
+  
+      rescue Exception => e
+        render json: {
+          error: {
+            message: e.message
+          }
+        }, status: 422 and return
+      end
+    
  
 end
   
