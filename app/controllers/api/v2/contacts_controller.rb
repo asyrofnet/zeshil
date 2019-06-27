@@ -373,7 +373,7 @@ class Api::V2::ContactsController < ProtectedController
 
     # =begin
     # @apiVersion 2.0.0
-    # @api {get} /api/v2/contacts/add_or_update Add or Update Contact V2
+    # @api {post} /api/v2/contacts/add_or_update Add or Update Contact V2
     # @apiName AddOrUpdateContactV2
     # @apiDescription Add or Update contacts.
     # @apiGroup Contact
@@ -472,7 +472,7 @@ class Api::V2::ContactsController < ProtectedController
 
     # =begin
     # @apiVersion 2.0.0
-    # @api {get} /api/v2/contacts/remove Remove Contact V2
+    # @api {post} /api/v2/contacts/remove Remove Contact V2
     # @apiName RemoveContactV2
     # @apiDescription Remove contacts.
     # @apiGroup Contact
