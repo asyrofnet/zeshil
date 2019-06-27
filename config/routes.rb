@@ -410,6 +410,8 @@ Rails.application.routes.draw do
           resources :sync, only: [:create]
         end
         resources :contacts, only: [:index] do
+          post :add_or_update, on: :collection
+          post :remove, on: :collection
           get :discover, on: :collection
         end
       end

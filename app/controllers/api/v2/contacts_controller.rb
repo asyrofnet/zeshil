@@ -369,7 +369,202 @@ class Api::V2::ContactsController < ProtectedController
             message: e.message
           }
         }, status: 422 and return
+    end
+
+    # =begin
+    # @apiVersion 2.0.0
+    # @api {get} /api/v2/contacts/add_or_update Add or Update Contact V2
+    # @apiName AddOrUpdateContactV2
+    # @apiDescription Add or Update contacts.
+    # @apiGroup Contact
+    #
+    # @apiParam {String} access_token User access token
+    # @apiParam {Array} contact[] Array of object of contacts with phone number and contact name, for instance: `contact:[{"phone_number":"+62832421","contact_name":"hello"},{"phone_number":"+62832424","contact_name":"world"}]`
+    # =end
+    def add_or_update
+      begin
+        if !params[:contact].present?
+          render json: {
+            data: []
+          } and return
+        end
+
+        if params[:contact].kind_of?(Array) && params[:contact].present?
+          current_user_phone_number = @current_user.phone_number
+          phone_numbers = Array.new
+          phone_books = Hash.new
+          params[:contact].each do | contact |
+  
+            phone_number = contact["phone_number"]
+            phone_number = phone_number.strip().delete(' ') # remove all spaces
+                      phone_number = phone_number.gsub(/[[:space:]]/, '')
+  
+            if phone_number.start_with?("8")
+              phone_number = @current_user.country_code + phone_number
+            elsif phone_number.start_with?("0")
+              phone_number = phone_number[1..-1]
+              phone_number = @current_user.country_code + phone_number
+            end
+             phone_numbers.push(phone_number)
+             phone_books[phone_number] = contact["contact_name"]
+          end
+
+          contacts = nil
+          ActiveRecord::Base.transaction do
+            users = User.where("LOWER(phone_number) IN (?)", phone_numbers)
+            users = users.where(application_id: @current_user.application.id) # only looking for user where has same application id
+            users = users.where.not(phone_number: current_user_phone_number) # exclude ownself to be added
+            
+            #update old contacts with new name
+            users.each do |user|
+              contact = Contact.find_or_create_by(user_id: @current_user.id, contact_id: user.id)
+              phone = user.phone_number
+              if !contact.nil?
+                if (contact.contact_name != phone_books[phone]) || (!contact.is_active)
+                  contact.update!(contact_name: phone_books[phone],is_active:true)
+                end
+              end
+            end
+            
+            contacts = users.order(fullname: :asc)
+    
+              contacts = contacts.as_json({:show_profile => true})
+    
+              favored_status = @current_user.contacts.pluck(:contact_id, :is_favored)
+              contacts = contacts.map do |e|
+                contact_name = phone_books[e["phone_number"]] || e["fullname"]
+                # is contact is always true since this will only load contact of this user
+                e.merge!('is_favored' => favored_status.to_h[ e["id"] ], 'is_contact' => true, "fullname" => contact_name )
+              end
+              render json: {
+                data: contacts,
+                # phone_numbers_not_valid: phone_numbers_not_valid
+                          phone_numbers: phone_numbers
+              }
+          end
+        else
+          raise Exception.new("Contact must be an array of object.")
+        end
+
+      rescue ActiveRecord::RecordInvalid => e
+        msg = ""
+        e.record.errors.map do |k, v|
+          key = k.to_s.humanize
+          msg = msg + "#{key} #{v}, "
+        end
+  
+        msg = msg.chomp(", ") + "."
+        render json: {
+          error: {
+            message: msg
+          }
+        }, status: 422 and return
+  
+      rescue Exception => e
+        render json: {
+          error: {
+            message: e.message
+          }
+        }, status: 422 and return
+
       end
+    end
+
+    # =begin
+    # @apiVersion 2.0.0
+    # @api {get} /api/v2/contacts/remove Remove Contact V2
+    # @apiName RemoveContactV2
+    # @apiDescription Remove contacts.
+    # @apiGroup Contact
+    #
+    # @apiParam {String} access_token User access token
+    # @apiParam {Array} phone_number[] Array of normalized phone number, for instance: `phone_number[]=+62...&phone_number[]=+62...`
+    # =end
+    def remove
+      begin
+        if !params[:phone_number].present?
+          render json: {
+            data: []
+          } and return
+        end
+
+        if params[:phone_number].kind_of?(Array) && params[:phone_number].present?
+          current_user_phone_number = @current_user.phone_number
+          phone_numbers = Array.new
+          params[:phone_number].each do | phone_number |
+  
+            phone_number = phone_number.strip().delete(' ') # remove all spaces
+                      phone_number = phone_number.gsub(/[[:space:]]/, '')
+  
+            if phone_number.start_with?("8")
+              phone_number = @current_user.country_code + phone_number
+            elsif phone_number.start_with?("0")
+              phone_number = phone_number[1..-1]
+              phone_number = @current_user.country_code + phone_number
+            end
+             phone_numbers.push(phone_number)
+          end
+
+          contacts = nil
+          ActiveRecord::Base.transaction do
+            users = User.where("LOWER(phone_number) IN (?)", phone_numbers)
+            users = users.where(application_id: @current_user.application.id) # only looking for user where has same application id
+            users = users.where.not(phone_number: current_user_phone_number) # exclude ownself to be added
+            
+            #update old contacts with new name
+            users.each do |user|
+              contact = Contact.find_by(user_id: @current_user.id, contact_id: user.id)
+              phone = user.phone_number
+              if !contact.nil?
+                if (contact.is_active)
+                  contact.update!(is_active:false)
+                end
+              end
+            end
+            
+            contacts = users.order(fullname: :asc)
+    
+              contacts = contacts.as_json({:show_profile => true})
+    
+              favored_status = @current_user.contacts.pluck(:contact_id, :is_favored)
+              contacts = contacts.map do |e|
+                # is contact is always true since this will only load contact of this user
+                e.merge!('is_favored' => favored_status.to_h[ e["id"] ], 'is_contact' => false )
+              end
+              render json: {
+                data: contacts,
+                # phone_numbers_not_valid: phone_numbers_not_valid
+                          phone_numbers: phone_numbers
+              }
+          end
+        else
+          raise Exception.new("phone_number must be an array of phone numbers.")
+        end
+
+      rescue ActiveRecord::RecordInvalid => e
+        msg = ""
+        e.record.errors.map do |k, v|
+          key = k.to_s.humanize
+          msg = msg + "#{key} #{v}, "
+        end
+  
+        msg = msg.chomp(", ") + "."
+        render json: {
+          error: {
+            message: msg
+          }
+        }, status: 422 and return
+  
+      rescue Exception => e
+        render json: {
+          error: {
+            message: e.message
+          }
+        }, status: 422 and return
+
+      end
+    end
+
     
  
 end
