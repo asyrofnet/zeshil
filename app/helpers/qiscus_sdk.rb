@@ -128,7 +128,7 @@ class QiscusSdk
     return res.to_a
   end
 
-  def post_comment(token, topic_id, comment, type="text", payload="", unique_temp_id = nil)
+  def post_comment(token, topic_id, comment, type="text", payload="", unique_temp_id = nil,extras = nil)
     url = "#{@BASE_URL}/api/v2/mobile/post_comment"
     params = {
       "token" => token,
@@ -136,7 +136,8 @@ class QiscusSdk
       "comment" => comment,
       "type" => type,
       "payload" => payload,
-      "unique_temp_id" => unique_temp_id
+      "unique_temp_id" => unique_temp_id,
+      "extras" => extras
     }
 
     res = request("POST", url, params)

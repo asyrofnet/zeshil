@@ -403,6 +403,9 @@ Rails.application.routes.draw do
         resources :users, only: [:index, :show]
       end
       scope module: :v2, path: '/v2' do
+        scope module: :chat, path: '/chat' do
+          post '/send_broadcast', to: 'broadcast#send_broadcast'
+        end
         resources :channel, only: [:show] do
           get :username_to_room_id, on: :collection
         end
