@@ -4,7 +4,7 @@ class Api::V2::Chat::BroadcastController < ProtectedController
     # =begin
     # @apiVersion 2.0.0
     # @api {post} /api/v1/chat/send_broadcast Send Broadcast V2
-    # @apiDescription Send broadcast to targets by qiscus emails
+    # @apiDescription Send broadcast to targets by phone numbers
     # @apiName SendBroadcastV2
     # @apiGroup Broadcast
     #
