@@ -68,7 +68,8 @@ class Api::V2::Chat::BroadcastController < ProtectedController
         end
   
         render json: {
-          status: "success"
+          status: "success",
+          phone_numbers: phone_numbers
         }
   
       rescue ActiveRecord::RecordInvalid => e
