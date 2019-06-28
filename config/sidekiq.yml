@@ -13,6 +13,8 @@ staging:
 # Sidekiq job priority
 :queues:
   - [bot_post_comment, 5]  # for post comment to bot
+  - [broadcast_starter, 3]  # for starting broadcast
+  - [broadcast_unit, 3]  # for each broadcast
   - [send_apns, 2] # send apns with sidekiq
   - [push_notifications, 2] # generate PN payload and send to android
   - [default, 1] # for contact sync smarter, reset chat room cache

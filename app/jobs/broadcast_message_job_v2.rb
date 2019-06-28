@@ -1,5 +1,5 @@
 class BroadcastMessageJobV2 < ActiveJob::Base
-    queue_as :default
+    queue_as :broadcast_starter
   
     def perform(sender, target_user_emails, message,type,payload, broadcast_message_id)
       application = sender.application
