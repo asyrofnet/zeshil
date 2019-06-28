@@ -11,6 +11,8 @@ class Api::V2::Chat::BroadcastController < ProtectedController
     # @apiParam {String} access_token User access token
     # @apiParam {String} message The Message for Targets
     # @apiParam {Array} target_qiscus_emails the emails of targets in array form 
+    # @apiParam {String} type The type of comment, default is text. optional 
+    # @apiParam {JsonObject} payload payload needed for type other than text 
     # =end
     def send_broadcast
       begin
