@@ -231,7 +231,7 @@ class ChatRoom < ActiveRecord::Base
         h["chat_name_sdk"] = ""
         h["unread_count"] = 0
         h["last_message"] = ""
-        h["last_message_timestamps"] = ""
+        h["last_message_timestamps"] = updated_at.strftime("%Y-%m-%dT%TZ")
         h["group_avatar_url_sdk"] = ""
 
         # only use avatar from SDK if it's a group chat (because latest group avatar is only in SDK [client only update group avatar in SDK])
