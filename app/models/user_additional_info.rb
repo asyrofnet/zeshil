@@ -11,6 +11,7 @@ class UserAdditionalInfo < ActiveRecord::Base
   IS_CHANNEL_KEY = "is_channel"
   USERNAME_KEY = "username"
   INVITE_URL_KEY = "invite_url"
+  INVITE_URL_BEGINNING = "link.kiwari.chat/"
 
   # Create user additional info
   def self.create_or_update_user_additional_info(user_ids, additional_info_key, additional_info_value)
