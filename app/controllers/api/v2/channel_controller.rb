@@ -71,6 +71,7 @@ class Api::V2::ChannelController < ProtectedController
       username = params[:username]
       room_id = nil
       success = false
+      has_joined = false
       message = "channel #{username} tidak ditemukan"
       additional_info = UserAdditionalInfo.where(key: UserAdditionalInfo::USERNAME_KEY, value: username).first
       if !additional_info.nil?
@@ -79,6 +80,10 @@ class Api::V2::ChannelController < ProtectedController
           if user.is_official
             chat_room = ChatRoom.where(user_id: user.id, is_channel: true).first
             if !chat_room.nil?
+
+              chat_user = ChatUser.find_by(user_id: @current_user.id, chat_room_id: chat_room.id)
+              has_joined = chat_user.present?
+
               app_id = user.application.app_id
               qiscus_email = user.qiscus_email
               unique_id = "#{app_id}##{qiscus_email}##{app_id}"
@@ -95,7 +100,8 @@ class Api::V2::ChannelController < ProtectedController
         success: success,
         room_id: room_id,
         unique_id: unique_id,
-        chat_room: chat_room
+        chat_room: chat_room,
+        has_joined: has_joined
       }
 
     rescue Exception => e
