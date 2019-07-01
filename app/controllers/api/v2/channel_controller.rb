@@ -27,10 +27,7 @@ class Api::V2::ChannelController < ProtectedController
         user_id = additional_info.user_id
         user = User.find(user_id)
         if !user.nil?
-          role_ids = user.role_ids
-          official_id = [Role.find_official]
-          is_official = (role_ids - official_id != role_ids)
-          if is_official == true
+          if user.is_official
             chat_room = ChatRoom.where(user_id: user_id, is_channel: true).first
             if !chat_room.nil?
               room_id = chat_room.qiscus_room_id
