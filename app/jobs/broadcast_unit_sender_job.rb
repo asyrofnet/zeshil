@@ -38,22 +38,17 @@ class BroadcastUnitSenderJob < ActiveJob::Base
 
           chat_name = sender_user.fullname+" and "+target_user.fullname
           
-          chat_room = ChatRoom.new(
-            application_id: application.id,
+          chat_room = ChatRoom.find_or_initialize_by(application_id: application.id, qiscus_room_id: room.id)
+          chat_room.update!(
             group_chat_name: chat_name,
             qiscus_room_name: room.name,
-            qiscus_room_id: room.id,
             is_group_chat: room.is_group_chat,
             user_id: sender_user.id,
             target_user_id: target_user.id
           )
 
-          chat_room.save!
-
-          ChatUser.create([
-            {chat_room_id: chat_room.id, user_id: sender_user.id},
-            {chat_room_id: chat_room.id, user_id: target_user.id}
-          ])
+          ChatUser.find_or_create_by(chat_room_id: chat_room.id, user_id: sender_user.id )
+          ChatUser.find_or_create_by( chat_room_id: chat_room.id, user_id: target_user.id )
           qiscus_room_id = chat_room.qiscus_room_id
         else 
           qiscus_room_id = common_single.last    
