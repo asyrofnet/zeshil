@@ -397,7 +397,8 @@ class Api::V2::ContactsController < ProtectedController
   
             phone_number = contact["phone_number"]
             phone_number = phone_number.strip().delete(' ') # remove all spaces
-                      phone_number = phone_number.gsub(/[[:space:]]/, '')
+            phone_number = phone_number.strip().delete('-') # remove dash
+            phone_number = phone_number.gsub(/[[:space:]]/, '')
   
             if phone_number.start_with?("8")
               phone_number = @current_user.country_code + phone_number
@@ -494,7 +495,8 @@ class Api::V2::ContactsController < ProtectedController
           params[:phone_number].each do | phone_number |
   
             phone_number = phone_number.strip().delete(' ') # remove all spaces
-                      phone_number = phone_number.gsub(/[[:space:]]/, '')
+            phone_number = phone_number.strip().delete('-') # remove dash
+            phone_number = phone_number.gsub(/[[:space:]]/, '')
   
             if phone_number.start_with?("8")
               phone_number = @current_user.country_code + phone_number
