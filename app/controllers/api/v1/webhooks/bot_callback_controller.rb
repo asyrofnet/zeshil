@@ -83,6 +83,7 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
 
       participants = User.where("LOWER(qiscus_email) IN (?)", participant_emails).where(application_id: app.id)
 
+      
       chat_room = ChatRoom.find_by(qiscus_room_id: room[:id], application_id: app.id)
 
       # if required payload is not present, then return error
@@ -95,7 +96,23 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
       end
 
       if chat_room.nil?
-        raise Exception.new("Chat room is not found in database.")
+        target = participants.where.not(id: from.id).first
+        chat_name = "Group Chat Name"
+        chat_room = ChatRoom.new(
+            group_chat_name: chat_name,
+            qiscus_room_name: chat_name,
+            qiscus_room_id: room[:id],
+            is_group_chat: false,
+            user_id: from.id,
+            target_user_id: target.id,
+            application_id: from.application.id
+          )
+
+          chat_room.save!
+
+          ChatUser.create(chat_room_id: chat_room.id, user_id: from.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: from.id)
+          ChatUser.create(chat_room_id: chat_room.id, user_id: target.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: target.id)
+  
       end
 
       chat_room = chat_room.as_json(:webhook => true) # convert to hash to merge more property/field such as qiscus_id
