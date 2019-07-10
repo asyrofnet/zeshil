@@ -33,7 +33,7 @@ class Api::V2::ChannelController < ProtectedController
               room_id = chat_room.qiscus_room_id
               if @os == "android"
                 bundle_id = ENV['ANDROID_BUNDLE_ID'] || "com.qiscus.kiwari"
-                location = "market://details?id=#{bundle_id}&referrer=#{room_id}"
+                location = "intent://channel/#{username}#Intent;scheme=kiwari;package=#{bundle_id};end"
               elsif @os == "ios"
                 bundle_id = ENV['IOS_BUNDLE_ID'] || "id1212085223?mt=8"
                 location = "itms://itunes.apple.com/us/app/kiwari/#{bundle_id}&referral=#{room_id}"
