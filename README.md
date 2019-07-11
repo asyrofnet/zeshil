@@ -72,6 +72,7 @@ $ rails db:seed
 
 ### Using Docker
 
+<<<<<<< HEAD
 ```
 params = {
   :app_id => 'kiwari-engine',
@@ -83,6 +84,10 @@ params = {
   :secret_key => '',
   :fcm_key => ''
 }
+=======
+* Clone this repository
+* Build docker image
+>>>>>>> cee8051e76c9880743d1a249cd5a537c193842f7
 
 ```bash
 $ cd kiwari-engine
@@ -109,8 +114,14 @@ $ docker-compose up
 * Open your kiwari-engine via `docker exec`, init the migration and seed initialize the data
 
 ```bash
+<<<<<<< HEAD
 $ docker build -t kiwari_engine .
 $ docker run -p 8000:3000 kiwari_engine
+=======
+$ docker exec -it yourcontainer bash
+$ rails db:migrate
+$ rails db:seed
+>>>>>>> cee8051e76c9880743d1a249cd5a537c193842f7
 ```
 
 After that, you need to create your own application via rails console:

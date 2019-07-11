@@ -6,7 +6,7 @@ JWT_KEY: "inisecret"
 
 # app name for new relic
 APP_NAME: 'Kiwari'
-NEW_RELIC_LICENSE_KEY: '6360b672468b68827529bd68884431c8d4f06091'
+NEW_RELIC_LICENSE_KEY: 'xxxyyyzzz'
 
 
 # Database connection
