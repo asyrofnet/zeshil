@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "API Documentation for Kiwari Application",
   "title": "Kiwari Engine API",
-  "url" : "https://qisme.qiscus.com",
-  "sampleUrl": "https://qisme-stag.qiscus.com",
+  "url" : "https://api.kiwari.chat",
+  "sampleUrl": "http://api-stag.kiwari.chat",
   "template": {
     "withCompare": true,
     "withGenerator": true
