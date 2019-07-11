@@ -404,11 +404,16 @@ Rails.application.routes.draw do
       end
       scope module: :v2, path: '/v2' do
         scope module: :chat, path: '/chat' do
+          resources :auto_responder, only: [:create,:update] do
+            post :trigger, on: :collection
+            post :delete, on: :collection
+          end
           post '/send_broadcast', to: 'broadcast#send_broadcast'
         end
         resources :channel, only: [:show] do
           get :username_to_room_id, on: :collection
         end
+        
         scope module: :contacts, path: '/contacts' do
           resources :sync, only: [:create]
         end

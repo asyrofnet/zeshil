@@ -13,6 +13,9 @@ class UserAdditionalInfo < ActiveRecord::Base
   INVITE_URL_KEY = "invite_url"
   INVITE_URL_BEGINNING = "link.kiwari.chat/"
 
+  AUTO_RESPONDER_KEY = "auto_responder"
+  AUTO_STARTER_KEY = "auto_starter"
+
   # Create user additional info
   def self.create_or_update_user_additional_info(user_ids, additional_info_key, additional_info_value)
     users = User.where("id IN (?)", user_ids)
