@@ -21,11 +21,12 @@ class AutoAddContact < ActiveJob::Base
         if Contact.find_by(user_id: user_id, contact_id: id).nil?
           new_contacts.push({:user_id => user_id, :contact_id => id})
         end
-
+=begin
         # now, make sure that they are friends, if A add B, then A must be in B's contact too
         if Contact.find_by(user_id: id, contact_id: user_id).nil?
           new_contacts.push({:user_id => id, :contact_id => user_id})
         end
+=end        
       end
 
       # add new contact

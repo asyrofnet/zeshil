@@ -28,3 +28,4 @@ listener_payload.json
 docker-compose.yml
 .tool-versions
 settings.json
+coverage

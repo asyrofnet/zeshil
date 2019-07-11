@@ -22,6 +22,7 @@ if role_official_user.nil?
 end
 
 Role.helpdesk
+Role.bot
 
 # no need to add default user or application, since it can be created using console
 

@@ -9,3 +9,7 @@ user2_role2:
   id: 2
   user_id: 2
   role_id: 2
+useroa_roleoa:
+  id: 3
+  user_id: 11
+  role_id: 3  

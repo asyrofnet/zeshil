@@ -12,7 +12,7 @@ class ChatRoom < ActiveRecord::Base
   belongs_to :user
   has_many :chat_users
   has_many :users, ->{ order 'users.fullname asc' }, through: :chat_users
-
+  has_many :admins, -> { where("chat_users.is_group_admin = ?", true) }, :through => :chat_users, :source => :user
   belongs_to :target, :class_name => :User, :foreign_key => "target_user_id"
 
   has_many :pin_chat_rooms
@@ -29,48 +29,95 @@ class ChatRoom < ActiveRecord::Base
   after_destroy :update_redis_cache
 
   def as_json(options={})
-    h = super(
-      :include =>
-        [
-          {
-            :users =>
+    if !self.is_channel
+      h = super(
+        :include =>
+          [
             {
-              # :include => [
-              #   {
-              #     :roles =>
-              #     {
-              #       :only => [:id, :name]
-              #     }
-              #   },
-              #   {
-              #     :application => { :only => [:app_name] }
-              #   }
-              # ],
-              :except => [:passcode, :application_id, :qiscus_token, :lock_version],
-              :methods => [ :is_admin, :is_official, :additional_infos ]
-            } # end of user
-          },
-          {
-            :target =>
+              :users =>
+              {
+                # :include => [
+                #   {
+                #     :roles =>
+                #     {
+                #       :only => [:id, :name]
+                #     }
+                #   },
+                #   {
+                #     :application => { :only => [:app_name] }
+                #   }
+                # ],
+                :except => [:passcode, :application_id, :qiscus_token, :lock_version],
+                :methods => [ :is_admin, :is_official, :additional_infos ]
+              } # end of user
+            },
             {
-              # :include => [
-              #   {
-              #     :roles =>
-              #     {
-              #       :only => [:id, :name]
-              #     }
-              #   },
-              #   {
-              #     :application => { :only => [:app_name] }
-              #   }
-              # ],
-              :except => [:passcode, :application_id, :qiscus_token, :lock_version],
-              :methods => [ :is_admin, :is_official, :additional_infos ]
-            } # end of target
-          }
-        ],
-        :except => [:user_id, :group_chat_name, :target_user_id]
-    )
+              :target =>
+              {
+                # :include => [
+                #   {
+                #     :roles =>
+                #     {
+                #       :only => [:id, :name]
+                #     }
+                #   },
+                #   {
+                #     :application => { :only => [:app_name] }
+                #   }
+                # ],
+                :except => [:passcode, :application_id, :qiscus_token, :lock_version],
+                :methods => [ :is_admin, :is_official, :additional_infos ]
+              } # end of target
+            }
+          ],
+          :except => [:user_id, :group_chat_name, :target_user_id]
+      )
+
+    else
+      h = super(
+        :include =>
+          [
+            {
+              :admins =>
+              {
+                # :include => [
+                #   {
+                #     :roles =>
+                #     {
+                #       :only => [:id, :name]
+                #     }
+                #   },
+                #   {
+                #     :application => { :only => [:app_name] }
+                #   }
+                # ],
+                :except => [:passcode, :application_id, :qiscus_token, :lock_version],
+                :methods => [ :is_admin, :is_official, :additional_infos ]
+              } # end of user
+            },
+            {
+              :target =>
+              {
+                # :include => [
+                #   {
+                #     :roles =>
+                #     {
+                #       :only => [:id, :name]
+                #     }
+                #   },
+                #   {
+                #     :application => { :only => [:app_name] }
+                #   }
+                # ],
+                :except => [:passcode, :application_id, :qiscus_token, :lock_version],
+                :methods => [ :is_admin, :is_official, :additional_infos ]
+              } # end of target
+            }
+          ],
+          :except => [:user_id, :group_chat_name, :target_user_id]
+      )
+      h["users"] = h["admins"].dup
+    end
 
     # Overwrite json if has webhook key. This json use only in webhook payload
     if options.has_key?(:webhook)
@@ -184,7 +231,7 @@ class ChatRoom < ActiveRecord::Base
         h["chat_name_sdk"] = ""
         h["unread_count"] = 0
         h["last_message"] = ""
-        h["last_message_timestamps"] = ""
+        h["last_message_timestamps"] = updated_at.strftime("%Y-%m-%dT%TZ")
         h["group_avatar_url_sdk"] = ""
 
         # only use avatar from SDK if it's a group chat (because latest group avatar is only in SDK [client only update group avatar in SDK])
@@ -195,6 +242,10 @@ class ChatRoom < ActiveRecord::Base
     end
 
     return h
+  end
+
+  def as_channel_json
+    h = as_json
   end
 
   # Updating all chat room name in SDK to chat room in backend.
@@ -327,6 +378,72 @@ class ChatRoom < ActiveRecord::Base
 
     puts "Single chat room which contains only one user : #{single_chat_user}"
     puts "Total : #{single_chat_user.count}"
+  end
+
+  def self.remove_participant_from_groups(user)
+    # step 1
+    user_groups = user.chat_rooms.where(is_group_chat: true)
+    # step 2
+    if user_groups
+      qiscus_room_ids = user_groups.pluck(:qiscus_room_id)
+      application_id = user.application_id
+      qiscus_email = user.qiscus_email
+
+      user_groups.each do |group|
+        chat_users = group.chat_users
+        current_chat_user = chat_users.find_by(user_id: user.id)
+
+        # step 3
+        if chat_users.count <= 1
+          # step 4
+          current_chat_user.destroy
+        else
+          # step 5
+          total_admin = chat_users.where(is_group_admin: true).count
+
+          # step 6
+          if total_admin > 1
+            current_chat_user.destroy
+          else
+            # step 7
+            if !current_chat_user.is_group_admin
+              # step 8
+              current_chat_user.destroy
+            else
+              # step 9
+              other_first_user = chat_users.where.not(user_id: user.id).first
+              other_first_user.update_attribute(:is_group_admin, true)
+              current_chat_user.destroy
+            end
+          end
+
+          if group.user_id == user.id
+            # fetch user that is not == group creator id
+            # and user must be admin
+            will_be_creator = chat_users.where.not(user_id: group.user_id)
+            will_be_creator = will_be_creator.where(is_group_admin: true).first
+            group.update_attribute(:user_id, will_be_creator.user_id)
+          end
+
+          if group.target_user_id == user.id
+            will_be_target = chat_users.where.not(user_id: group.target_user_id).first
+            group.update_attribute(:target_user_id, will_be_target.user_id)
+          end
+        end
+      end
+
+      RemoveGroupParticipantsJob.perform_later(application_id, qiscus_room_ids, qiscus_email)
+
+      success = "success removing user from group"
+      error = nil
+
+      return success, error
+    raise Exception => e
+      success = nil
+      error = e.message
+
+      return success, error
+    end
   end
 
 end

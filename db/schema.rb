@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180904025149) do
+ActiveRecord::Schema.define(version: 20190619044406) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,17 @@ ActiveRecord::Schema.define(version: 20180904025149) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "bots", force: :cascade do |t|
+    t.string "username", null: false
+    t.string "password_digest", null: false
+    t.string "description"
+    t.integer "user_id", null: false, comment: "detail of bot"
+    t.integer "user_id_creator", null: false, comment: "bot creator"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["username"], name: "index_bots_on_username", unique: true
+  end
+
   create_table "broadcast_messages", force: :cascade do |t|
     t.text "message"
     t.integer "user_id", null: false
@@ -114,6 +125,7 @@ ActiveRecord::Schema.define(version: 20180904025149) do
     t.integer "target_user_id", default: 0
     t.boolean "is_public_chat", default: false, null: false
     t.boolean "is_channel", default: false
+    t.integer "chat_users_count", default: 0
     t.index ["qiscus_room_id", "application_id"], name: "index_chat_rooms_on_qiscus_room_id_and_application_id", unique: true
   end
 
@@ -156,6 +168,8 @@ ActiveRecord::Schema.define(version: 20180904025149) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_favored", default: false, null: false
+    t.string "contact_name"
+    t.boolean "is_active", default: true
     t.index ["user_id", "contact_id"], name: "index_contacts_on_user_id_and_contact_id", unique: true
   end
 
@@ -348,6 +362,8 @@ ActiveRecord::Schema.define(version: 20180904025149) do
 
   add_foreign_key "announcements", "applications", on_update: :cascade, on_delete: :cascade
   add_foreign_key "auth_sessions", "users", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "bots", "users", column: "user_id_creator", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "bots", "users", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_messages", "applications", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_messages", "users", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_receipt_histories", "broadcast_messages", on_update: :cascade, on_delete: :cascade

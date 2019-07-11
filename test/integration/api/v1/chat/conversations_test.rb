@@ -162,7 +162,7 @@ class API::V1::Chat::ConversationsTest < ActionDispatch::IntegrationTest
     # assert_equal  'Qiscus room id can not be blank.', response_data['error']['message']
   end
 
-  test "user1 create channel with valid target_user_id" do
+  test "user1 create channel only get admins" do
     session = auth_sessions(:user1_session1)
     user1 = users(:user1)
     user2 = users(:user2)
@@ -179,9 +179,9 @@ class API::V1::Chat::ConversationsTest < ActionDispatch::IntegrationTest
       headers: { 'Authorization' => token_header(session.jwt_token) }
 
     response_data = JSON.parse(response.body)
-
+    
     assert_equal user1.fullname, response_data['data']['creator']['fullname'] # ensure creator user
-    assert_equal user2.fullname, response_data['data']['users'][1]['fullname'] # ensure target user
+    assert_equal user1.fullname, response_data['data']['admins'][0]['fullname'] # ensure admin user
 
     # Ensure that user1, user2, and user3 are participants
     get '/api/v1/chat/conversations/456/participants',
@@ -192,6 +192,7 @@ class API::V1::Chat::ConversationsTest < ActionDispatch::IntegrationTest
     assert_equal user1.fullname, response_data['data'][0]['fullname']
     assert_equal user2.fullname, response_data['data'][1]['fullname']
     assert_equal user3.fullname, response_data['data'][2]['fullname']
+    
   end
 
 end

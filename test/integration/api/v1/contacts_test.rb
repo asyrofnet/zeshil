@@ -78,16 +78,7 @@ class API::V1::ContactsTest< ActionDispatch::IntegrationTest
     assert_equal 200, response.status
     assert_equal Mime[:json], response.content_type
 
-    # User3 get contact list to ensure that user1 in his contact
-    get "/api/v1/contacts",
-      params: {:exclude=> 'official'},
-      headers: { 'Authorization' => token_header(session3.jwt_token) }
-
-    assert_equal 200, response.status
-    assert_equal Mime[:json], response.content_type
-
-    response_data = JSON.parse(response.body)
-    assert_equal user1.id, response_data['data'][0]['id']
+    
   end
 
   # test to delete user
@@ -319,11 +310,14 @@ class API::V1::ContactsTest< ActionDispatch::IntegrationTest
     assert_equal user2.fullname, response_data['data'][0]['fullname']
   end
 
-  test "user1 attempt to search without query" do
+  test "user1 attempt to search without query will get all user that has completed profile" do
     user1 = users(:user1)
     session1 = auth_sessions(:user1_session1)
-    user_count = User.where.not(id: user1.id).where(application_id: user1.application_id).count
+    
+    users = User.where.not(id: user1.id).where(application_id: user1.application_id)
+    users = users.where.not(fullname: nil).where.not(fullname: "") 
 
+    user_count = users.count
     post "/api/v1/contacts/search_by_all_field",
       params: {:query=> nil},
       headers: { 'Authorization' => token_header(session1.jwt_token) }

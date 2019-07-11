@@ -4,7 +4,7 @@ class ChatUser < ActiveRecord::Base
 
   # Relation info
   belongs_to :user
-  belongs_to :chat_room
+  belongs_to :chat_room, :counter_cache => true
 
   default_scope { joins(:user)}
 
@@ -13,7 +13,9 @@ class ChatUser < ActiveRecord::Base
   # after save hooks will called both when Creating or Updating an Object
   # This should update cache after user removed or added to a chat room
   after_save :update_redis_cache
+  after_create :update_owner_subscriber_count
   after_destroy :update_redis_cache
+  after_destroy :update_owner_subscriber_count
   after_destroy :delete_customized_chat_rooms
 
   # Delete and update redis cache for conversation list to make all data sync after update
@@ -23,6 +25,15 @@ class ChatUser < ActiveRecord::Base
     user_ids = user_ids << user_id 
 
     ChatRoomHelper.reset_chat_room_cache_for_users(user_ids)
+  end
+
+  def update_owner_subscriber_count
+     owner = chat_room.user
+     
+     if chat_room.is_channel
+       subscriber_count = chat_room.chat_users_count.to_s
+       UserAdditionalInfo.create_or_update_user_additional_info([owner.id], UserAdditionalInfo::SUBSCRIBER_KEY, subscriber_count)
+     end
   end
 
   # For initialization, assign all group participants as group admin

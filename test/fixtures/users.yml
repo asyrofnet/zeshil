@@ -16,6 +16,22 @@ user1:
   qiscus_email: 'userid_1_6285643882066@qisme.com'
   description: 'Hello World!'
 
+useroa1:
+  id: 11
+  phone_number: '+62856438820665'
+  passcode: '1234'
+  fullname: 'Herua'
+  email: 'herua@gmail.com'
+  gender: 'male'
+  date_of_birth: '1994-07-01'
+  avatar_url: 'https://res.cloudinary.com/qiscus/image/upload/NITXR7pLhz/avatar1.jpg'
+  application_id: '1'
+  is_public: 'false'
+  verification_attempts: '0'
+  qiscus_token: 'IaF7RqdC5xj96lfO8umL'
+  qiscus_email: 'userid_1oa_6285643882066@qisme.com'
+  description: 'Hello World!'  
+
 user2:
   id: 2
   phone_number: '+6285643123456'
@@ -63,3 +79,19 @@ user4:
   qiscus_token: 'IaF7RqdC5xj96lfO8umL'
   qiscus_email: 'userid_4_6285643123456@qisme.com'
   description: 'User 4 Description' 
+
+user99:
+  id: 99
+  phone_number: '+628681234567913'
+  passcode: null
+  fullname: null
+  email: 'user5@gmail.com'
+  gender: 'male'
+  date_of_birth: '1991-07-01'
+  avatar_url: null
+  application_id: '1'
+  is_public: 'false'
+  verification_attempts: '0'
+  qiscus_token: 'IaF7RqdC5xj96lfO8umL'
+  qiscus_email: 'userid_99_6285643123456@qisme.com'
+  description: 'User 99 Description' 

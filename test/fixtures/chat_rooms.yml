@@ -23,3 +23,16 @@ user2_chatroom200:
   group_avatar_url: ''
   is_official_chat: false
   target_user_id: 3
+
+useroa1_channel:
+  id: 99
+  qiscus_room_name: 'Channel 1'
+  qiscus_room_id: 99
+  is_group_chat: true
+  is_channel: true
+  user_id: 11
+  group_chat_name: 'Chat Room 2'
+  application_id: 1
+  group_avatar_url: ''
+  is_official_chat: false
+  target_user_id: 11

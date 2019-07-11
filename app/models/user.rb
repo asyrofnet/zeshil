@@ -48,6 +48,7 @@ class User < ActiveRecord::Base
   has_many :call_logs
 
   has_one :user_dedicated_passcodes
+  has_one :bot
 
   # Hooks
   before_validation :strip_spaces
@@ -78,9 +79,33 @@ class User < ActiveRecord::Base
     self.roles.pluck(:name).include?('Helpdesk')
   end
 
+  def self.find_bot_id
+    bot = Role.where(name: "Bot").first
+    if bot.nil?
+      bot_id = nil
+    else
+      bot_id = bot.id
+    end
+    return bot_id
+  end
+
+  def self.find_user_bot(user_ids, bot_id)
+    user_bot = UserRole.where(user_id: user_ids, role_id: bot_id)
+    if !user_bot.nil?
+      user_bot = user_bot.pluck(:user_id)
+    else
+      user_bot = []
+    end
+    return user_bot
+  end
+
+  def is_bot
+    self.roles.pluck(:name).include?('Bot')
+  end
+
   def additional_infos
     additional_infos = Hash.new
-    user_additional_infos.each do | user_additional_info |
+    self.user_additional_infos.each do | user_additional_info |
       additional_infos[user_additional_info.key] = user_additional_info.value
     end
     return additional_infos
@@ -164,6 +189,8 @@ class User < ActiveRecord::Base
 
   # json manipulation
   def as_json(options={})
+    the_infos = additional_infos
+    is_channel = additional_infos[UserAdditionalInfo::IS_CHANNEL_KEY] == "true"
     h = super(
       # :include => [
       #   {
@@ -177,9 +204,10 @@ class User < ActiveRecord::Base
       #   }
       # ],
       :except => [:passcode, :application_id, :qiscus_token, :lock_version],
-      :methods => [ :is_admin, :is_official, :additional_infos ]
+      :methods => [ :is_admin, :is_official, :is_bot, :additional_infos ],
+      
     )
-
+    h[UserAdditionalInfo::IS_CHANNEL_KEY] = is_channel
     # Overwrite json if has key webhook. This json use only in webhook payload
     if options.has_key?(:webhook)
       h = super(
@@ -188,7 +216,7 @@ class User < ActiveRecord::Base
     elsif options.has_key?(:job)
       h = super(
         :except => [:passcode, :application_id, :qiscus_token, :lock_version, :updated_at, :created_at],
-        :methods => [ :is_admin, :is_official, :additional_infos ]
+        :methods => [ :is_admin, :is_official, :is_bot, :additional_infos ]
        )
       h["created_at"] = created_at.iso8601.to_s
       h["updated_at"] = updated_at.iso8601.to_s
@@ -394,10 +422,6 @@ class User < ActiveRecord::Base
     else
       raise Exception.new("Already restored")
     end
-  end
-
-  def delete
-    self.destroy
   end
 
 end

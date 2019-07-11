@@ -310,6 +310,8 @@ Rails.application.routes.draw do
           post :search_by_qiscus_email, on: :collection
           post :search_by_email, on: :collection
           post :search_by_all_field, on: :collection
+          post :search_bot, on: :collection
+          post :bot, on: :collection
         end
 
         scope module: :contacts, path: '/contacts' do
@@ -355,6 +357,9 @@ Rails.application.routes.draw do
 
         scope module: :webhooks, path: '/webhooks' do
           post '/bot-callback/:app_id', to: 'bot_callback#create'
+          resources :bot_builder, only: [] do
+            post :handler, on: :collection
+          end
         end
 
         resources :posts, only: [:index, :create, :destroy, :show, :update]
@@ -396,7 +401,27 @@ Rails.application.routes.draw do
         end
 
         resources :users, only: [:index, :show]
-
+      end
+      scope module: :v2, path: '/v2' do
+        scope module: :chat, path: '/chat' do
+          resources :auto_responder, only: [:create,:update] do
+            post :trigger, on: :collection
+            post :delete, on: :collection
+          end
+          post '/send_broadcast', to: 'broadcast#send_broadcast'
+        end
+        resources :channel, only: [:show] do
+          get :username_to_room_id, on: :collection
+        end
+        
+        scope module: :contacts, path: '/contacts' do
+          resources :sync, only: [:create]
+        end
+        resources :contacts, only: [:index] do
+          post :add_or_update, on: :collection
+          post :remove, on: :collection
+          get :discover, on: :collection
+        end
       end
     end
   end

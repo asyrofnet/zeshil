@@ -133,6 +133,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 group :test do
   # Mocha is mocking library that works well with minitest
   gem 'mocha'
+  #Gem to check test coverage
+  gem 'simplecov', require: false
 
   # help to kill N+1 queries and unused eager loading
   gem 'bullet'
