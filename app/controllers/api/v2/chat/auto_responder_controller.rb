@@ -14,6 +14,9 @@ class Api::V2::Chat::AutoResponderController < ProtectedController
     # =end
     def create
       begin
+        if !@current_user.is_official
+          raise Exception.new("Only Official can update auto responder")
+        end
         auto_responder = params[:auto_responder]
         auto_starter = params[:auto_starter]
         

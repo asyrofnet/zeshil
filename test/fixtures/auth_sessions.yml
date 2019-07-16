@@ -14,3 +14,8 @@ user3_session3:
   id: 3
   user_id: 3
   jwt_token: <%= JWT.encode({user_id: 3, timestamp: Time.now}, ENV['JWT_KEY'], 'HS256') %>
+
+useroa_sessionoa:
+  id: 4
+  user_id: 11
+  jwt_token: <%= JWT.encode({user_id: 11, timestamp: Time.now}, ENV['JWT_KEY'], 'HS256') %>

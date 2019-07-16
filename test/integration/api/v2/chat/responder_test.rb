@@ -3,6 +3,94 @@ require 'test_helper'
 class API::V2::Chat::ResponderTest< ActionDispatch::IntegrationTest
   setup { host! 'api.example.com' }
 
+
+  test "Official Account can update auto responder and starter" do
+    useroa1 = users(:useroa1)
+    auto_responder = "Hello this is respond"
+    auto_starter = "Hello this is starter"
+    session_oa = auth_sessions(:useroa_sessionoa)
+    post "/api/v2/chat/auto_responder/",
+      params: {:auto_responder => auto_responder, :auto_starter => auto_starter },
+      headers: { 'Authorization' => token_header(session_oa.jwt_token) }
+      
+    assert_equal 200, response.status
+    assert_equal Mime[:json], response.content_type
+    
+    response_data = JSON.parse(response.body)
+    #assert DB updated
+    assert_equal useroa1.reload.user_additional_infos.find_by(key: UserAdditionalInfo::AUTO_RESPONDER_KEY).value, auto_responder
+    assert_equal useroa1.reload.user_additional_infos.find_by(key: UserAdditionalInfo::AUTO_STARTER_KEY).value, auto_starter
+    response_data = JSON.parse(response.body)
+    auto_responder_data = useroa1.user_additional_infos.where(key: [UserAdditionalInfo::AUTO_RESPONDER_KEY,UserAdditionalInfo::AUTO_STARTER_KEY])
+    #assert data is the same
+    assert_equal 2, response_data["data"].length
+    assert_equal auto_responder_data.to_json, response_data["data"].to_json
+  end
+
+  test "Official Account can update only auto responder" do
+    useroa1 = users(:useroa1)
+    auto_responder = "Hello this is respond"
+    auto_starter = "Hello this is starter"
+    session_oa = auth_sessions(:useroa_sessionoa)
+    post "/api/v2/chat/auto_responder/",
+      params: {:auto_responder => auto_responder, },
+      headers: { 'Authorization' => token_header(session_oa.jwt_token) }
+      
+    assert_equal 200, response.status
+    assert_equal Mime[:json], response.content_type
+    
+    response_data = JSON.parse(response.body)
+    #assert DB updated
+    assert_equal useroa1.reload.user_additional_infos.find_by(key: UserAdditionalInfo::AUTO_RESPONDER_KEY).value, auto_responder
+    assert_nil useroa1.reload.user_additional_infos.find_by(key: UserAdditionalInfo::AUTO_STARTER_KEY)
+    response_data = JSON.parse(response.body)
+    auto_responder_data = useroa1.user_additional_infos.where(key: [UserAdditionalInfo::AUTO_RESPONDER_KEY,UserAdditionalInfo::AUTO_STARTER_KEY])
+    #assert data is the same
+    assert_equal 1, response_data["data"].length
+    assert_equal auto_responder_data.to_json, response_data["data"].to_json
+  end
+
+  test "Official Account can update only auto starter" do
+    useroa1 = users(:useroa1)
+    useroa1.reload.user_additional_infos.find_by(key: UserAdditionalInfo::AUTO_RESPONDER_KEY).destroy
+    auto_responder = "Hello this is respond"
+    auto_starter = "Hello this is starter"
+    session_oa = auth_sessions(:useroa_sessionoa)
+    post "/api/v2/chat/auto_responder/",
+      params: {:auto_starter => auto_starter, },
+      headers: { 'Authorization' => token_header(session_oa.jwt_token) }
+      
+    assert_equal 200, response.status
+    assert_equal Mime[:json], response.content_type
+    
+    response_data = JSON.parse(response.body)
+    #assert DB updated
+    assert_nil useroa1.reload.user_additional_infos.find_by(key: UserAdditionalInfo::AUTO_RESPONDER_KEY)
+    assert_equal useroa1.reload.user_additional_infos.find_by(key: UserAdditionalInfo::AUTO_STARTER_KEY).value, auto_starter
+    response_data = JSON.parse(response.body)
+    auto_responder_data = useroa1.user_additional_infos.where(key: [UserAdditionalInfo::AUTO_RESPONDER_KEY,UserAdditionalInfo::AUTO_STARTER_KEY])
+    #assert data is the same
+    assert_equal 1, response_data["data"].length
+    assert_equal auto_responder_data.to_json, response_data["data"].to_json
+  end
+
+  test "non Official Account cannot update auto responder" do
+    useroa1 = users(:user1)
+    auto_responder = "Hello this is respond"
+    auto_starter = "Hello this is starter"
+    session_1 = auth_sessions(:user1_session1)
+    post "/api/v2/chat/auto_responder/",
+      params: {:auto_responder => auto_responder, :auto_starter => auto_starter },
+      headers: { 'Authorization' => token_header(session_1.jwt_token) }
+      
+    assert_equal 422, response.status
+    assert_equal Mime[:json], response.content_type
+    
+    response_data = JSON.parse(response.body)
+    assert_equal "Only Official can update auto responder", response_data['error']['message']
+    
+  end
+
   test "user1 attempt to trigger auto responder" do
     #Make sure official have auto responder
     
@@ -51,10 +139,21 @@ test "status fail if no responder" do
 end
 
 
-  test "unauthorized will get error" do
-    user3 = users(:user3)
-    contact = [ {contact_name:"random",phone_number:user3.phone_number} ]
+  test "unauthorized trigger will get error" do
     post "/api/v2/chat/auto_responder/trigger",
+      params: {},
+      headers: { 'Authorization' => nil }
+
+    assert_equal 401, response.status
+    assert_equal Mime[:json], response.content_type
+
+    response_data = JSON.parse(response.body)
+    assert_equal 'Unauthorized Access', response_data['error']['message']
+
+  end
+
+  test "unauthorized update will get error" do
+    post "/api/v2/chat/auto_responder/",
       params: {},
       headers: { 'Authorization' => nil }
 
