@@ -148,7 +148,7 @@ class Api::V2::Chat::AutoResponderController < ProtectedController
         official = User.find(params[:official_id])
         qiscus_token = official.qiscus_token
         application = @current_user.application
-        additional_info = UserAdditionalInfo.where(key: UserAdditionalInfo::AUTO_RESPONDER_KEY).first
+        additional_info = official.user_additional_infos.find_by(key: UserAdditionalInfo::AUTO_RESPONDER_KEY)
         
         if additional_info.nil? || !additional_info.value.present?
           comments = "No Auto Responder Found"

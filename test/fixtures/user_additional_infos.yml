@@ -5,4 +5,7 @@ useroa_username:
   key: "username"
   value: "channel"
 
-
+useroa_responder:
+  user_id: 11
+  key: "auto_responder"
+  value: "hello"
