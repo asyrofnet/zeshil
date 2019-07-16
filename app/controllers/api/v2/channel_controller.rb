@@ -94,13 +94,14 @@ class Api::V2::ChannelController < ProtectedController
           end
         end
       end
-
+      chat_room_json = chat_room.as_json
+      chat_room_json["has_joined"] = has_joined
       render json: {
         message: message,
         success: success,
         room_id: room_id,
         unique_id: unique_id,
-        chat_room: chat_room,
+        chat_room: chat_room_json,
         has_joined: has_joined
       }
 
