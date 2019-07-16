@@ -8,4 +8,9 @@ useroa_username:
 useroa_responder:
   user_id: 11
   key: "auto_responder"
-  value: "hello"
+  value: "hello auto responder"
+
+useroa_starter:
+  user_id: 11
+  key: "auto_starter"
+  value: "hello auto starter"
