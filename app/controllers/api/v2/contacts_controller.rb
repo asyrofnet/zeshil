@@ -326,11 +326,12 @@ class Api::V2::ContactsController < ProtectedController
           
           favored_status = @current_user.contacts.pluck(:contact_id, :is_favored)
           phone_book = @current_user.contacts.pluck(:contact_id, :contact_name)
+          contact_hash = phone_book.to_h
           contacts = contacts.map do |e|
             # is contact is always true since this will only load contact of this user
             is_contact = contact_id.include?(e["id"])
             is_favored = favored_status.to_h[ e["id"] ] == nil ? false : favored_status.to_h[ e["id"] ]
-            contact_name = phone_book.to_h[ e["id"] ]
+            contact_name = contact_hash[ e["id"] ]
             if contact_name.present?
               e.merge!("fullname" => contact_name )
             end
