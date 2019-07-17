@@ -233,11 +233,9 @@ class Api::V1::ContactsController < ProtectedController
           # is contact is always true since this will only load contact of this user
           is_contact = contact_id.include?(e["id"])
           is_favored = favored_status.to_h[ e["id"] ] == nil ? false : favored_status.to_h[ e["id"] ]
-          contact_name = phone_book.to_h[ e["id"] ]
-          if contact_name.present?
-            e.merge!("fullname" => contact_name )
-          end
-          e.merge!('is_favored' => is_favored, 'is_contact' => is_contact )
+          contact_hash = phone_book.to_h
+          contact_name = contact_hash [ e["id"] ] || e["fullname"]
+          e.merge!('is_favored' => is_favored, 'is_contact' => is_contact, "fullname" => contact_name )
           
         end
 

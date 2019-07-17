@@ -31,6 +31,7 @@ class API::V2::ChannelTest< ActionDispatch::IntegrationTest
     get "/api/v2/channel/username_to_room_id",
       params: {:username=> "random"},
       headers: { 'Authorization' => token_header(session1.jwt_token) }
+      
     assert_equal 200, response.status
     assert_equal Mime[:json], response.content_type
     
