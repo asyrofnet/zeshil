@@ -495,7 +495,7 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
 
       if message.nil?
         message = Bot.message("unknown")
-        if !exist_session["command"] == nil
+        if exist_session["command"].present?
           message = message+ ".\nanda sedang dalam proses "+ exist_session["command"]+".\nketik /batal untuk membatalkan proses"
         end
         type = "buttons"
