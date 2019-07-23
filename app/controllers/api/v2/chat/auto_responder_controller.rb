@@ -140,7 +140,7 @@ class Api::V2::Chat::AutoResponderController < ProtectedController
     #
     # @apiParam {String} access_token User access token
     # @apiParam {Integer} official_id the user ID of OA. use either this or official_qiscus_email
-    # @apiParam {Integer} official_qiscus_email the qiscus email of OA. use either this or official_id
+    # @apiParam {String} official_qiscus_email the qiscus email of OA. use either this or official_id
     # @apiParam {Integer} qiscus_room_id the qiscus room id
     # =end
     def trigger
