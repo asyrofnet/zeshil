@@ -73,6 +73,7 @@ class Api::V2::ChannelController < ProtectedController
       success = false
       has_joined = false
       message = "channel #{username} tidak ditemukan"
+      chat_room = nil
       additional_info = UserAdditionalInfo.where(key: UserAdditionalInfo::USERNAME_KEY, value: username).first
       if !additional_info.nil?
         user = additional_info.user
@@ -89,12 +90,14 @@ class Api::V2::ChannelController < ProtectedController
               unique_id = "#{app_id}##{qiscus_email}##{app_id}"
               room_id = chat_room.qiscus_room_id
               success = true
-              message = "channel #{username} ditemukan"              
+              message = "channel #{username} ditemukan"
+              chat_room_json = chat_room.as_json
+              chat_room_json["has_joined"] = has_joined            
             end
           end
         end
       end
-
+      
       render json: {
         message: message,
         success: success,

@@ -103,6 +103,20 @@ class User < ActiveRecord::Base
     self.roles.pluck(:name).include?('Bot')
   end
 
+  def auto_responder
+    auto = self.user_additional_infos.find_by(key: UserAdditionalInfo::AUTO_RESPONDER_KEY)
+    responder = ""
+    responder = auto.value if auto.present?
+    responder
+  end
+
+  def auto_starter
+    auto = self.user_additional_infos.find_by(key: UserAdditionalInfo::AUTO_STARTER_KEY)
+    starter = ""
+    starter = auto.value if auto.present?
+    starter
+  end
+
   def additional_infos
     additional_infos = Hash.new
     self.user_additional_infos.each do | user_additional_info |

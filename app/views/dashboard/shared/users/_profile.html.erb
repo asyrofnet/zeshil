@@ -76,12 +76,32 @@
   </div>
 </div>
 
+
+
+
+<% if @user.is_official%>
+<div class="form-group">
+  <div class="col-xs-6">
+    <label><h4>Auto Starter</h4> <small>Auto Starter on opening chat</small></label>
+    <textarea name="auto_starter" class="form-control"><%= @user.auto_starter %></textarea>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-xs-6">
+    <label><h4>Auto Responder</h4> <small>Auto Responder on opening chat</small></label>
+    <textarea name="auto_responder" class="form-control"><%= @user.auto_responder %></textarea>
+  </div>
+</div>
+<% end %>
+
 <div class="form-group">
   <div class="col-xs-6">
     <label><h4>User avatar <a href="<%= @user.avatar_url %>"><small>(current)</small></a></label>
     <input type="file" name="avatar_file"></input>
   </div>
 </div>
+
 <div class="form-group">
 <div class="col-xs-12">
     <br>

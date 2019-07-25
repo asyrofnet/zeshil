@@ -14,6 +14,9 @@ class Api::V2::Chat::AutoResponderController < ProtectedController
     # =end
     def create
       begin
+        if !@current_user.is_official
+          raise Exception.new("Only Official can update auto responder")
+        end
         auto_responder = params[:auto_responder]
         auto_starter = params[:auto_starter]
         
@@ -131,13 +134,14 @@ class Api::V2::Chat::AutoResponderController < ProtectedController
     # =begin
     # @apiVersion 2.0.0
     # @api {post} /api/v2/chat/auto_responder/trigger Trigger Auto Responder V2
-    # @apiDescription Send auto reply from OA
+    # @apiDescription Send auto reply from OA. use either official_id or official_qiscus_email
     # @apiName Trigger Auto Responder V2
     # @apiGroup Chat
     #
     # @apiParam {String} access_token User access token
-    # @apiParam {Integer} official_id the user ID of OA
-    # @apiParam {Integer} qiscus_room_id the qiscus room id 
+    # @apiParam {Integer} official_id the user ID of OA. use either this or official_qiscus_email
+    # @apiParam {String} official_qiscus_email the qiscus email of OA. use either this or official_id
+    # @apiParam {Integer} qiscus_room_id the qiscus room id
     # =end
     def trigger
       
@@ -145,10 +149,16 @@ class Api::V2::Chat::AutoResponderController < ProtectedController
       status = "fail"
         comments = nil
       ActiveRecord::Base.transaction do
-        official = User.find(params[:official_id])
+        official = nil
+        official_qiscus_email = params[:official_qiscus_email]
+        if official_qiscus_email.present?
+          official = User.find_by(qiscus_email: official_qiscus_email)
+        else    
+          official = User.find(params[:official_id])
+        end
         qiscus_token = official.qiscus_token
         application = @current_user.application
-        additional_info = UserAdditionalInfo.where(key: UserAdditionalInfo::AUTO_RESPONDER_KEY).first
+        additional_info = official.user_additional_infos.find_by(key: UserAdditionalInfo::AUTO_RESPONDER_KEY)
         
         if additional_info.nil? || !additional_info.value.present?
           comments = "No Auto Responder Found"
