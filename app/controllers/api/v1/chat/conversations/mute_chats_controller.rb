@@ -17,7 +17,7 @@ class Api::V1::Chat::Conversations::MuteChatsController < ProtectedController
       qiscus_room_id = params[:qiscus_room_id]
 
       if !qiscus_room_id.is_a?(Array)
-        raise StandardError.new("Qiscus room id must be an array of qiscus room id.")
+        raise InputError.new("Qiscus room id must be an array of qiscus room id.")
       end
 
       qiscus_room_ids = qiscus_room_id.to_a
@@ -25,7 +25,7 @@ class Api::V1::Chat::Conversations::MuteChatsController < ProtectedController
       # anticipate empty index of qiscus room id
       qiscus_room_ids.each do |id|
         if id.nil? || id == ""
-          raise StandardError.new("Qiscus room id must be present.")
+          raise InputError.new("Qiscus room id must be present.")
         end
       end
 
@@ -43,7 +43,7 @@ class Api::V1::Chat::Conversations::MuteChatsController < ProtectedController
         # chat room not found
         if qiscus_room_ids.size != qiscus_room_id_in_database.size
           qiscus_room_ids_not_found = qiscus_room_ids.map(&:to_i) - qiscus_room_id_in_database
-          raise StandardError.new("Chat room with qiscus_room_id #{qiscus_room_ids_not_found} not found.")
+          raise InputError.new("Chat room with qiscus_room_id #{qiscus_room_ids_not_found} not found.")
         end 
 
         # chat_room_id already in mute chat rooms
@@ -53,7 +53,7 @@ class Api::V1::Chat::Conversations::MuteChatsController < ProtectedController
         duplicat_chat_rooms = candidate_mute_chat_rooms_ids & already_been_in_mute_chat_rooms # duplicat chat rooms
         if !duplicat_chat_rooms.empty?
           qiscus_room_ids = ChatRoom.where("chat_rooms.id IN (?)", duplicat_chat_rooms).pluck(:qiscus_room_id)
-          raise StandardError.new("Chat room with qiscus_room_id #{qiscus_room_ids} already muted.")
+          raise InputError.new("Chat room with qiscus_room_id #{qiscus_room_ids} already muted.")
         end
 
 
@@ -131,13 +131,13 @@ class Api::V1::Chat::Conversations::MuteChatsController < ProtectedController
       qiscus_room_ids = qiscus_room_id.to_a
 
       if !qiscus_room_id.is_a?(Array)
-        raise StandardError.new("Qiscus room id must be an array of qiscus room id.")
+        raise InputError.new("Qiscus room id must be an array of qiscus room id.")
       end
 
       # anticipate empty index of qiscus room id
       qiscus_room_ids.each do |id|
         if id.nil? || id == ""
-          raise StandardError.new("Qiscus room id must be present.")
+          raise InputError.new("Qiscus room id must be present.")
         end
       end
 
@@ -150,7 +150,7 @@ class Api::V1::Chat::Conversations::MuteChatsController < ProtectedController
         qiscus_room_id_in_database = chat_rooms.pluck(:qiscus_room_id)
         if qiscus_room_ids.size != qiscus_room_id_in_database.size
           invalid_qiscus_room_ids = qiscus_room_ids.map(&:to_i) - qiscus_room_id_in_database
-          raise StandardError.new("Invalid chat room with qiscus_room_id #{invalid_qiscus_room_ids}.")
+          raise InputError.new("Invalid chat room with qiscus_room_id #{invalid_qiscus_room_ids}.")
         end
 
         # get all mute chat rooms
@@ -161,7 +161,7 @@ class Api::V1::Chat::Conversations::MuteChatsController < ProtectedController
         mute_chat_room_qiscus_room_ids = ChatRoom.where("chat_rooms.id IN (?)", mute_chat_rooms_ids).pluck(:qiscus_room_id)
         qiscus_room_ids_not_found = qiscus_room_ids.map(&:to_i) - mute_chat_room_qiscus_room_ids
         if !qiscus_room_ids_not_found.empty?
-          raise StandardError.new("Chat room with qiscus_room_id #{qiscus_room_ids_not_found} is not mute chats.")
+          raise InputError.new("Chat room with qiscus_room_id #{qiscus_room_ids_not_found} is not mute chats.")
         end
 
         mute_chat_rooms.destroy_all

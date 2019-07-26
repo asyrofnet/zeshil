@@ -44,15 +44,15 @@ class Api::V1::Admin::Utilities::MobileAppsVersionController < ProtectedControll
       apps = @current_user.application
 
       if params[:platform].nil? || !params[:platform].present? || params[:platform] == ""
-        raise StandardError.new("Please specify your platform name.")
+        raise InputError.new("Please specify your platform name.")
       else
         if params[:platform].downcase.delete(' ') != "android" && params[:platform].downcase.delete(' ') != "ios"
-          raise StandardError.new("Permitted platform is 'android' or 'ios'.")
+          raise InputError.new("Permitted platform is 'android' or 'ios'.")
         end
       end
 
       if params[:version].nil? || !params[:version].present? || params[:version] == ""
-        raise StandardError.new("Please specify your application version.")
+        raise InputError.new("Please specify your application version.")
       end
         
       app_version = MobileAppsVersion.find_by(application_id: apps.id, platform: params[:platform])

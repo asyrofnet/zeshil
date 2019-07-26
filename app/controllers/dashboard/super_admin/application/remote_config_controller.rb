@@ -21,7 +21,7 @@ class Dashboard::SuperAdmin::Application::RemoteConfigController < SuperAdminCon
   def create
     begin
       if params[:feature_id] == "" || params[:feature_name] == ""
-        raise StandardError.new("feature_id and feature_name can't be empty.")
+        raise InputError.new("feature_id and feature_name can't be empty.")
       end
 
       application = nil

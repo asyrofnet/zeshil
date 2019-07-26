@@ -87,7 +87,7 @@ class Api::V1::PostsController < ProtectedController
       if !params[:share_post_id].present? || params[:share_post_id].nil?
         # if user create a new post then content or media cannot be empty
         if !params[:content].present? && @media_params.empty?
-          raise StandardError.new("Post content or media cannot be empty.")
+          raise InputError.new("Post content or media cannot be empty.")
         end
       end
 
@@ -158,10 +158,10 @@ class Api::V1::PostsController < ProtectedController
               begin
                 link_meta = JSON.parse(params[:link_meta])
               rescue => e
-                raise StandardError.new('Link meta params is malformed JSON string.')
+                raise InputError.new('Link meta params is malformed JSON string.')
               end
             else
-              raise StandardError.new('Link meta params must be string.')
+              raise InputError.new('Link meta params must be string.')
             end
           end
 
@@ -230,7 +230,7 @@ class Api::V1::PostsController < ProtectedController
       post = Post.where(user_id: @current_user.id).where(id: params[:id]).first
 
       if post.nil?
-        raise StandardError.new("Post not found")
+        raise InputError.new("Post not found")
       end
 
       post.delete
@@ -269,17 +269,17 @@ class Api::V1::PostsController < ProtectedController
   def update
     begin
       if !params[:content].present? || params[:content] == ""
-        raise StandardError.new("Post content cannot be empty.")
+        raise InputError.new("Post content cannot be empty.")
       end
 
       post = Post.find(params[:id])
       if post.nil?
-        raise StandardError.new("Post not found.")
+        raise InputError.new("Post not found.")
       end
 
       # only post owner that can update post
       if post.user_id != @current_user.id
-        raise StandardError.new("Only post owner that can update post.")
+        raise InputError.new("Only post owner that can update post.")
       end
 
       ActiveRecord::Base.transaction do
@@ -348,7 +348,7 @@ class Api::V1::PostsController < ProtectedController
       post = Post.find(params[:id])
 
       if post.nil?
-        raise StandardError.new('Post not found.')
+        raise InputError.new('Post not found.')
       end
 
       post_history = post.post_history.order(created_at: :desc)

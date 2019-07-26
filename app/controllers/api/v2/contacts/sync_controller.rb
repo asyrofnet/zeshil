@@ -166,7 +166,7 @@ class Api::V2::Contacts::SyncController < ProtectedController
                       phone_numbers: phone_numbers
           }
         else
-          raise StandardError.new("Contact must be an array of object.")
+          raise InputError.new("Contact must be an array of object.")
         end
   
       rescue ActiveRecord::RecordInvalid => e

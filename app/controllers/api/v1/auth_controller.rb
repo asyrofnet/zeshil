@@ -42,10 +42,10 @@ class Api::V1::AuthController < ApplicationController
           # phone_number = PhonyRails.normalize_number(phone_number, default_country_code: 'ID')
 
           if phone_number == ""
-            raise StandardError.new('Phone number is empty.')
+            raise InputError.new('Phone number is empty.')
           end
         else
-          raise StandardError.new('Phone number is empty.')
+          raise InputError.new('Phone number is empty.')
         end
         user = User.find_by(phone_number: phone_number, application_id: application.id)
 

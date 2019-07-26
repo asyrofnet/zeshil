@@ -155,7 +155,7 @@ class Api::V1::Contacts::SyncController < ProtectedController
 					phone_numbers: phone_numbers
         }
       else
-        raise StandardError.new("Phone number must be an array.")
+        raise InputError.new("Phone number must be an array.")
       end
 
     rescue ActiveRecord::RecordInvalid => e

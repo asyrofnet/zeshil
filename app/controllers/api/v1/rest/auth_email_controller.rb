@@ -43,29 +43,29 @@ class Api::V1::Rest::AuthEmailController < ApplicationController
           email = email.strip().delete(' ')
 
           if email == ""
-            raise StandardError.new('Email is empty.')
+            raise InputError.new('Email is empty.')
           end
         else
-          raise StandardError.new('Email is empty.')
+          raise InputError.new('Email is empty.')
         end
 
         # fullname
         fullname = params[:user][:name]
         if fullname.nil? || fullname == ""
-          raise StandardError.new('Name is empty.')
+          raise InputError.new('Name is empty.')
         end
 
         # phone number
         phone_number = params[:user][:phone_number]
         # if phone_number.nil? || phone_number == ""
-        #   raise StandardError.new('Phone number is empty.')
+        #   raise InputError.new('Phone number is empty.')
         # end
         phone_number = phone_number.strip().delete(' ')
 
         # is_official
         is_official = params[:user][:is_official]
         if is_official.nil? || is_official == ""
-          raise StandardError.new('Is_official is empty.')
+          raise InputError.new('Is_official is empty.')
         end
 
         # avatar_url is optional

@@ -19,18 +19,18 @@ class Dashboard::SuperAdmin::Application::FeatureFlagController < SuperAdminCont
   def create
     begin
       if params[:target_user_id] == "" || params[:target_user_id].nil?
-        raise StandardError.new("target_user_id can't be empty.")
+        raise InputError.new("target_user_id can't be empty.")
       end
 
       if params[:feature_action] == "" || params[:feature_action].nil? 
-        raise StandardError.new("Action and can't be empty.")
+        raise InputError.new("Action and can't be empty.")
       end
 
       string_target_user_id = params[:target_user_id]
       target_user_ids = string_target_user_id.split(",") # Split params target_user_id and convert it to array
 
       if !target_user_ids.is_a?(Array)
-        raise StandardError.new("Target user id must be an array of user id.")
+        raise InputError.new("Target user id must be an array of user id.")
       end
 
       user_params = params.permit!

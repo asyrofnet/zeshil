@@ -69,7 +69,7 @@ class Api::V1::Admin::ApplicationsController < ProtectedController
   def create
     begin
       if params[:app_id] == "" || params[:app_name] == "" || params[:qiscus_sdk_secret] == ""
-        raise StandardError.new("app_id and app_name can't be empty.")
+        raise InputError.new("app_id and app_name can't be empty.")
       end
 
       application = nil
@@ -239,7 +239,7 @@ class Api::V1::Admin::ApplicationsController < ProtectedController
     application = Application.find(params[:id])
 
     if application.nil?
-      raise StandardError.new("Application not found.")
+      raise InputError.new("Application not found.")
     end
 
     users = application.users

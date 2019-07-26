@@ -25,7 +25,7 @@ class Api::V1::Admin::ChatRooms::ParticipantsController < ProtectedController
         chat_room = ChatRoom.find(params[:chatroom_id])
 
         if !chat_room.is_group_chat
-          raise StandardError.new("This is not group chat. You can't add another participants.")
+          raise InputError.new("This is not group chat. You can't add another participants.")
         end
 
         if params[:user_id].kind_of?(Array) && params[:user_id].present?
@@ -66,7 +66,7 @@ class Api::V1::Admin::ChatRooms::ParticipantsController < ProtectedController
         chat_room = ChatRoom.find(params[:chatroom_id])
 
         if !chat_room.is_group_chat
-          raise StandardError.new("This is not group chat. You can't remove participants.")
+          raise InputError.new("This is not group chat. You can't remove participants.")
         end
 
         if params[:user_id].kind_of?(Array) && params[:user_id].present?

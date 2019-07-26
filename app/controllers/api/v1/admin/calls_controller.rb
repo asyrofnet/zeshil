@@ -27,7 +27,7 @@ class Api::V1::Admin::CallsController < ProtectedController
         user = User.find_by(id: params[:user_id], application_id: @current_user.application_id)
 
         if user.nil?
-          raise StandardError.new("User not found.")
+          raise InputError.new("User not found.")
         end
 
         call_logs = CallLog.where(caller_user_id: user.id, application_id: @current_user.application_id)
@@ -52,7 +52,7 @@ class Api::V1::Admin::CallsController < ProtectedController
         call_logs = call_logs.where(caller_user_id: call_participant.id, callee_user_id: user.id, application_id: @current_user.application_id)
                     .or(call_logs.where(caller_user_id: user.id, callee_user_id: call_participant.id, application_id: @current_user.application_id))
       elsif params[:call_participant].present? && !params[:user_id].present?
-        raise StandardError.new("you can not get call history data based on the participant if the user parameter is empty.")
+        raise InputError.new("you can not get call history data based on the participant if the user parameter is empty.")
       end
 
       # update call duration and connected_at from call sdk

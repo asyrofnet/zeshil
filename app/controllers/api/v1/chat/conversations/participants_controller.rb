@@ -73,23 +73,23 @@ class Api::V1::Chat::Conversations::ParticipantsController < ProtectedController
         if !chat_room.is_channel
           total_participants = chat_room.users.count
           if total_participants > 100
-            raise StandardError.new("You cannot add more than 100 participants in group chat. Please use channel instead")
+            raise InputError.new("You cannot add more than 100 participants in group chat. Please use channel instead")
           end
         end
 
         user_ids_already_in_group = chat_room.users.pluck(:id).to_a
         if user_ids_already_in_group.include?(@current_user.id) == false
-          raise StandardError.new("You are not member of this group.")
+          raise InputError.new("You are not member of this group.")
         end
 
         # only admin can add group participants
         is_group_admin = ChatUser.find_by(chat_room_id: chat_room.id, user_id: @current_user.id, is_group_admin: true)
         if is_group_admin.nil?
-          raise StandardError.new("You are not admin of this group. Only admin can add group participants.")
+          raise InputError.new("You are not admin of this group. Only admin can add group participants.")
         end
 
         if !params[:user_id].present? && !params[:qiscus_email].present?
-          raise StandardError.new("Array of user id or qiscus email must be present.")
+          raise InputError.new("Array of user id or qiscus email must be present.")
         end
 
         if params[:user_id].kind_of?(Array) && params[:user_id].present?
@@ -227,18 +227,18 @@ class Api::V1::Chat::Conversations::ParticipantsController < ProtectedController
         chat_room = @chat_room
 
         if !params[:user_id].present? && !params[:qiscus_email].present?
-          raise StandardError.new("Array of user id or qiscus email must be present.")
+          raise InputError.new("Array of user id or qiscus email must be present.")
         end
 
         # only admin can delete group participants
         is_group_admin = ChatUser.find_by(chat_room_id: chat_room.id, user_id: @current_user.id, is_group_admin: true)
         if is_group_admin.nil?
-          raise StandardError.new("You are not admin of this group. Only admin can delete group participants.")
+          raise InputError.new("You are not admin of this group. Only admin can delete group participants.")
         end
 
         user_ids_already_in_group = chat_room.users.pluck(:id)
         if user_ids_already_in_group.to_a.include?(@current_user.id) == false
-          raise StandardError.new("You are not member of this group.")
+          raise InputError.new("You are not member of this group.")
         end
 
         if params[:user_id].kind_of?(Array) && params[:user_id].present?
@@ -379,14 +379,14 @@ class Api::V1::Chat::Conversations::ParticipantsController < ProtectedController
       chat_room = @chat_room
       ActiveRecord::Base.transaction do
         if !params[:qiscus_room_id].present?
-          raise StandardError.new("Qiscus room id must be present.")
+          raise InputError.new("Qiscus room id must be present.")
         end
 
 				application = @current_user.application
 
         user_ids_already_in_group = chat_room.users.pluck(:id)
         if user_ids_already_in_group.to_a.include?(@current_user.id) == false
-          raise StandardError.new("You are not member of this group.")
+          raise InputError.new("You are not member of this group.")
         end
 
         is_group_admin = ChatUser.find_by(chat_room_id: chat_room.id, user_id: @current_user.id, is_group_admin: true)
@@ -487,7 +487,7 @@ class Api::V1::Chat::Conversations::ParticipantsController < ProtectedController
           }, status: 401 and return
         else
           if !@chat_room.is_group_chat
-            raise StandardError.new("This is not group chat. You can't add/remove participants.")
+            raise InputError.new("This is not group chat. You can't add/remove participants.")
           end
         end
       else

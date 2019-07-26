@@ -59,7 +59,7 @@ class Api::V1::MeController < ProtectedController
         # before updating user's email or phone number, check if there are no another user
         # who have same email/phone number except current user
         if User.where.not(id: user.id).where(application_id: @current_user.application.id).exists?(phone_number: phone_number)
-          raise StandardError.new("Your submitted phone number already used by another user. Please use another phone number.")
+          raise InputError.new("Your submitted phone number already used by another user. Please use another phone number.")
         end
 
         user.phone_number = phone_number
@@ -73,7 +73,7 @@ class Api::V1::MeController < ProtectedController
         qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
         qiscus_token = qiscus_sdk.update_profile(user.qiscus_email, fullname)
       else
-        raise StandardError.new("Fullname minimum character is 4.")
+        raise InputError.new("Fullname minimum character is 4.")
       end
 
       email = user_params[:email]
@@ -81,7 +81,7 @@ class Api::V1::MeController < ProtectedController
         # before updating user's email or phone number, check if there are no another user
         # who have same email/phone number except current user
         if User.where.not(id: user.id).where(application_id: @current_user.application.id).exists?(email: email)
-          raise StandardError.new("Your submitted email already used by another user. Please use another email.")
+          raise InputError.new("Your submitted email already used by another user. Please use another email.")
         end
 
         user.email = (email.nil? || email == "") ? "" : email.strip().delete(' ')
@@ -232,7 +232,7 @@ class Api::V1::MeController < ProtectedController
       devicetoken = params[:devicetoken]
 
       if !devicetoken.present?
-        raise StandardError.new("User device token must be present.")
+        raise InputError.new("User device token must be present.")
       end
 
       session = AuthSession.find_by(jwt_token: @current_jwt_token, user_id: @current_user.id)
@@ -317,15 +317,15 @@ class Api::V1::MeController < ProtectedController
   def register_device_token
     begin
       if params[:user_type].nil? || !params[:user_type].present? || params[:user_type] == ""
-        raise StandardError.new("User type can't be empty.")
+        raise InputError.new("User type can't be empty.")
       else
         if params[:user_type].downcase.delete(' ') != "android" && params[:user_type].downcase.delete(' ') != "ios"
-          raise StandardError.new("Permitted user_type is 'android' or 'ios'.")
+          raise InputError.new("Permitted user_type is 'android' or 'ios'.")
         end
       end
 
       if params[:devicetoken].nil? || !params[:devicetoken].present? || params[:devicetoken] == ""
-        raise StandardError.new("Device token can't be empty. Your user_type is #{params[:user_type]}")
+        raise InputError.new("Device token can't be empty. Your user_type is #{params[:user_type]}")
       end
 
       userdevicetoken = UserDeviceToken.find_by(devicetoken: params[:devicetoken])
@@ -379,7 +379,7 @@ class Api::V1::MeController < ProtectedController
   def delete_device_token
     begin
       if params[:devicetoken].nil? || !params[:devicetoken].present? || params[:devicetoken] == ""
-        raise StandardError.new("Please specify your device token.")
+        raise InputError.new("Please specify your device token.")
       end
 
       userdevicetoken = UserDeviceToken.find_by(devicetoken: params[:devicetoken], user_id: @current_user.id)
@@ -387,7 +387,7 @@ class Api::V1::MeController < ProtectedController
       if !userdevicetoken.nil?
         userdevicetoken.destroy
       else
-        raise StandardError.new("User device token is not found.")
+        raise InputError.new("User device token is not found.")
       end
 
       render json: {
@@ -419,7 +419,7 @@ class Api::V1::MeController < ProtectedController
     begin
       nonce = params[:nonce]
       if nonce.nil? || !nonce.present? || nonce == ""
-        raise StandardError.new("Nonce can't be empty.")
+        raise InputError.new("Nonce can't be empty.")
       end
 
       user = @current_user

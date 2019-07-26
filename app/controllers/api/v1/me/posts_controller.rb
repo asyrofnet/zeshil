@@ -65,7 +65,7 @@ class Api::V1::Me::PostsController < ProtectedController
       post = Post.where(user_id: @current_user.id).where(id: params[:id]).first
 
       if post.nil?
-        raise StandardError.new("Post not found")
+        raise InputError.new("Post not found")
       end
 
       post.delete

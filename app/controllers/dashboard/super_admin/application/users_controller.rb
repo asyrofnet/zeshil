@@ -124,7 +124,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
         # before updating user's email or phone number, check if there are no another user
         # who have same email/phone number except current user
         if User.where.not(id: @user.id).where(application_id: @user.application.id).exists?(phone_number: phone_number)
-          raise StandardError.new("Your submitted phone number already used by another user. Please use another phone number.")
+          raise InputError.new("Your submitted phone number already used by another user. Please use another phone number.")
         end
 
         @user.phone_number = phone_number
@@ -140,7 +140,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
       country_code = user_params[:country_code]
       if country_code.present? && !country_code.nil? && country_code != ""
         if !@user.phone_number.include? country_code
-          raise StandardError.new("You have to include your validated country code at the beginning of your phone_number")
+          raise InputError.new("You have to include your validated country code at the beginning of your phone_number")
         else
           @user.country_code = country_code.strip().delete(' ')
         end
@@ -156,7 +156,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
         # before updating user's email or phone number, check if there are no another user
         # who have same email/phone number except current user
         if User.where.not(id: @user.id).where(application_id: @user.application.id).exists?(email: email)
-          raise StandardError.new("Your submitted email already used by another user. Please use another email.")
+          raise InputError.new("Your submitted email already used by another user. Please use another email.")
         end
 
         @user.email = (email.nil? || email == "") ? "" : email.strip().delete(' ')
@@ -203,7 +203,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
         application = ::Application.find(params[:application_id])
         if application.is_coaching_module_connected
           if role_ids.to_a.map(&:to_i).include? Role.official.id
-            raise StandardError.new("Access denied. Cannot add Official Account roles.")
+            raise InputError.new("Access denied. Cannot add Official Account roles.")
           end
         end
 
@@ -311,7 +311,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
         application = ::Application.find(params[:application_id])
         if application.is_coaching_module_connected
           if params[:user_roles].to_a.map(&:to_i).include? Role.official.id
-            raise StandardError.new("Access denied. Cannot add Official Account roles.")
+            raise InputError.new("Access denied. Cannot add Official Account roles.")
           end
         end
 
@@ -322,10 +322,10 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
           # phone_number = PhonyRails.normalize_number(phone_number, default_country_code: 'ID')
 
           if phone_number == ""
-            raise StandardError.new('Phone number is empty.')
+            raise InputError.new('Phone number is empty.')
           end
         else
-          raise StandardError.new('Phone number is empty.')
+          raise InputError.new('Phone number is empty.')
         end
         user = ::User.find_by(phone_number: phone_number, application_id: application.id)
 
@@ -349,7 +349,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
           country_code = params[:user][:country_code]
           if country_code.present?
             if !phone_number.include? country_code
-              raise StandardError.new("You have to include your validated country code at the beginning of your phone_number")
+              raise InputError.new("You have to include your validated country code at the beginning of your phone_number")
             else
               new_user_credential["country_code"] = country_code
             end
@@ -364,7 +364,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
           username_valid = UserAdditionalInfo.check_username(new_user_credential["username"])
           
           if (params[:user_roles] - official_role_id != params[:user_roles]) && (username_valid[:success] != true)
-            raise StandardError.new("username is invalid!")
+            raise InputError.new("username is invalid!")
           end
 
           user = User.new
@@ -382,7 +382,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
           user.country_code = new_user_credential["country_code"]
 
           if params[:user_roles].to_a.empty?
-            raise StandardError.new("You must select roles!")
+            raise InputError.new("You must select roles!")
           end
 
           user.roles = Role.where("id IN (?)", params[:user_roles].to_a)
@@ -421,7 +421,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
             user.update!(avatar_url: url)
           end
         else
-          raise StandardError.new('User with given phone number already exist.')
+          raise InputError.new('User with given phone number already exist.')
         end
 
         # here the user must already created, so we can add default contact (official user) here

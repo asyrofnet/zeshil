@@ -17,7 +17,7 @@ class Api::V1::Posts::LikesController < ProtectedController
       post = Post.find(params[:post_id])
 
       if post.nil?
-        raise StandardError.new('Post not found.')
+        raise InputError.new('Post not found.')
       end
 
       likes = post.likes.order(created_at: :asc)
@@ -60,13 +60,13 @@ class Api::V1::Posts::LikesController < ProtectedController
       post = Post.find_by(id: params[:post_id])
 
       if post.nil?
-        raise StandardError.new('Post not found.')
+        raise InputError.new('Post not found.')
       end
 
       like = Like.find_by(user_id: @current_user.id, post_id: params[:post_id])
 
       if !like.nil?
-        raise StandardError.new('You are already like this post.')
+        raise InputError.new('You are already like this post.')
       end
 
       like = Like.new
@@ -136,7 +136,7 @@ class Api::V1::Posts::LikesController < ProtectedController
       like = Like.find_by(post_id: params[:post_id], user_id: @current_user.id)
 
       if like.nil?
-        raise StandardError.new("You have not like this post yet.")
+        raise InputError.new("You have not like this post yet.")
       end
       
       like.delete

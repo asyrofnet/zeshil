@@ -66,7 +66,7 @@ class ApplicationController < ActionController::Base
         end
 
       rescue StandardError => error
-        raise StandardError.new(error.message)
+        raise InputError.new(error.message)
       end
 
     rescue StandardError => e
@@ -102,7 +102,6 @@ class ApplicationController < ActionController::Base
             email: user_qiscus_email, # the actor's email address, if available
             ip_address: request.ip # '127.0.0.1'
           )
-          puts "raven capture"
 
           Raven.capture_message("#{user_qiscus_email} #{error_message}",
             level: "error",

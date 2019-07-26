@@ -70,7 +70,7 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
       # this ensure the data still relevant in qisme
       app = Application.find_by(app_id: params[:app_id])
       if app.nil?
-        raise StandardError.new("Application id #{params[:app_id]} is not found.")
+        raise InputError.new("Application id #{params[:app_id]} is not found.")
       end
 
       from = User.find_by(qiscus_email: user[:email], application_id: app.id)
@@ -88,11 +88,11 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
 
       # if required payload is not present, then return error
       if from.nil?
-        raise StandardError.new("Sender is not found in database.")
+        raise InputError.new("Sender is not found in database.")
       end
 
       if participants.empty?
-        raise StandardError.new("Participant is empty.")
+        raise InputError.new("Participant is empty.")
       end
 
       if chat_room.nil?

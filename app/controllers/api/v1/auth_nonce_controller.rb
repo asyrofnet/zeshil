@@ -46,10 +46,10 @@ class Api::V1::AuthNonceController < ApplicationController
           # phone_number = PhonyRails.normalize_number(phone_number, default_country_code: 'ID')
 
           if phone_number == ""
-            raise StandardError.new('Phone number is empty.')
+            raise InputError.new('Phone number is empty.')
           end
         else
-          raise StandardError.new('Phone number is empty.')
+          raise InputError.new('Phone number is empty.')
         end
         user = User.find_by(phone_number: phone_number, application_id: application.id)
 
@@ -325,13 +325,13 @@ class Api::V1::AuthNonceController < ApplicationController
         # check empty passcode
         passcode = params[:user][:passcode]
         if passcode.nil? || passcode.blank?
-          raise StandardError.new('passcode cannot be empty.')
+          raise InputError.new('passcode cannot be empty.')
         end
 
         # check empty nonce
         nonce = params[:user][:nonce]
         if nonce.nil? || nonce.blank?
-          raise StandardError.new('nonce cannot be empty.')
+          raise InputError.new('nonce cannot be empty.')
         end
 
         user = User.find_by(phone_number: phone_number,

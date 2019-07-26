@@ -15,13 +15,13 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
     begin
       app_name = params[:app_name]
       if app_name == "" || app_name.nil?
-        raise StandardError.new("app_name can't be empty.")
+        raise InputError.new("app_name can't be empty.")
       end
 
       # check app_name character because qiscus sdk only allow app_name in alphabet
       is_all_alphabet = app_name[/[a-zA-Z ]+/] == app_name
       if is_all_alphabet == false
-        raise StandardError.new("app_name only alphabet are allowed.")
+        raise InputError.new("app_name only alphabet are allowed.")
       end
 
       # Create new app in Qiscus SDK using QIscus SDK Admin API
@@ -179,7 +179,7 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
       application = ::Application.find_by(id: params[:id])
 
       if application.nil?
-        raise StandardError.new("Not found application.")
+        raise InputError.new("Not found application.")
       end
 
       application.destroy
@@ -208,15 +208,15 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
       @application = ::Application.find(params[:id])
 
       if params[:platform].nil? || !params[:platform].present? || params[:platform] == ""
-        raise StandardError.new("Please specify your platform name.")
+        raise InputError.new("Please specify your platform name.")
       else
         if params[:platform].downcase.delete(' ') != "android" && params[:platform].downcase.delete(' ') != "ios"
-          raise StandardError.new("Permitted platform is 'android' or 'ios'.")
+          raise InputError.new("Permitted platform is 'android' or 'ios'.")
         end
       end
 
       if params[:version].nil? || !params[:version].present? || params[:version] == ""
-        raise StandardError.new("Please specify your application version.")
+        raise InputError.new("Please specify your application version.")
       end
 
       app_version = MobileAppsVersion.find_by(application_id: @application.id, platform: params[:platform])

@@ -42,7 +42,7 @@ class Dashboard::User::ProfileController < UserController
         # before updating user's email or phone number, check if there are no another user
         # who have same email/phone number except current user
         if User.where.not(id: @user.id).where(application_id: @user.application.id).exists?(phone_number: phone_number)
-          raise StandardError.new("Your submitted phone number already used by another user. Please use another phone number.")
+          raise InputError.new("Your submitted phone number already used by another user. Please use another phone number.")
         end
 
         @user.phone_number = phone_number
@@ -65,7 +65,7 @@ class Dashboard::User::ProfileController < UserController
         # before updating user's email or phone number, check if there are no another user
         # who have same email/phone number except current user
         if User.where.not(id: @user.id).where(application_id: @user.application.id).exists?(email: email)
-          raise StandardError.new("Your submitted email already used by another user. Please use another email.")
+          raise InputError.new("Your submitted email already used by another user. Please use another email.")
         end
 
         @user.email = (email.nil? || email == "") ? "" : email.strip().delete(' ')

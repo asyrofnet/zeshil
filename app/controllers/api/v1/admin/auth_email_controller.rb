@@ -23,10 +23,10 @@ class Api::V1::Admin::AuthEmailController < ApplicationController
           email = email.strip().delete(' ')
 
           if email == ""
-            raise StandardError.new('Email is empty.')
+            raise InputError.new('Email is empty.')
           end
         else
-          raise StandardError.new('Email is empty.')
+          raise InputError.new('Email is empty.')
         end
 
         user = User.find_by(email: email, application_id: application.id)

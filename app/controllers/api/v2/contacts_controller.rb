@@ -446,7 +446,7 @@ class Api::V2::ContactsController < ProtectedController
               }
           end
         else
-          raise StandardError.new("Contact must be an array of object.")
+          raise InputError.new("Contact must be an array of object.")
         end
 
       rescue ActiveRecord::RecordInvalid => e
@@ -542,7 +542,7 @@ class Api::V2::ContactsController < ProtectedController
               }
           end
         else
-          raise StandardError.new("phone_number must be an array of phone numbers.")
+          raise InputError.new("phone_number must be an array of phone numbers.")
         end
 
       rescue ActiveRecord::RecordInvalid => e

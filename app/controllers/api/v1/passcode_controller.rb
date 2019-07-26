@@ -38,17 +38,17 @@ class Api::V1::PasscodeController < ApplicationController
           phone_number = phone_number.strip().delete(' ')
 
           if phone_number == ""
-            raise StandardError.new('Phone number is empty.')
+            raise InputError.new('Phone number is empty.')
           end
         else
-          raise StandardError.new('Phone number is empty.')
+          raise InputError.new('Phone number is empty.')
         end
         user = User.find_by(phone_number: phone_number, application_id: application.id)
 
         passcode = nil
         # only generate passcode for existing user
         if user.nil?
-            raise StandardError.new('Cant find user.')
+            raise InputError.new('Cant find user.')
         else
           # if exist then just update passcode
           # for now, update passcode only when passcode field in database is nil

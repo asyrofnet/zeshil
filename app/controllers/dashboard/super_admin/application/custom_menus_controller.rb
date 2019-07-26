@@ -23,7 +23,7 @@ class Dashboard::SuperAdmin::Application::CustomMenusController < SuperAdminCont
   def create
     begin
       if params[:caption] == "" || params[:url] == ""
-        raise StandardError.new("caption and url can't be empty.")
+        raise InputError.new("caption and url can't be empty.")
       end
 
       application = nil

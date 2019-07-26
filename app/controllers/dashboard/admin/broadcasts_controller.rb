@@ -111,23 +111,23 @@ class Dashboard::Admin::BroadcastsController < AdminController
     begin
       sender_user_id = params[:sender_user_id]
       if sender_user_id == "" || sender_user_id.nil?
-        raise StandardError.new("Sender user can't be empty.")
+        raise InputError.new("Sender user can't be empty.")
       end
 
       message = params[:message]
       if message == "" || message.nil?
-        raise StandardError.new("Message can't be empty.")
+        raise InputError.new("Message can't be empty.")
       end
 
       target_user_ids = params[:target_user_ids]
       if target_user_ids == "" || target_user_ids.nil?
-        raise StandardError.new("Target user can't be empty.")
+        raise InputError.new("Target user can't be empty.")
       end
 
       target_user_ids = target_user_ids.split(",") # Split params target_user_id and convert it to array
 
       if !target_user_ids.is_a?(Array)
-        raise StandardError.new("Target user id must be an array of user id.")
+        raise InputError.new("Target user id must be an array of user id.")
       end
       target_user_ids.delete(sender_user_id) # ensure that sender user id not in target_user_ids
       target_user_ids.uniq

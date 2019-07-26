@@ -65,7 +65,7 @@ class Api::V1::Listeners::TelkomNewsBotProductionController < ApplicationControl
     def add_participants(url, jwt_token, qiscus_email)
       begin
         if !qiscus_email.kind_of?(Array) || qiscus_email.empty? || qiscus_email == ""
-          raise StandardError.new("Emails is not array or nil.")
+          raise InputError.new("Emails is not array or nil.")
         end
 
         params = {
@@ -108,7 +108,7 @@ class Api::V1::Listeners::TelkomNewsBotProductionController < ApplicationControl
     def remove_participants(url, jwt_token, qiscus_email)
       begin
         if !qiscus_email.kind_of?(Array) || qiscus_email.empty? || qiscus_email == ""
-          raise StandardError.new("Emails is not array or nil.")
+          raise InputError.new("Emails is not array or nil.")
         end
 
         params = {

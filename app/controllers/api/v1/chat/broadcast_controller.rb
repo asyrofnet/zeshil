@@ -17,15 +17,15 @@ class Api::V1::Chat::BroadcastController < ProtectedController
     begin
       qiscus_room_id = params[:qiscus_room_id]
       if qiscus_room_id.nil? || qiscus_room_id == ""
-        raise StandardError.new("Qiscus room id can not be blank.")
+        raise InputError.new("Qiscus room id can not be blank.")
       end
 
       status = params[:status]
       if status.nil? || !status.present? || status == ""
-        raise StandardError.new("Status can not be blank.")
+        raise InputError.new("Status can not be blank.")
       else
         if status.downcase.delete(' ') != "delivered" && status.downcase.delete(' ') != "read"
-          raise StandardError.new("Permitted status is 'delivered' or 'read'.")
+          raise InputError.new("Permitted status is 'delivered' or 'read'.")
         end
       end
 
@@ -33,7 +33,7 @@ class Api::V1::Chat::BroadcastController < ProtectedController
       ActiveRecord::Base.transaction do
         chat_room = ChatRoom.find_by(qiscus_room_id: qiscus_room_id)
         if chat_room.nil?
-          raise StandardError.new("Chat room not found. Please check qiscus_room_id value.")
+          raise InputError.new("Chat room not found. Please check qiscus_room_id value.")
         end
 
         # Search broadcast receipt histories

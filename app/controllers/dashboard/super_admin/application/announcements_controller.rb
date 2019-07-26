@@ -23,7 +23,7 @@ class Dashboard::SuperAdmin::Application::AnnouncementsController < SuperAdminCo
   def create
     begin
       if params[:text_content] == ""
-        raise StandardError.new("Text content can't be empty.")
+        raise InputError.new("Text content can't be empty.")
       end
 
       application = nil
