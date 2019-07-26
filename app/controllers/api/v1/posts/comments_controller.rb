@@ -50,7 +50,8 @@ class Api::V1::Posts::CommentsController < ProtectedController
       render json: {
         error: {
           message: e.message,
-          backtrace: e.backtrace
+          backtrace: e.backtrace,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -187,7 +188,8 @@ class Api::V1::Posts::CommentsController < ProtectedController
     rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -224,7 +226,8 @@ class Api::V1::Posts::CommentsController < ProtectedController
     rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

@@ -54,7 +54,8 @@ class Api::V1::Listeners::TelkomNewsBotProductionController < ApplicationControl
       render json: {
         error: {
           message: e.message,
-          backtrace: e.backtrace
+          backtrace: e.backtrace,
+          class: e.class.name
         }
       }, status: 422 and return
     end

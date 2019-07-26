@@ -84,7 +84,8 @@ class Api::V1::Chat::Conversations::GroupChatController < ProtectedController
       render json: {
         error: {
           message: e.message,
-          code: 105
+          code: 105,
+          class: e.class.name
         }
       }, status: 422
     end

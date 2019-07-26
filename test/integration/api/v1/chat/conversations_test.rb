@@ -63,9 +63,17 @@ class API::V1::Chat::ConversationsTest < ActionDispatch::IntegrationTest
     user1 = users(:user1)
     user2 = users(:user2)
 
+    response_mock = OpenStruct.new(
+    {
+      :name => "room_name",
+      :id => 123,
+      :topic_id => 123,
+      :is_group_chat => false
+    })
+
     # mock QiscusSdk#rest_get_or_create_room_with_target
     qiscus_sdk = mock('object')
-    qiscus_sdk.expects(:get_or_create_room_with_target_rest).returns([200, {}])
+    qiscus_sdk.expects(:get_or_create_room_with_target_rest).returns(response_mock)
     QiscusSdk.expects(:new).returns(qiscus_sdk)
 
     post '/api/v1/chat/conversations',
@@ -73,12 +81,11 @@ class API::V1::Chat::ConversationsTest < ActionDispatch::IntegrationTest
       headers: { 'Authorization' => token_header(session.jwt_token) }
 
     response_data = JSON.parse(response.body)
-
     # Ensure user1 is creator
-    # assert_equal  user1.fullname, response_data['data']['creator']['fullname']
+    assert_equal  user1.fullname, response_data['data']['creator']['fullname']
 
     # Ensure user2 is target
-    # assert_equal  user2.fullname, response_data['data']['target']['fullname']
+    assert_equal  user2.fullname, response_data['data']['target']['fullname']
   end
 
   test "user1 create group chat with target_user not in array" do

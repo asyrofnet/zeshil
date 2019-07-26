@@ -208,7 +208,8 @@ class Api::V1::AuthNonceController < ApplicationController
     rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -406,6 +407,7 @@ class Api::V1::AuthNonceController < ApplicationController
       render json: {
         error: {
           message: e.message,
+          class: e.class.name
           # backtrace: e.backtrace
         }
       }, status: 422 and return

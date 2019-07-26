@@ -209,7 +209,8 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
         error: {
           message: e.message,
           payload: params,
-          trace: e.backtrace
+          trace: e.backtrace,
+          class: e.class.name
         }
       }, status: 422 and return
     end

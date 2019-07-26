@@ -67,7 +67,8 @@ class Api::V1::Admin::Users::SessionsController < ProtectedController
     rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422
     end
@@ -102,7 +103,8 @@ class Api::V1::Admin::Users::SessionsController < ProtectedController
     rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422
     end

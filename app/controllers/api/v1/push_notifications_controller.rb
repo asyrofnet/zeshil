@@ -98,7 +98,8 @@ class Api::V1::PushNotificationsController < ProtectedController
     rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

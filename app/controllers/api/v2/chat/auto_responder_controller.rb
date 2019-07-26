@@ -125,7 +125,8 @@ class Api::V2::Chat::AutoResponderController < ProtectedController
         rescue => e
           render json: {
             error: {
-              message: e.message
+              message: e.message,
+              class: e.class.name
             }
           }, status: 422 and return
       end
@@ -196,7 +197,8 @@ class Api::V2::Chat::AutoResponderController < ProtectedController
       rescue => e
         render json: {
           error: {
-            message: e.message
+            message: e.message,
+            class: e.class.name
           }
         }, status: 422 and return
      end

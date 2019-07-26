@@ -84,7 +84,8 @@ class Api::V1::Me::PostsController < ProtectedController
     rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

@@ -96,7 +96,7 @@ class ApplicationController < ActionController::Base
               http_code_response: response.status,
               response_body: response.body
           }
-
+          
           # bind the logged in user
           Raven.user_context(
             email: user_qiscus_email, # the actor's email address, if available
