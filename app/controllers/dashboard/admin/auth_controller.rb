@@ -42,7 +42,7 @@ class Dashboard::Admin::AuthController < ApplicationController
         redirect_back fallback_location: "/app/#{app_id}"
       end
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: "/app/#{app_id}"
     end

@@ -9,7 +9,7 @@ class Dashboard::SuperAdmin::Application::AnnouncementsController < SuperAdminCo
       @path_segments = request.fullpath.split("/")
 
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -23,7 +23,7 @@ class Dashboard::SuperAdmin::Application::AnnouncementsController < SuperAdminCo
   def create
     begin
       if params[:text_content] == ""
-        raise Exception.new("Text content can't be empty.")
+        raise StandardError.new("Text content can't be empty.")
       end
 
       application = nil
@@ -49,7 +49,7 @@ class Dashboard::SuperAdmin::Application::AnnouncementsController < SuperAdminCo
 
       flash[:success] = "Success create new announcement."
       redirect_to "/dashboard/super_admin/application/#{application.id}/announcements" and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -69,7 +69,7 @@ class Dashboard::SuperAdmin::Application::AnnouncementsController < SuperAdminCo
 
       flash[:success] = "Success delete announcement."
       redirect_to "/dashboard/super_admin/application/#{params[:application_id]}/announcements"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -85,7 +85,7 @@ class Dashboard::SuperAdmin::Application::AnnouncementsController < SuperAdminCo
       end
 
       render "show"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -104,7 +104,7 @@ class Dashboard::SuperAdmin::Application::AnnouncementsController < SuperAdminCo
 
       flash[:success] = "Success update announcement."
       redirect_to "/dashboard/super_admin/application/#{params[:application_id]}/announcements"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end

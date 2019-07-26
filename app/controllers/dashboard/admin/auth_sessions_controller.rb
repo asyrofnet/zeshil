@@ -15,7 +15,7 @@ class Dashboard::Admin::AuthSessionsController < AdminController
 
       flash[:success] = "Success revoke access login from #{@auth_session.ip_address} #{@auth_session.user_agent}'." 
       redirect_to "/dashboard/admin/users/#{params[:user_id]}"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/admin/home'
     end
@@ -28,7 +28,7 @@ class Dashboard::Admin::AuthSessionsController < AdminController
 
       flash[:success] = "Success create new access. Your access_token = #{jwt}"
       redirect_to "/dashboard/admin/users/#{params[:user_id]}"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/admin/home'
     end
@@ -48,7 +48,7 @@ class Dashboard::Admin::AuthSessionsController < AdminController
 
       flash[:success] = "Success revoke all access." 
       redirect_to "/dashboard/admin/users/#{params[:user_id]}"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to "/dashboard/admin/home"
     end

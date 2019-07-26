@@ -22,11 +22,11 @@ class QiscusSdkAdmin
     secret_key = res["results"]["app"]["secret_key"]
 
     if app_id.nil?
-      raise Exception.new("Qiscus app id name is null.")
+      raise StandardError.new("Qiscus app id name is null.")
     end
 
     if secret_key.nil?
-      raise Exception.new("Qiscus secret key is null.")
+      raise StandardError.new("Qiscus secret key is null.")
     end
 
     return app_id, secret_key
@@ -77,7 +77,7 @@ class QiscusSdkAdmin
               }
             )
 
-            raise Exception.new("Error while calling Qiscus SDK Admin #{uri.host} return HTTP status code #{res.code} (#{res.message})")
+            raise StandardError.new("Error while calling Qiscus SDK Admin #{uri.host} return HTTP status code #{res.code} (#{res.message})")
           end
 
         else
@@ -110,11 +110,11 @@ class QiscusSdkAdmin
               }
             )
 
-            raise Exception.new("Error while calling Qiscus SDK Admin #{uri.host} return HTTP status code #{res.code} (#{res.message})")
+            raise StandardError.new("Error while calling Qiscus SDK Admin #{uri.host} return HTTP status code #{res.code} (#{res.message})")
           end
         end
-      rescue Exception => e
-        raise Exception.new(e.message)
+      rescue => e
+        raise StandardError.new(e.message)
       end
     end
 

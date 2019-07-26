@@ -99,7 +99,7 @@ class Api::V1::Admin::StatisticsController < ProtectedController
           
         }
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

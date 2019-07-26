@@ -38,12 +38,12 @@ class Api::V1::Rest::MeController < ApplicationController
 
         app_id = params[:app_id]
         if app_id.nil? || app_id == ""
-          raise Exception.new('app_id cant be empty')
+          raise StandardError.new('app_id cant be empty')
         end
 
         server_key = params[:server_key]
         if server_key.nil? || server_key == ""
-          raise Exception.new('server key cant be empty')
+          raise StandardError.new('server key cant be empty')
         end
 
         # find application using server_key and app_id
@@ -58,12 +58,12 @@ class Api::V1::Rest::MeController < ApplicationController
 
         user_params = params[:user]
         if user_params.nil?
-          raise Exception.new('param is missing or the value is empty: user')
+          raise StandardError.new('param is missing or the value is empty: user')
         end
 
         user_id = user_params[:id]
         if user_id.nil? || user_id == ""
-          raise Exception.new('User id is empty.')
+          raise StandardError.new('User id is empty.')
         end
 
         user = User.find_by(id: user_id, application_id: application.id)
@@ -80,7 +80,7 @@ class Api::V1::Rest::MeController < ApplicationController
           phone_number = phone_number.strip().delete(' ')
 
           if User.where.not(id: user.id).where(application_id: user.application_id).exists?(phone_number: phone_number)
-            raise Exception.new("Your submitted phone number already used by another user. Please use another phone number.")
+            raise StandardError.new("Your submitted phone number already used by another user. Please use another phone number.")
           end
 
           user.phone_number = phone_number
@@ -90,7 +90,7 @@ class Api::V1::Rest::MeController < ApplicationController
         if fullname.present? && !fullname.nil? && fullname != ""
           fullname = fullname.strip().gsub(/\s+/, " ") # remove multi space to single space
           if fullname.length < 4
-            raise Exception.new("Fullname minimum character is 4.")
+            raise StandardError.new("Fullname minimum character is 4.")
           end
 
           user.fullname = fullname
@@ -103,7 +103,7 @@ class Api::V1::Rest::MeController < ApplicationController
         email = user_params[:email]
         if email.present? && !email.nil? && email != ""
           if User.where.not(id: user.id).where(application_id: user.application_id).exists?(email: email)
-            raise Exception.new("Your submitted email already used by another user. Please use another email.")
+            raise StandardError.new("Your submitted email already used by another user. Please use another email.")
           end
 
           user.email = (email.nil? || email == "") ? "" : email.strip().delete(' ')
@@ -190,7 +190,7 @@ class Api::V1::Rest::MeController < ApplicationController
         }
         }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

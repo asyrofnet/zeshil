@@ -9,7 +9,7 @@ module SuperAdminSessionHelper
       else
         redirect_to dashboard_auth_index_path and return
       end
-    rescue Exception => e
+    rescue => e
       redirect_to dashboard_auth_index_path and return
     end
   end

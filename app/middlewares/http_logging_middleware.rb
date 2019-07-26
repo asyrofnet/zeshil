@@ -18,7 +18,7 @@ class HttpLoggingMiddleware
         Rails.logger.debug "Response Body: #{@response.body}"
         Rails.logger.debug "=" * 60
       end
-    rescue Exception => e
+    rescue => e
       # do nothing
     end
     

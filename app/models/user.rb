@@ -179,7 +179,7 @@ class User < ActiveRecord::Base
         reason[:user] = params
         reason[:error_message] = "User with phone number '#{params[:phone_number]}' and application '#{application.app_id}' already exist"
         reasons.push(reason)
-      rescue Exception => e
+      rescue => e
         not_imported.push(params)
 
         reason = Hash.new
@@ -355,7 +355,7 @@ class User < ActiveRecord::Base
         password = SecureRandom.hex # generate random password for security reason
         qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
         qiscus_sdk.login_or_register_rest(qiscus_email, password, fullname, avatar_url) # get qiscus token
-      # rescue Exception => e
+      # rescue => e
       #   message = "Fail when call SDK in update user profile"
       #   Raven.capture_message(message,
       #     level: "error",
@@ -417,7 +417,7 @@ class User < ActiveRecord::Base
       self.save!
       update_redis_cache
     else
-      raise Exception.new("Already deleted")
+      raise StandardError.new("Already deleted")
     end
   end
 
@@ -432,9 +432,9 @@ class User < ActiveRecord::Base
         self.email = email_local_part.concat("@").concat(email_domain)
       end
       self.phone_number = self.phone_number.split("_deleted")[0] if self.phone_number.present?
-      raise Exception.new("Another User already use same registration data") unless self.save
+      raise StandardError.new("Another User already use same registration data") unless self.save
     else
-      raise Exception.new("Already restored")
+      raise StandardError.new("Already restored")
     end
   end
 

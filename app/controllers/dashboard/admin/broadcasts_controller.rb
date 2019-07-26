@@ -15,7 +15,7 @@ class Dashboard::Admin::BroadcastsController < AdminController
       @path_segments = request.fullpath.split("/")
 
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/admin/home'
     end
@@ -35,7 +35,7 @@ class Dashboard::Admin::BroadcastsController < AdminController
       @path_segments = request.fullpath.split("/")
 
       render "show_chat_users"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/admin/home'
     end
@@ -57,7 +57,7 @@ class Dashboard::Admin::BroadcastsController < AdminController
       @users = ::User.where("id IN (?)", user_ids).where(application_id: @current_admin.application.id)
 
       render 'show_users', layout: false and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: "/dashboard/admin/home"
     end
@@ -74,7 +74,7 @@ class Dashboard::Admin::BroadcastsController < AdminController
       @path_segments = request.fullpath.split("/")
 
       render "show_status"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/admin/home'
     end
@@ -101,7 +101,7 @@ class Dashboard::Admin::BroadcastsController < AdminController
       @path_segments = request.fullpath.split("/")
 
       render "show_receipt_histories"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/admin/home'
     end
@@ -111,23 +111,23 @@ class Dashboard::Admin::BroadcastsController < AdminController
     begin
       sender_user_id = params[:sender_user_id]
       if sender_user_id == "" || sender_user_id.nil?
-        raise Exception.new("Sender user can't be empty.")
+        raise StandardError.new("Sender user can't be empty.")
       end
 
       message = params[:message]
       if message == "" || message.nil?
-        raise Exception.new("Message can't be empty.")
+        raise StandardError.new("Message can't be empty.")
       end
 
       target_user_ids = params[:target_user_ids]
       if target_user_ids == "" || target_user_ids.nil?
-        raise Exception.new("Target user can't be empty.")
+        raise StandardError.new("Target user can't be empty.")
       end
 
       target_user_ids = target_user_ids.split(",") # Split params target_user_id and convert it to array
 
       if !target_user_ids.is_a?(Array)
-        raise Exception.new("Target user id must be an array of user id.")
+        raise StandardError.new("Target user id must be an array of user id.")
       end
       target_user_ids.delete(sender_user_id) # ensure that sender user id not in target_user_ids
       target_user_ids.uniq
@@ -147,7 +147,7 @@ class Dashboard::Admin::BroadcastsController < AdminController
       flash[:success] = "Sending broadcast message is on progress."
       redirect_to "/dashboard/admin/broadcasts" and return
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: "/dashboard/admin/broadcasts"
     end

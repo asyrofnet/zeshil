@@ -15,13 +15,13 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
     begin
       app_name = params[:app_name]
       if app_name == "" || app_name.nil?
-        raise Exception.new("app_name can't be empty.")
+        raise StandardError.new("app_name can't be empty.")
       end
 
       # check app_name character because qiscus sdk only allow app_name in alphabet
       is_all_alphabet = app_name[/[a-zA-Z ]+/] == app_name
       if is_all_alphabet == false
-        raise Exception.new("app_name only alphabet are allowed.")
+        raise StandardError.new("app_name only alphabet are allowed.")
       end
 
       # Create new app in Qiscus SDK using QIscus SDK Admin API
@@ -54,7 +54,7 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
 
       flash[:success] = "Success create new application #{is_all_alphabet}."
       redirect_to '/dashboard/super_admin/home' and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -134,7 +134,7 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
 
       # render json: @statistics and return
       render "show"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -168,7 +168,7 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
 
       flash[:success] = "Success update application."
       redirect_back fallback_location: '/dashboard/super_admin/home' and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -179,14 +179,14 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
       application = ::Application.find_by(id: params[:id])
 
       if application.nil?
-        raise Exception.new("Not found application.")
+        raise StandardError.new("Not found application.")
       end
 
       application.destroy
 
       flash[:success] = "Success delete application."
       redirect_back fallback_location: '/dashboard/super_admin/home' and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -197,7 +197,7 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
       @application = ::Application.find(params[:id])
       @mobile_apps_version = MobileAppsVersion::where(application_id: params[:id])
       render "mobile_version"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -208,15 +208,15 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
       @application = ::Application.find(params[:id])
 
       if params[:platform].nil? || !params[:platform].present? || params[:platform] == ""
-        raise Exception.new("Please specify your platform name.")
+        raise StandardError.new("Please specify your platform name.")
       else
         if params[:platform].downcase.delete(' ') != "android" && params[:platform].downcase.delete(' ') != "ios"
-          raise Exception.new("Permitted platform is 'android' or 'ios'.")
+          raise StandardError.new("Permitted platform is 'android' or 'ios'.")
         end
       end
 
       if params[:version].nil? || !params[:version].present? || params[:version] == ""
-        raise Exception.new("Please specify your application version.")
+        raise StandardError.new("Please specify your application version.")
       end
 
       app_version = MobileAppsVersion.find_by(application_id: @application.id, platform: params[:platform])
@@ -237,7 +237,7 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
       flash[:success] = "Success update #{app_version.platform.titleize} to #{app_version.version}."
       redirect_back fallback_location: '/dashboard/super_admin/home' and return
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -249,7 +249,7 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
 			@providers = ::Provider.all
       @provider_settings = ::ProviderSetting.where(application_id: params[:id]).order(attempt: :asc)
       render "provider_setting"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -273,7 +273,7 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
       redirect_back fallback_location: '/dashboard/super_admin/home' and return
 
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -285,7 +285,7 @@ class Dashboard::SuperAdmin::ApplicationController < SuperAdminController
 
       flash[:success] = "Make all users as contact is on progress"
       redirect_back fallback_location: '/dashboard/super_admin/home' and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end

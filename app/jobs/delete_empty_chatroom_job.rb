@@ -26,7 +26,7 @@ class DeleteEmptyChatroomJob < ActiveJob::Base
                 end
               end
             end
-          rescue Exception => e
+          rescue => e
             puts "Error processing qiscus_room_ids: #{qiscus_room_ids} (#{e.message})"
           end
 

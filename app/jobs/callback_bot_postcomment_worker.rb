@@ -72,10 +72,10 @@ class CallbackBotPostcommentWorker < ActiveJob::Base
           return res.body
         end
       else
-        raise Exception.new("Error while calling callback at #{url} return HTTP status code #{res.code} (#{res.message}): #{res.body}")
+        raise StandardError.new("Error while calling callback at #{url} return HTTP status code #{res.code} (#{res.message}): #{res.body}")
       end
-    rescue Exception => e
-      raise Exception.new(e.message)
+    rescue => e
+      raise StandardError.new(e.message)
     end
   end
 

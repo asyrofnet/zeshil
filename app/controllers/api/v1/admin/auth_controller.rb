@@ -67,7 +67,7 @@ class Api::V1::Admin::AuthController < ApplicationController
         end
 
       end
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -134,7 +134,7 @@ class Api::V1::Admin::AuthController < ApplicationController
           }, status: 404 and return
         end
       end
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -199,7 +199,7 @@ class Api::V1::Admin::AuthController < ApplicationController
         end
 
       end
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

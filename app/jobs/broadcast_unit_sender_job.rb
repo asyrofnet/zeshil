@@ -14,7 +14,7 @@ class BroadcastUnitSenderJob < ActiveJob::Base
         
         begin
           comment = qiscus_sdk.post_comment( sender_user.qiscus_token, qiscus_room_id, message,type,payload)
-        rescue Exception => e
+        rescue => e
         end
         is_sent = true if comment.present?
         retry_counter += 1

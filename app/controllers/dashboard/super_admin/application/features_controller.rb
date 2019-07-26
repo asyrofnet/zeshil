@@ -9,7 +9,7 @@ class Dashboard::SuperAdmin::Application::FeaturesController < SuperAdminControl
       @path_segments = request.fullpath.split("/")
 
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -23,7 +23,7 @@ class Dashboard::SuperAdmin::Application::FeaturesController < SuperAdminControl
   def create
     begin
       if params[:feature_id] == "" || params[:feature_name] == ""
-        raise Exception.new("feature_id and feature_name can't be empty.")
+        raise StandardError.new("feature_id and feature_name can't be empty.")
       end
 
       application = nil
@@ -35,7 +35,7 @@ class Dashboard::SuperAdmin::Application::FeaturesController < SuperAdminControl
         # check duplicate feature_id
         feature_id = ::Feature.find_by(feature_id: params[:feature_id], application_id: application.id)
         if !feature_id.nil?
-          raise Exception.new("Duplicate feature id. Please enter different feature id")
+          raise StandardError.new("Duplicate feature id. Please enter different feature id")
         end
 
         if application.nil?
@@ -57,7 +57,7 @@ class Dashboard::SuperAdmin::Application::FeaturesController < SuperAdminControl
 
       flash[:success] = "Success create new feature."
       redirect_to "/dashboard/super_admin/application/#{application.id}/features" and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -77,7 +77,7 @@ class Dashboard::SuperAdmin::Application::FeaturesController < SuperAdminControl
 
       flash[:success] = "Success delete feature."
       redirect_to "/dashboard/super_admin/application/#{params[:application_id]}/features"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -93,7 +93,7 @@ class Dashboard::SuperAdmin::Application::FeaturesController < SuperAdminControl
       end
 
       render "show"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -109,7 +109,7 @@ class Dashboard::SuperAdmin::Application::FeaturesController < SuperAdminControl
         if feature_id.present? && !feature_id.nil? && !feature_id != ""
           # feature_id duplicate validation
           if Feature.where.not(id: feature.id).where(application_id: feature.application_id).exists?(feature_id: feature_id)
-            raise Exception.new("Duplicate feature id. Please enter different feature id")
+            raise StandardError.new("Duplicate feature id. Please enter different feature id")
           end
 
           feature.feature_id = feature_id
@@ -123,7 +123,7 @@ class Dashboard::SuperAdmin::Application::FeaturesController < SuperAdminControl
 
       flash[:success] = "Success update feature."
       redirect_to "/dashboard/super_admin/application/#{params[:application_id]}/features"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end

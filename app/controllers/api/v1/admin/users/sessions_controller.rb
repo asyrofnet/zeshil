@@ -26,7 +26,7 @@ class Api::V1::Admin::Users::SessionsController < ProtectedController
       render json: {
         data: auth_sessions
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -52,19 +52,19 @@ class Api::V1::Admin::Users::SessionsController < ProtectedController
       session = AuthSession.find_by(id: params[:id], user_id: params[:user_id])
 
       if user.id == @current_user.id
-        raise Exception.new('You cannot delete your own session since you will have no access anymore. To delete your session please use /me instead.')
+        raise StandardError.new('You cannot delete your own session since you will have no access anymore. To delete your session please use /me instead.')
       end
 
       if !session.nil?
         session.destroy
       else
-        raise Exception.new("Session with id #{params[:id]} is not found.")
+        raise StandardError.new("Session with id #{params[:id]} is not found.")
       end
 
       render json: {
         data: session
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -89,7 +89,7 @@ class Api::V1::Admin::Users::SessionsController < ProtectedController
       session = AuthSession.where(user_id: params[:user_id])
 
       if params[:user_id].to_i == @current_user.id
-        raise Exception.new('You cannot delete your own session since you will have no access anymore. To delete your session please use /me instead.')
+        raise StandardError.new('You cannot delete your own session since you will have no access anymore. To delete your session please use /me instead.')
       end
 
       if !session.empty?
@@ -99,7 +99,7 @@ class Api::V1::Admin::Users::SessionsController < ProtectedController
       render json: {
         data: session
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

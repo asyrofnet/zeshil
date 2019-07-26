@@ -32,22 +32,22 @@ class Api::V1::PushNotificationsController < ProtectedController
     begin
       user_id = params[:user_id]
       if user_id.nil? || user_id == ""
-        raise Exception.new("user_id cannot be empty.")
+        raise StandardError.new("user_id cannot be empty.")
       end
 
       pn_payload = params[:pn_payload]
       if pn_payload.nil? || pn_payload == ""
-        raise Exception.new("payload cannot be empty.")
+        raise StandardError.new("payload cannot be empty.")
       end
 
       # ensure title is exist
       if pn_payload["title"].nil? || pn_payload["title"] == ""
-        raise Exception.new("title cannot be empty.")
+        raise StandardError.new("title cannot be empty.")
       end
 
       # ensure body is exist
       if pn_payload["body"].nil? || pn_payload["body"] == ""
-        raise Exception.new("body cannot be empty.")
+        raise StandardError.new("body cannot be empty.")
       end
 
       # alert is used for ios pop up
@@ -95,7 +95,7 @@ class Api::V1::PushNotificationsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

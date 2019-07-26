@@ -11,7 +11,7 @@ class SendToQiscus
       qiscus_sdk = QiscusSdk.new(QISCUS_APP_ID, QISCUS_SDK_SECRET)
       qiscus_sdk.post_comment(USER_QISCUS_TOKEN, qiscus_room_id, message)
 
-    rescue Exception => e
+    rescue => e
       Rails.logger.debug "Error while POST comment, #{e.message}"
       return false
     end

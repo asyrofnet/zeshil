@@ -54,7 +54,7 @@ class Api::V1::Admin::UsersController < ProtectedController
           }
         }
       end
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -77,13 +77,13 @@ class Api::V1::Admin::UsersController < ProtectedController
     begin
       user = nil
       if params[:id] == @current_user.id.to_s
-        raise Exception.new("You can not show your own profile. Please use /me instead.")
+        raise StandardError.new("You can not show your own profile. Please use /me instead.")
       end
       user = User.where(application_id: @current_user.application_id).where(id: params[:id]).first
       render json: {
         data: user.as_json({:show_profile => true})
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -116,7 +116,7 @@ class Api::V1::Admin::UsersController < ProtectedController
     begin
       user = nil
       if params[:id] == @current_user.id.to_s
-        raise Exception.new("You can not change your own profile. Please use /me instead.")
+        raise StandardError.new("You can not change your own profile. Please use /me instead.")
       end
 
       user_params = params[:user].permit!
@@ -155,7 +155,7 @@ class Api::V1::Admin::UsersController < ProtectedController
       render json: {
         data: user.as_json({:show_profile => true})
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -251,7 +251,7 @@ class Api::V1::Admin::UsersController < ProtectedController
       render json: {
         data: user.as_json({:show_profile => true})
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -274,7 +274,7 @@ class Api::V1::Admin::UsersController < ProtectedController
     begin
       user = nil
       if params[:id] == @current_user.id.to_s
-        raise Exception.new("You can not delete your own profile. Please use /me instead.")
+        raise StandardError.new("You can not delete your own profile. Please use /me instead.")
       end
       user = User.where(application_id: @current_user.application_id).where(id: params[:id]).first
       user.destroy
@@ -282,7 +282,7 @@ class Api::V1::Admin::UsersController < ProtectedController
       render json: {
         data: user.as_json({:show_profile => true})
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -314,7 +314,7 @@ class Api::V1::Admin::UsersController < ProtectedController
       ActiveRecord::Base.transaction do
 
         if params[:id].to_s == @current_user.id.to_s
-          raise Exception.new("You can not see your own contact using this end-point. Please use /me instead.")
+          raise StandardError.new("You can not see your own contact using this end-point. Please use /me instead.")
         end
         user = User.find_by(id: params[:id], application_id: @current_user.application_id)
 
@@ -368,7 +368,7 @@ class Api::V1::Admin::UsersController < ProtectedController
         }
       end
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -403,7 +403,7 @@ class Api::V1::Admin::UsersController < ProtectedController
 			# find user by id and application id
 			user = User.find_by(id: params[:id], application_id: @current_user.application.id)
 			if user.nil?
-				raise Exception.new("User not found")
+				raise StandardError.new("User not found")
       end
 
       if room_name.present?
@@ -430,7 +430,7 @@ class Api::V1::Admin::UsersController < ProtectedController
         sdk_status, chat_room_sdk_info = qiscus_sdk.get_rooms_info(user.qiscus_email, qiscus_room_ids)
 
         if sdk_status != 200
-          raise Exception.new(chat_room_sdk_info["error"]["message"])
+          raise StandardError.new(chat_room_sdk_info["error"]["message"])
         end
 
         chat_rooms_hash = ChatRoomHelper.get_user_of_chat_rooms(chat_rooms)
@@ -456,7 +456,7 @@ class Api::V1::Admin::UsersController < ProtectedController
         },
 				data: chat_rooms
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -503,7 +503,7 @@ class Api::V1::Admin::UsersController < ProtectedController
       render json: {
         data: import
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -586,7 +586,7 @@ class Api::V1::Admin::UsersController < ProtectedController
           }
         }
       end
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -623,7 +623,7 @@ class Api::V1::Admin::UsersController < ProtectedController
         data: users
       }
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -646,7 +646,7 @@ class Api::V1::Admin::UsersController < ProtectedController
   def update_avatar
     begin
       if params[:id] == @current_user.id.to_s
-        raise Exception.new("You can not change your own profile. Please use /me instead.")
+        raise StandardError.new("You can not change your own profile. Please use /me instead.")
       end
 
       user = User.find_by(id: params[:id], application_id: @current_user.application_id)
@@ -659,7 +659,7 @@ class Api::V1::Admin::UsersController < ProtectedController
       render json: {
         data: user.as_json({:show_profile => true})
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

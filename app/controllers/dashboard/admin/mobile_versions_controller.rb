@@ -7,7 +7,7 @@ class Dashboard::Admin::MobileVersionsController < AdminController
       @application = ::Application.find(@current_admin.application.id)
       @mobile_apps_version = MobileAppsVersion::where(application_id: @current_admin.application.id)
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/admin/home'
     end
@@ -18,15 +18,15 @@ class Dashboard::Admin::MobileVersionsController < AdminController
       @application = ::Application.find(@current_admin.application.id)
 
       if params[:platform].nil? || !params[:platform].present? || params[:platform] == ""
-        raise Exception.new("Please specify your platform name.")
+        raise StandardError.new("Please specify your platform name.")
       else
         if params[:platform].downcase.delete(' ') != "android" && params[:platform].downcase.delete(' ') != "ios"
-          raise Exception.new("Permitted platform is 'android' or 'ios'.")
+          raise StandardError.new("Permitted platform is 'android' or 'ios'.")
         end
       end
 
       if params[:version].nil? || !params[:version].present? || params[:version] == ""
-        raise Exception.new("Please specify your application version.")
+        raise StandardError.new("Please specify your application version.")
       end
         
       app_version = MobileAppsVersion.find_by(application_id: @application.id, platform: params[:platform])
@@ -47,7 +47,7 @@ class Dashboard::Admin::MobileVersionsController < AdminController
       flash[:success] = "Success update #{app_version.platform.titleize} to #{app_version.version}."
       redirect_back fallback_location: '/dashboard/admin/home' and return
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/admin/home'
     end

@@ -42,10 +42,10 @@ class Api::V1::AuthEmailNonceController < ApplicationController
           email = email.strip().delete(' ')
 
           if email == ""
-            raise Exception.new('Email is empty.')
+            raise StandardError.new('Email is empty.')
           end
         else
-          raise Exception.new('Email is empty.')
+          raise StandardError.new('Email is empty.')
         end
         user = User.find_by(email: email, application_id: application.id)
 
@@ -190,7 +190,7 @@ class Api::V1::AuthEmailNonceController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -228,10 +228,10 @@ class Api::V1::AuthEmailNonceController < ApplicationController
           email = email.strip().delete(' ')
 
           if email == ""
-            raise Exception.new('Email is empty.')
+            raise StandardError.new('Email is empty.')
           end
         else
-          raise Exception.new('Email is empty.')
+          raise StandardError.new('Email is empty.')
         end
 
         user = User.find_by(email: email, application_id: application.id)
@@ -274,7 +274,7 @@ class Api::V1::AuthEmailNonceController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -314,22 +314,22 @@ class Api::V1::AuthEmailNonceController < ApplicationController
           email = email.strip().delete(' ')
 
           if email == ""
-            raise Exception.new('Email is empty.')
+            raise StandardError.new('Email is empty.')
           end
         else
-          raise Exception.new('Email is empty.')
+          raise StandardError.new('Email is empty.')
         end
 
         # check empty passcode
         passcode = params[:user][:passcode]
         if passcode.nil? || passcode.blank?
-          raise Exception.new('passcode cannot be empty.')
+          raise StandardError.new('passcode cannot be empty.')
         end
 
         # check empty nonce
         nonce = params[:user][:nonce]
         if nonce.nil? || nonce.blank?
-          raise Exception.new('nonce cannot be empty.')
+          raise StandardError.new('nonce cannot be empty.')
         end
 
         user = User.find_by(email: email,
@@ -401,7 +401,7 @@ class Api::V1::AuthEmailNonceController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

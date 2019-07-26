@@ -50,7 +50,7 @@ class Api::V1::Listeners::TelkomNewsBotStagingController < ApplicationController
       render json: {
         data: response
       }, status: 200 and return
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message,
@@ -65,7 +65,7 @@ class Api::V1::Listeners::TelkomNewsBotStagingController < ApplicationController
     def add_participants(url, jwt_token, qiscus_email)
       begin
         if !qiscus_email.kind_of?(Array) || qiscus_email.empty? || qiscus_email == ""
-          raise Exception.new("Emails is not array or nil.")
+          raise StandardError.new("Emails is not array or nil.")
         end
 
         params = {
@@ -96,19 +96,19 @@ class Api::V1::Listeners::TelkomNewsBotStagingController < ApplicationController
         else
           if res.content_type == "application/json"
             e = JSON.parse(res.body)
-            raise Exception.new( e['error']['message'] )
+            raise StandardError.new( e['error']['message'] )
           end
-          raise Exception.new("Error while calling callback at #{url} return HTTP status code #{res.code} (#{res.message}).")
+          raise StandardError.new("Error while calling callback at #{url} return HTTP status code #{res.code} (#{res.message}).")
         end
-      rescue Exception => e
-        raise Exception.new(e.message)
+      rescue => e
+        raise StandardError.new(e.message)
       end
     end
 
     def remove_participants(url, jwt_token, qiscus_email)
       begin
         if !qiscus_email.kind_of?(Array) || qiscus_email.empty? || qiscus_email == ""
-          raise Exception.new("Emails is not array or nil.")
+          raise StandardError.new("Emails is not array or nil.")
         end
 
         params = {
@@ -139,12 +139,12 @@ class Api::V1::Listeners::TelkomNewsBotStagingController < ApplicationController
         else
           if res.content_type == "application/json"
             e = JSON.parse(res.body)
-            raise Exception.new( e['error']['message'] )
+            raise StandardError.new( e['error']['message'] )
           end
-          raise Exception.new("Error while calling callback at #{url} return HTTP status code #{res.code} (#{res.message}).")
+          raise StandardError.new("Error while calling callback at #{url} return HTTP status code #{res.code} (#{res.message}).")
         end
-      rescue Exception => e
-        raise Exception.new(e.message)
+      rescue => e
+        raise StandardError.new(e.message)
       end
     end
 

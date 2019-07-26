@@ -30,7 +30,7 @@ class Api::V1::Rest::ConversationsController < ApplicationController
 
         user_id = params[:user_id]
         if user_id.nil? || user_id == ""
-          raise Exception.new('User id is empty.')
+          raise StandardError.new('User id is empty.')
         end
 
         user = User.find_by(id: user_id, application_id: application.id)
@@ -43,7 +43,7 @@ class Api::V1::Rest::ConversationsController < ApplicationController
         # Ensure that public chat room is not exist
         chat_room = ChatRoom.find_by(user_id: user.id, is_public_chat: true, application_id: application.id)
         if !chat_room.nil?
-          raise Exception.new('Public chat room already exist.')
+          raise StandardError.new('Public chat room already exist.')
         end
 
         chat_name = user.fullname
@@ -106,7 +106,7 @@ class Api::V1::Rest::ConversationsController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -138,13 +138,13 @@ class Api::V1::Rest::ConversationsController < ApplicationController
         # app_id
         app_id = params[:app_id]
         if app_id.nil? || app_id == ""
-          raise Exception.new("App_id can't be empty.")
+          raise StandardError.new("App_id can't be empty.")
         end
 
         # server_key
         server_key = params[:server_key]
         if server_key.nil? || server_key == ""
-          raise Exception.new("Server key can't be empty.")
+          raise StandardError.new("Server key can't be empty.")
         end
 
         # find application using app_id and server_key
@@ -161,7 +161,7 @@ class Api::V1::Rest::ConversationsController < ApplicationController
         user_ids = params[:user_id]
 
         if !user_ids.is_a?(Array)
-          raise Exception.new("User id must be an array of user id.")
+          raise StandardError.new("User id must be an array of user id.")
         end
 
         # need to convert array of user_id (string) into integer
@@ -169,7 +169,7 @@ class Api::V1::Rest::ConversationsController < ApplicationController
 
         unique_id = params[:unique_id]
         if unique_id.nil? || unique_id == ""
-          raise Exception.new("Unique id can't be empty.")
+          raise StandardError.new("Unique id can't be empty.")
         end
 
         chat_name = ""
@@ -209,7 +209,7 @@ class Api::V1::Rest::ConversationsController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -238,7 +238,7 @@ class Api::V1::Rest::ConversationsController < ApplicationController
 				# server_key
         server_key = params[:server_key]
         if server_key.nil? || server_key == ""
-          raise Exception.new("Server key can't be empty.")
+          raise StandardError.new("Server key can't be empty.")
         end
 
         # find application using server_key
@@ -254,17 +254,17 @@ class Api::V1::Rest::ConversationsController < ApplicationController
 
 				qiscus_room_id = params[:qiscus_room_id]
 				if qiscus_room_id.nil? || qiscus_room_id == ""
-					raise Exception.new("qiscus_room_id cannot be empty.")
+					raise StandardError.new("qiscus_room_id cannot be empty.")
 				end
 
 				message = params[:message]
 				if message.nil? || message == ""
-					raise Exception.new("message cannot be empty.")
+					raise StandardError.new("message cannot be empty.")
 				end
 
 				payload = params[:payload]
 				if payload.nil? || payload == ""
-					raise Exception.new("payload cannot be empty.")
+					raise StandardError.new("payload cannot be empty.")
 				end
 
 				extras = params[:extras]
@@ -272,7 +272,7 @@ class Api::V1::Rest::ConversationsController < ApplicationController
 				# looking for room with qiscus_room_id in qisme
 				chat_room = ChatRoom.find_by(qiscus_room_id: qiscus_room_id)
 				if chat_room.nil?
-					raise Exception.new("chat_room not found")
+					raise StandardError.new("chat_room not found")
 				end
 
 				type = "custom"
@@ -301,7 +301,7 @@ class Api::V1::Rest::ConversationsController < ApplicationController
         }
       }, status: 422 and return
 
-			rescue Exception => e
+			rescue => e
 			render json: {
 				error: {
 					message: e.message

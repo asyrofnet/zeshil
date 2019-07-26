@@ -19,7 +19,7 @@ class Api::V1::Me::SessionsController < ProtectedController
       render json: {
         data: sessions
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -66,7 +66,7 @@ class Api::V1::Me::SessionsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

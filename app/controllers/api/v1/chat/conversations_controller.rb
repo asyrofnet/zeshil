@@ -61,7 +61,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
 
                 # if after second call the error from SDK still occured, then throw an error instead trying a new call.
                 if sdk_status != 200
-                  raise Exception.new(chat_room_sdk_info['error']['detailed_messages'].to_a.join(", ").capitalize)
+                  raise StandardError.new(chat_room_sdk_info['error']['detailed_messages'].to_a.join(", ").capitalize)
                 end
 
                 merged_info.merge!(chat_room_sdk_info)
@@ -73,7 +73,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
 
               # if after second call the error from SDK still occured, then throw an error instead trying a new call.
               if sdk_status != 200
-                raise Exception.new(chat_room_sdk_info['error']['detailed_messages'].to_a.join(", ").capitalize)
+                raise StandardError.new(chat_room_sdk_info['error']['detailed_messages'].to_a.join(", ").capitalize)
               end
             end
           end
@@ -127,7 +127,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         },
         data: chat_rooms
       } and return
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message,
@@ -160,7 +160,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         sdk_status, chat_room_sdk_info = qiscus_sdk.get_rooms_info(@current_user.qiscus_email, [chat_room.qiscus_room_id])
 
         if sdk_status != 200
-          raise Exception.new(chat_room_sdk_info['error']['detailed_messages'].to_a.join(", ").capitalize)
+          raise StandardError.new(chat_room_sdk_info['error']['detailed_messages'].to_a.join(", ").capitalize)
         end
 
         chat_room = chat_room.as_json({:me => @current_user, :chat_room_sdk_info => chat_room_sdk_info})
@@ -186,9 +186,9 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         } and return
 
       else
-        raise Exception.new("You are not member of this group.")
+        raise StandardError.new("You are not member of this group.")
       end
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -218,10 +218,10 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         target_user_id = params[:target_user_id]
 
         if target_user_id.nil? || target_user_id == ""
-          raise Exception.new("Target user id can not be blank.")
+          raise StandardError.new("Target user id can not be blank.")
         else
           if target_user_id.to_s == @current_user.id.to_s
-            raise Exception.new("You can not chat only with yourself.")
+            raise StandardError.new("You can not chat only with yourself.")
           end
         end
 
@@ -244,7 +244,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         room = qiscus_sdk.get_or_create_room_with_target_rest(emails)
 
         if qiscus_room_id.to_i != room.id
-          raise Exception.new("Invalid qiscus_room_id.")
+          raise StandardError.new("Invalid qiscus_room_id.")
         end
 
         chat_room = ChatRoom.find_by(qiscus_room_id: qiscus_room_id, application_id: @current_user.application.id)
@@ -282,7 +282,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
 					end
         else
           # if exist then return error with warning that qiscus room id has been inserted before
-          # raise Exception.new("Qiscus room id has been inserted before, it must be unique.")
+          # raise StandardError.new("Qiscus room id has been inserted before, it must be unique.")
         end
 
       end
@@ -305,7 +305,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -340,11 +340,11 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         target_user_id = params[:target_user_id]
 
         if !target_user_id.is_a?(Array)
-          raise Exception.new("Target user id must be an array of user id.")
+          raise StandardError.new("Target user id must be an array of user id.")
         end
 
         if target_user_id.count > 100
-          raise Exception.new("Maximum group participants is 100. Please use the channel instead for more than 100 participants")
+          raise StandardError.new("Maximum group participants is 100. Please use the channel instead for more than 100 participants")
         end
 
         # need to convert array of target_user_id (string) into integer
@@ -376,7 +376,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
 
         # prevent error if target user is not found
         if target_user.empty?
-          raise Exception.new("No one target user found.")
+          raise StandardError.new("No one target user found.")
         end
 
         # default group avatar
@@ -442,7 +442,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
           end
         else
           # if exist then return error with warning that qiscus room id has been inserted before
-          raise Exception.new("Qiscus room id has been inserted before, it must be unique.")
+          raise StandardError.new("Qiscus room id has been inserted before, it must be unique.")
         end
       end
 
@@ -469,7 +469,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -504,7 +504,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         target_user_id = params[:target_user_id]
 
         if !target_user_id.is_a?(Array)
-          raise Exception.new("Target user id must be an array of user id.")
+          raise StandardError.new("Target user id must be an array of user id.")
         end
 
         # need to convert array of target_user_id (string) into integer
@@ -540,7 +540,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
 
         # prevent error if target user is not found
         if target_user.empty?
-          raise Exception.new("No one target user found.")
+          raise StandardError.new("No one target user found.")
         end
 
         # default group avatar
@@ -609,7 +609,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
           end
         else
           # if exist then return error with warning that qiscus room id has been inserted before
-          raise Exception.new("Qiscus room id has been inserted before, it must be unique.")
+          raise StandardError.new("Qiscus room id has been inserted before, it must be unique.")
         end
       end
 
@@ -636,7 +636,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -691,7 +691,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
           } and return
 
         else
-          raise Exception.new("You are not member of this group.")
+          raise StandardError.new("You are not member of this group.")
         end
       end
 
@@ -709,7 +709,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -762,7 +762,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
           } and return
 
         else
-          raise Exception.new("You are not member of this group.")
+          raise StandardError.new("You are not member of this group.")
         end
       end
 
@@ -780,7 +780,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -854,7 +854,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -893,7 +893,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -931,7 +931,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
             message: e.message
@@ -971,7 +971,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -992,10 +992,10 @@ class Api::V1::Chat::ConversationsController < ProtectedController
   def filter
     begin
       if params[:chat_room_type].nil? || !params[:chat_room_type].present? || params[:chat_room_type] == ""
-        raise Exception.new("Please specify your chat_room_type.")
+        raise StandardError.new("Please specify your chat_room_type.")
       else
         if params[:chat_room_type].downcase.delete(' ') != "single" && params[:chat_room_type].downcase.delete(' ') != "group"
-          raise Exception.new("Permitted chat_room_type is 'single' or 'group'.")
+          raise StandardError.new("Permitted chat_room_type is 'single' or 'group'.")
         end
       end
       #
@@ -1020,7 +1020,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
 
         # throw an error
         if sdk_status != 200
-          raise Exception.new(chat_room_sdk_info['error']['detailed_messages'].to_a.join(", ").capitalize)
+          raise StandardError.new(chat_room_sdk_info['error']['detailed_messages'].to_a.join(", ").capitalize)
         end
       end
       end_time_sdk = Time.now
@@ -1055,7 +1055,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         },
         data: filtered_chat_rooms
       } and return
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message,
@@ -1086,13 +1086,13 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         creator_user_id = params[:creator_user_id]
 
         if !creator_user_id.present?
-          raise Exception.new("Creator user id must be present.")
+          raise StandardError.new("Creator user id must be present.")
         end
 
         unique_id = params[:unique_id]
 
         if !unique_id.present?
-          raise Exception.new("Unique id must be present.")
+          raise StandardError.new("Unique id must be present.")
         end
 
         creator = User.find(creator_user_id)
@@ -1101,13 +1101,13 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         # Unique id is combination of app_id, creator (official) qiscus_email, app_id using # as separator. For example unique_id = "kiwari-prod#userid_001_62812345678987@kiwari-prod.com#kiwari-prod
         split_unique_id = unique_id.split("#")
         if split_unique_id[0] != application.app_id || split_unique_id[1] != creator.qiscus_email || split_unique_id[2] != application.app_id
-          raise Exception.new("Invalid unique id format.")
+          raise StandardError.new("Invalid unique id format.")
         end
 
         # Ensure that public chat room is exist
         chat_room = ChatRoom.find_by(user_id: creator.id, is_public_chat: true, application_id: application.id)
         if chat_room.nil?
-          raise Exception.new("Chat room is not exist.")
+          raise StandardError.new("Chat room is not exist.")
         end
 
         chat_name = creator.fullname
@@ -1119,7 +1119,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         room = qiscus_sdk.get_or_create_room_with_unique_id(qiscus_token, unique_id, chat_name, chat_avatar_url)
 
         if !chat_room.qiscus_room_id == room.id
-          raise Exception.new("Chat room is not exist.")
+          raise StandardError.new("Chat room is not exist.")
         end
 
         # Ensure that chat_user is not exist
@@ -1164,7 +1164,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -1230,7 +1230,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         },
         data: chat_rooms
       } and return
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message,
@@ -1257,24 +1257,24 @@ class Api::V1::Chat::ConversationsController < ProtectedController
     begin
       target_email = params[:target_email]
       if target_email.nil? || target_email == ""
-        raise Exception.new("target_email cannot be empty.")
+        raise StandardError.new("target_email cannot be empty.")
       end
 
       current_user = @current_user
 
       target_user = User.find_by(qiscus_email: target_email, application_id: current_user.application.id)
       if target_user.nil?
-        raise Exception.new("User is not found.")
+        raise StandardError.new("User is not found.")
       end
 
       message = params[:message]
       if message.nil? || message == ""
-        raise Exception.new("message cannot be empty.")
+        raise StandardError.new("message cannot be empty.")
       end
 
       payload = params[:payload]
       if payload.nil? || payload == ""
-        raise Exception.new("payload cannot be empty.")
+        raise StandardError.new("payload cannot be empty.")
       end
 
       extras = params[:extras]
@@ -1316,7 +1316,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
 
         else
           # if exist then return error with warning that qiscus room id has been inserted before
-          # raise Exception.new("Qiscus room id has been inserted before, it must be unique.")
+          # raise StandardError.new("Qiscus room id has been inserted before, it must be unique.")
         end
       else
         # If single chat already exist then get qiscus_room_id
@@ -1346,7 +1346,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

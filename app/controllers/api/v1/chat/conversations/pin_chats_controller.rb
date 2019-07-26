@@ -36,7 +36,7 @@ class Api::V1::Chat::Conversations::PinChatsController < ProtectedController
       qiscus_room_id = params[:qiscus_room_id]
 
       if !qiscus_room_id.is_a?(Array)
-        raise Exception.new("Qiscus room id must be an array of qiscus room id.")
+        raise StandardError.new("Qiscus room id must be an array of qiscus room id.")
       end
 
       qiscus_room_ids = qiscus_room_id.to_a
@@ -44,7 +44,7 @@ class Api::V1::Chat::Conversations::PinChatsController < ProtectedController
       # anticipate empty index of qiscus room id
       qiscus_room_ids.each do |id|
         if id.nil? || id == ""
-          raise Exception.new("Qiscus room id must be present.")
+          raise StandardError.new("Qiscus room id must be present.")
         end
       end
 
@@ -55,7 +55,7 @@ class Api::V1::Chat::Conversations::PinChatsController < ProtectedController
 
       max = 3 # user can only pin up (max) chats
       if count_current_pin_chat_rooms + qiscus_room_ids.size > max
-        raise Exception.new("You can only pin up #{max} chats.")
+        raise StandardError.new("You can only pin up #{max} chats.")
       end
 
       chat_rooms = nil
@@ -69,7 +69,7 @@ class Api::V1::Chat::Conversations::PinChatsController < ProtectedController
         # chat room not found
         if qiscus_room_ids.size != qiscus_room_id_in_database.size
           qiscus_room_ids_not_found = qiscus_room_ids.map(&:to_i) - qiscus_room_id_in_database
-          raise Exception.new("Chat room with qiscus_room_id #{qiscus_room_ids_not_found} not found.")
+          raise StandardError.new("Chat room with qiscus_room_id #{qiscus_room_ids_not_found} not found.")
         end
 
         # chat_room_id already in pin chat rooms
@@ -79,7 +79,7 @@ class Api::V1::Chat::Conversations::PinChatsController < ProtectedController
         duplicat_chat_rooms = candidate_pin_chat_rooms_ids & already_been_in_pin_chat_rooms # duplicat chat rooms
         if !duplicat_chat_rooms.empty?
           qiscus_room_ids = ChatRoom.where("chat_rooms.id IN (?)", duplicat_chat_rooms).pluck(:qiscus_room_id)
-          raise Exception.new("Chat room with qiscus_room_id #{qiscus_room_ids} already pinned.")
+          raise StandardError.new("Chat room with qiscus_room_id #{qiscus_room_ids} already pinned.")
         end
 
 
@@ -125,7 +125,7 @@ class Api::V1::Chat::Conversations::PinChatsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -150,7 +150,7 @@ class Api::V1::Chat::Conversations::PinChatsController < ProtectedController
       qiscus_room_id = params[:qiscus_room_id]
 
       if !qiscus_room_id.is_a?(Array)
-        raise Exception.new("Qiscus room id must be an array of qiscus room id.")
+        raise StandardError.new("Qiscus room id must be an array of qiscus room id.")
       end
 
       qiscus_room_ids = qiscus_room_id.to_a
@@ -158,7 +158,7 @@ class Api::V1::Chat::Conversations::PinChatsController < ProtectedController
       # anticipate empty index of qiscus room id
       qiscus_room_ids.each do |id|
         if id.nil? || id == ""
-          raise Exception.new("Qiscus room id must be present.")
+          raise StandardError.new("Qiscus room id must be present.")
         end
       end
 
@@ -171,7 +171,7 @@ class Api::V1::Chat::Conversations::PinChatsController < ProtectedController
         qiscus_room_id_in_database = chat_rooms.pluck(:qiscus_room_id)
         if qiscus_room_ids.size != qiscus_room_id_in_database.size
           invalid_qiscus_room_ids = qiscus_room_ids.map(&:to_i) - qiscus_room_id_in_database
-          raise Exception.new("Invalid chat room with qiscus_room_id #{invalid_qiscus_room_ids}.")
+          raise StandardError.new("Invalid chat room with qiscus_room_id #{invalid_qiscus_room_ids}.")
         end
 
         # get all pin chat rooms
@@ -182,7 +182,7 @@ class Api::V1::Chat::Conversations::PinChatsController < ProtectedController
         pin_chat_room_qiscus_room_ids = ChatRoom.where("chat_rooms.id IN (?)", pin_chat_rooms_ids).pluck(:qiscus_room_id)
         qiscus_room_ids_not_found = qiscus_room_ids.map(&:to_i) - pin_chat_room_qiscus_room_ids
         if !qiscus_room_ids_not_found.empty?
-          raise Exception.new("Chat room with qiscus_room_id #{qiscus_room_ids_not_found} is not pin chats.")
+          raise StandardError.new("Chat room with qiscus_room_id #{qiscus_room_ids_not_found} is not pin chats.")
         end
 
         pin_chat_rooms.destroy_all
@@ -200,7 +200,7 @@ class Api::V1::Chat::Conversations::PinChatsController < ProtectedController
         data: chat_rooms
       } and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

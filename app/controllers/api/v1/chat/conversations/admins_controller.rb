@@ -23,7 +23,7 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
       render json: {
         data: group_admins
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -51,17 +51,17 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
       ActiveRecord::Base.transaction do
         user_ids_already_in_group = chat_room.users.pluck(:id).to_a
         if user_ids_already_in_group.include?(@current_user.id) == false
-          raise Exception.new("You are not member of this group.")
+          raise StandardError.new("You are not member of this group.")
         end
 
         # only admin can add new group admin
         is_group_admin = ChatUser.find_by(chat_room_id: chat_room.id, user_id: @current_user.id, is_group_admin: true)
         if is_group_admin.nil?
-          raise Exception.new("You are not admin of this group. Only admin can add new group admin.")
+          raise StandardError.new("You are not admin of this group. Only admin can add new group admin.")
         end
 
         if !params[:user_id].present? && !params[:qiscus_email].present?
-          raise Exception.new("Array of user id or qiscus email must be present.")
+          raise StandardError.new("Array of user id or qiscus email must be present.")
         end
 
         # add group admins using array of user_id
@@ -71,7 +71,7 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
           # ensure that candidate group admin has been already in group
           user_ids_not_in_group = user_ids - user_ids_already_in_group
           if !user_ids_not_in_group.empty?
-            raise Exception.new("Users with user_id #{user_ids_not_in_group} are not group participants.")
+            raise StandardError.new("Users with user_id #{user_ids_not_in_group} are not group participants.")
           end
 
           new_admin_ids = User.where("id IN (?)", user_ids).pluck(:id)
@@ -93,7 +93,7 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
           # ensure that candidate group admin has been already in group
           user_qiscus_email_not_in_group = user_qiscus_emails - registered_user_qiscus_emails
           if !user_qiscus_email_not_in_group.empty?
-            raise Exception.new("Users with qiscus_email #{user_qiscus_email_not_in_group} are not group participants.")
+            raise StandardError.new("Users with qiscus_email #{user_qiscus_email_not_in_group} are not group participants.")
           end
 
           new_admin_ids = User.where("qiscus_email IN (?)", user_qiscus_emails).pluck(:id)
@@ -156,7 +156,7 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -182,18 +182,18 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
       delete_admin_ids = Array.new
       ActiveRecord::Base.transaction do
         if !params[:user_id].present? && !params[:qiscus_email].present?
-          raise Exception.new("Array of user id or qiscus email must be present.")
+          raise StandardError.new("Array of user id or qiscus email must be present.")
         end
 
         user_ids_already_in_group = chat_room.users.pluck(:id)
         if user_ids_already_in_group.to_a.include?(@current_user.id) == false
-          raise Exception.new("You are not member of this group.")
+          raise StandardError.new("You are not member of this group.")
         end
 
         # only admin can delete group admin
         is_group_admin = ChatUser.find_by(chat_room_id: chat_room.id, user_id: @current_user.id, is_group_admin: true)
         if is_group_admin.nil?
-          raise Exception.new("You are not admin of this group. Only admin can delete group admin.")
+          raise StandardError.new("You are not admin of this group. Only admin can delete group admin.")
         end
 
         # delete group admins using array of user_id
@@ -202,13 +202,13 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
 
           # admin can't remove themselves from admin
           if user_ids.include?(@current_user.id)
-            raise Exception.new("You can't remove yourself from admin.")
+            raise StandardError.new("You can't remove yourself from admin.")
           end
 
           # ensure that candidate group admin has been already in group
           user_ids_not_in_group = user_ids - user_ids_already_in_group
           if !user_ids_not_in_group.empty?
-            raise Exception.new("Users with user_id #{user_ids_not_in_group} are not group participants.")
+            raise StandardError.new("Users with user_id #{user_ids_not_in_group} are not group participants.")
           end
 
           delete_admin_ids = User.where("id IN (?)", user_ids).pluck(:id)
@@ -230,13 +230,13 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
 
           # admin can't remove themselves from admin
           if user_qiscus_emails.include?(@current_user.qiscus_email)
-            raise Exception.new("You can't remove yourself from admin.")
+            raise StandardError.new("You can't remove yourself from admin.")
           end
 
           # ensure that candidate group admin has been already in group
           user_qiscus_email_not_in_group = user_qiscus_emails - registered_user_qiscus_emails
           if !user_qiscus_email_not_in_group.empty?
-            raise Exception.new("Users with qiscus_email #{user_qiscus_email_not_in_group} are not group participants.")
+            raise StandardError.new("Users with qiscus_email #{user_qiscus_email_not_in_group} are not group participants.")
           end
 
           delete_admin_ids = User.where("qiscus_email IN (?)", user_qiscus_emails).pluck(:id)
@@ -302,7 +302,7 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -325,7 +325,7 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
           }, status: 401 and return
         else
           if !@chat_room.is_group_chat
-            raise Exception.new("This is not group chat. You can't add/remove participants.")
+            raise StandardError.new("This is not group chat. You can't add/remove participants.")
           end
         end
       else

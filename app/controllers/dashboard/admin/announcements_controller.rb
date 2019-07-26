@@ -9,7 +9,7 @@ class Dashboard::Admin::AnnouncementsController < AdminController
       @path_segments = request.fullpath.split("/")
       
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/admin/home'
     end
@@ -23,7 +23,7 @@ class Dashboard::Admin::AnnouncementsController < AdminController
   def create
     begin
       if params[:text_content] == ""
-        raise Exception.new("Text content can't be empty.")
+        raise StandardError.new("Text content can't be empty.")
       end
 
       application = nil
@@ -49,7 +49,7 @@ class Dashboard::Admin::AnnouncementsController < AdminController
 
       flash[:success] = "Success create new announcement."
       redirect_to "/dashboard/admin/announcements" and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/admin/home'
     end
@@ -69,7 +69,7 @@ class Dashboard::Admin::AnnouncementsController < AdminController
 
       flash[:success] = "Success delete announcement." 
       redirect_to "/dashboard/admin/announcements"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/admin/home'
     end
@@ -85,7 +85,7 @@ class Dashboard::Admin::AnnouncementsController < AdminController
       end
 
       render "show"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super/home'
     end
@@ -104,7 +104,7 @@ class Dashboard::Admin::AnnouncementsController < AdminController
 
       flash[:success] = "Success update announcement."
       redirect_to "/dashboard/admin/announcements"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/admin/home'
     end

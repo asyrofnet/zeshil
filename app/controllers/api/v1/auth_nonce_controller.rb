@@ -46,10 +46,10 @@ class Api::V1::AuthNonceController < ApplicationController
           # phone_number = PhonyRails.normalize_number(phone_number, default_country_code: 'ID')
 
           if phone_number == ""
-            raise Exception.new('Phone number is empty.')
+            raise StandardError.new('Phone number is empty.')
           end
         else
-          raise Exception.new('Phone number is empty.')
+          raise StandardError.new('Phone number is empty.')
         end
         user = User.find_by(phone_number: phone_number, application_id: application.id)
 
@@ -205,7 +205,7 @@ class Api::V1::AuthNonceController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -283,7 +283,7 @@ class Api::V1::AuthNonceController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -325,13 +325,13 @@ class Api::V1::AuthNonceController < ApplicationController
         # check empty passcode
         passcode = params[:user][:passcode]
         if passcode.nil? || passcode.blank?
-          raise Exception.new('passcode cannot be empty.')
+          raise StandardError.new('passcode cannot be empty.')
         end
 
         # check empty nonce
         nonce = params[:user][:nonce]
         if nonce.nil? || nonce.blank?
-          raise Exception.new('nonce cannot be empty.')
+          raise StandardError.new('nonce cannot be empty.')
         end
 
         user = User.find_by(phone_number: phone_number,
@@ -402,7 +402,7 @@ class Api::V1::AuthNonceController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message,

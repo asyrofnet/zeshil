@@ -27,7 +27,7 @@ class Dashboard::AuthController < ApplicationController
         end
       end
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: "superadmin"
     end

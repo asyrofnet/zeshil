@@ -74,9 +74,9 @@ class QiscusAI
           return res.body
         end
       end
-    rescue Exception => e
+    rescue => e
       # if error is not from response, then throw an exception
-      raise Exception.new(e.message)
+      raise StandardError.new(e.message)
     end
 
   end
@@ -129,9 +129,9 @@ class QiscusAI
           return res.body
         end
       end
-    rescue Exception => e
+    rescue => e
       # if error is not from response, then throw an exception
-      raise Exception.new(e.message)
+      raise StandardError.new(e.message)
     end
 
   end

@@ -166,7 +166,7 @@ class Api::V2::Contacts::SyncController < ProtectedController
                       phone_numbers: phone_numbers
           }
         else
-          raise Exception.new("Contact must be an array of object.")
+          raise StandardError.new("Contact must be an array of object.")
         end
   
       rescue ActiveRecord::RecordInvalid => e
@@ -183,7 +183,7 @@ class Api::V2::Contacts::SyncController < ProtectedController
           }
         }, status: 422 and return
   
-      rescue Exception => e
+      rescue => e
         render json: {
           error: {
             message: e.message

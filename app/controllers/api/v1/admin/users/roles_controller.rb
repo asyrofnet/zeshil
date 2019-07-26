@@ -76,7 +76,7 @@ class Api::V1::Admin::Users::RolesController < ProtectedController
           data: user.roles
         } and return
       end
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -129,7 +129,7 @@ class Api::V1::Admin::Users::RolesController < ProtectedController
           data: user.roles
         } and return
       end
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

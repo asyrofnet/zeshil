@@ -15,7 +15,7 @@ class Api::V2::Chat::AutoResponderController < ProtectedController
     def create
       begin
         if !@current_user.is_official
-          raise Exception.new("Only Official can update auto responder")
+          raise InputError.new("Only Official can update auto responder")
         end
         auto_responder = params[:auto_responder]
         auto_starter = params[:auto_starter]
@@ -61,10 +61,11 @@ class Api::V2::Chat::AutoResponderController < ProtectedController
             }
           }, status: 422 and return
     
-        rescue Exception => e
+        rescue => e
           render json: {
             error: {
-              message: e.message
+              message: e.message,
+              class: e.class.name
             }
           }, status: 422 and return
       end
@@ -121,7 +122,7 @@ class Api::V2::Chat::AutoResponderController < ProtectedController
             }
           }, status: 422 and return
     
-        rescue Exception => e
+        rescue => e
           render json: {
             error: {
               message: e.message
@@ -192,7 +193,7 @@ class Api::V2::Chat::AutoResponderController < ProtectedController
           }
         }, status: 422 and return
 
-      rescue Exception => e
+      rescue => e
         render json: {
           error: {
             message: e.message

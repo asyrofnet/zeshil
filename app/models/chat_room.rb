@@ -288,7 +288,7 @@ class ChatRoom < ActiveRecord::Base
 
         qiscus_sdk.update_room(token, qiscus_room_id, group_chat_name, group_avatar_url)
       end
-    rescue Exception => e
+    rescue => e
       Rails.logger.debug "Fail when call SDK: #{e.message}"
     end
   end
@@ -438,7 +438,7 @@ class ChatRoom < ActiveRecord::Base
       error = nil
 
       return success, error
-    raise Exception => e
+    raise StandardError => e
       success = nil
       error = e.message
 

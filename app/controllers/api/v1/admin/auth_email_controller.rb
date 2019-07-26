@@ -23,10 +23,10 @@ class Api::V1::Admin::AuthEmailController < ApplicationController
           email = email.strip().delete(' ')
 
           if email == ""
-            raise Exception.new('Email is empty.')
+            raise StandardError.new('Email is empty.')
           end
         else
-          raise Exception.new('Email is empty.')
+          raise StandardError.new('Email is empty.')
         end
 
         user = User.find_by(email: email, application_id: application.id)
@@ -69,7 +69,7 @@ class Api::V1::Admin::AuthEmailController < ApplicationController
         end
 
       end
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
