@@ -21,7 +21,7 @@ module MemberSessionHelper
           }
         }, status: 401
       end
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -41,7 +41,7 @@ module MemberSessionHelper
           }
         }, status: 401
       end
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -65,8 +65,8 @@ module MemberSessionHelper
           return true
         end
       end
-    rescue Exception => e
-      raise Exception.new(e.message)
+    rescue => e
+      raise StandardError.new(e.message)
     end
   end
 
@@ -86,17 +86,17 @@ module MemberSessionHelper
           # return current user
           return auth_session.user
         else
-          raise Exception.new('Session is compromised, you enforced to logout from this application because of invalid token.')
+          raise StandardError.new('Session is compromised, you enforced to logout from this application because of invalid token.')
         end
       end
       
     rescue JWT::ExpiredSignature => e
       # Handle expired token, e.g. logout user or deny access
-      raise Exception.new(e.message)
+      raise StandardError.new(e.message)
     rescue JWT::VerificationError => e
-      raise Exception.new(e.message)
-    rescue Exception => e
-      raise Exception.new(e.message)
+      raise StandardError.new(e.message)
+    rescue => e
+      raise StandardError.new(e.message)
     end
 
   end # end of lookup_token

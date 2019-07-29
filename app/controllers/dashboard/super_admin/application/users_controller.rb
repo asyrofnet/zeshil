@@ -21,7 +21,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
       @path_segments = request.fullpath.split("/")
 
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -71,7 +71,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
 
       render "list_sessions"
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -101,7 +101,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
       # render json: {
       #   user: @user
       # }
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -124,7 +124,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
         # before updating user's email or phone number, check if there are no another user
         # who have same email/phone number except current user
         if User.where.not(id: @user.id).where(application_id: @user.application.id).exists?(phone_number: phone_number)
-          raise Exception.new("Your submitted phone number already used by another user. Please use another phone number.")
+          raise InputError.new("Your submitted phone number already used by another user. Please use another phone number.")
         end
 
         @user.phone_number = phone_number
@@ -140,7 +140,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
       country_code = user_params[:country_code]
       if country_code.present? && !country_code.nil? && country_code != ""
         if !@user.phone_number.include? country_code
-          raise Exception.new("You have to include your validated country code at the beginning of your phone_number")
+          raise InputError.new("You have to include your validated country code at the beginning of your phone_number")
         else
           @user.country_code = country_code.strip().delete(' ')
         end
@@ -156,7 +156,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
         # before updating user's email or phone number, check if there are no another user
         # who have same email/phone number except current user
         if User.where.not(id: @user.id).where(application_id: @user.application.id).exists?(email: email)
-          raise Exception.new("Your submitted email already used by another user. Please use another email.")
+          raise InputError.new("Your submitted email already used by another user. Please use another email.")
         end
 
         @user.email = (email.nil? || email == "") ? "" : email.strip().delete(' ')
@@ -203,7 +203,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
         application = ::Application.find(params[:application_id])
         if application.is_coaching_module_connected
           if role_ids.to_a.map(&:to_i).include? Role.official.id
-            raise Exception.new("Access denied. Cannot add Official Account roles.")
+            raise InputError.new("Access denied. Cannot add Official Account roles.")
           end
         end
 
@@ -221,7 +221,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
 
       flash[:success] = "Success update profile."
       redirect_back fallback_location: '/dashboard/super_admin/home' and return
-    rescue Exception => e
+    rescue => e
       # render json: {
       #   message: e.message,
       #   backtrace: e.backtrace,
@@ -280,7 +280,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
 
       flash[:success] = "Success delete profile '#{@user.fullname || @user.phone_number || @user.email}'."
       redirect_to "/dashboard/super_admin/application/#{params[:application_id]}/users"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -311,7 +311,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
         application = ::Application.find(params[:application_id])
         if application.is_coaching_module_connected
           if params[:user_roles].to_a.map(&:to_i).include? Role.official.id
-            raise Exception.new("Access denied. Cannot add Official Account roles.")
+            raise InputError.new("Access denied. Cannot add Official Account roles.")
           end
         end
 
@@ -322,10 +322,10 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
           # phone_number = PhonyRails.normalize_number(phone_number, default_country_code: 'ID')
 
           if phone_number == ""
-            raise Exception.new('Phone number is empty.')
+            raise InputError.new('Phone number is empty.')
           end
         else
-          raise Exception.new('Phone number is empty.')
+          raise InputError.new('Phone number is empty.')
         end
         user = ::User.find_by(phone_number: phone_number, application_id: application.id)
 
@@ -349,7 +349,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
           country_code = params[:user][:country_code]
           if country_code.present?
             if !phone_number.include? country_code
-              raise Exception.new("You have to include your validated country code at the beginning of your phone_number")
+              raise InputError.new("You have to include your validated country code at the beginning of your phone_number")
             else
               new_user_credential["country_code"] = country_code
             end
@@ -364,7 +364,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
           username_valid = UserAdditionalInfo.check_username(new_user_credential["username"])
           
           if (params[:user_roles] - official_role_id != params[:user_roles]) && (username_valid[:success] != true)
-            raise Exception.new("username is invalid!")
+            raise InputError.new("username is invalid!")
           end
 
           user = User.new
@@ -382,7 +382,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
           user.country_code = new_user_credential["country_code"]
 
           if params[:user_roles].to_a.empty?
-            raise Exception.new("You must select roles!")
+            raise InputError.new("You must select roles!")
           end
 
           user.roles = Role.where("id IN (?)", params[:user_roles].to_a)
@@ -421,7 +421,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
             user.update!(avatar_url: url)
           end
         else
-          raise Exception.new('User with given phone number already exist.')
+          raise InputError.new('User with given phone number already exist.')
         end
 
         # here the user must already created, so we can add default contact (official user) here
@@ -453,7 +453,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -480,7 +480,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
       # render json: {
       #   user: @chat_rooms
       # }
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -501,7 +501,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
 
       flash[:success] = "Success update user features."
       redirect_back fallback_location: '/dashboard/super_admin/home' and return
-    rescue Exception => e
+    rescue => e
       render json: {
         backtrace: e.backtrace
       } and return
@@ -590,7 +590,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
       flash[:notice] = msg
       redirect_back fallback_location: '/dashboard/super_admin/home'
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -601,7 +601,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
       @application = ::Application.find(params[:application_id])
       @users = @application.users.includes(:roles).order(created_at: :desc)
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -631,7 +631,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
 				:stream => true,
 				:buffer_size => 4096
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -692,7 +692,7 @@ class Dashboard::SuperAdmin::Application::UsersController < SuperAdminController
         :stream => true,
         :buffer_size => 4096
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end

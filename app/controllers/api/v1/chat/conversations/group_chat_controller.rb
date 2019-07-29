@@ -17,7 +17,7 @@ class Api::V1::Chat::Conversations::GroupChatController < ProtectedController
             user: [:roles, :application],
           }).find_by(qiscus_room_id: params[:qiscus_room_id], application_id: @current_user.application.id)
       if chat_room.nil?
-        raise Exception.new("Chat room with qiscus room id #{params[:qiscus_room_id]} is not found.")
+        raise InputError.new("Chat room with qiscus room id #{params[:qiscus_room_id]} is not found.")
       end
 
       bot_id = User.find_bot_id
@@ -30,7 +30,7 @@ class Api::V1::Chat::Conversations::GroupChatController < ProtectedController
         sdk_info, chat_room_sdk_info = qiscus_sdk.get_rooms_info(@current_user.qiscus_email, [chat_room.qiscus_room_id])
 
         if sdk_info != 200
-          raise Exception.new(chat_room_sdk_info['error']['detailed_messages'].to_a.join(", ").capitalize)
+          raise InputError.new(chat_room_sdk_info['error']['detailed_messages'].to_a.join(", ").capitalize)
         end
 
         chat_room = chat_room.as_json({:me => @current_user, :chat_room_sdk_info => chat_room_sdk_info})
@@ -78,13 +78,14 @@ class Api::V1::Chat::Conversations::GroupChatController < ProtectedController
         } and return
 
       else
-        raise Exception.new("You are not member of this group.")
+        raise InputError.new("You are not member of this group.")
       end
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message,
-          code: 105
+          code: 105,
+          class: e.class.name
         }
       }, status: 422
     end

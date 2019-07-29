@@ -25,33 +25,33 @@ class Api::V1::CallsController < ProtectedController
     begin
       user_email = params[:user_email]
       if user_email.nil? || user_email == ""
-        raise Exception.new("user_email cannot be empty.")
+        raise InputError.new("user_email cannot be empty.")
       end
 
       user1 = User.find_by(qiscus_email: user_email, application_id: @current_user.application.id)
       if user1.nil?
-        raise Exception.new("User is not found.")
+        raise InputError.new("User is not found.")
       end
 
       user_type = params[:user_type]
       if user_type.nil? || !user_type.present? || user_type == ""
-        raise Exception.new("user_type can't be empty.")
+        raise InputError.new("user_type can't be empty.")
       else
         if user_type.downcase.delete(' ') != "caller" && user_type.downcase.delete(' ') != "callee"
-          raise Exception.new("Permitted user_type is 'caller' or 'callee'.")
+          raise InputError.new("Permitted user_type is 'caller' or 'callee'.")
         end
       end
 
       call_room_id = params[:call_room_id]
       if call_room_id.nil? || call_room_id == ""
-        raise Exception.new("call_room_id cannot be empty.")
+        raise InputError.new("call_room_id cannot be empty.")
       end
 
       if params[:is_video].nil? || !params[:is_video].present? || params[:is_video] == ""
-        raise Exception.new("is_video can't be empty.")
+        raise InputError.new("is_video can't be empty.")
       else
         if params[:is_video].downcase.delete(' ') != "true" && params[:is_video].downcase.delete(' ') != "false"
-          raise Exception.new("Permitted is_video is 'true' or 'false'.")
+          raise InputError.new("Permitted is_video is 'true' or 'false'.")
         end
       end
 
@@ -63,10 +63,10 @@ class Api::V1::CallsController < ProtectedController
 
       call_event = params[:call_event]
       if call_event.nil? || !call_event.present? || call_event == ""
-        raise Exception.new("Call event can't be empty.")
+        raise InputError.new("Call event can't be empty.")
       else
         if call_event.downcase.delete(' ') != "incoming" && call_event.downcase.delete(' ') != "accept" && call_event.downcase.delete(' ') != "end" && call_event.downcase.delete(' ') != "cancel" && call_event.downcase.delete(' ') != "reject"
-          raise Exception.new("Permitted call_event is 'incoming', 'accept', 'end', 'cancel', 'reject'.")
+          raise InputError.new("Permitted call_event is 'incoming', 'accept', 'end', 'cancel', 'reject'.")
         end
       end
 
@@ -126,7 +126,7 @@ class Api::V1::CallsController < ProtectedController
       else
         bot_user = User.find_by(qiscus_email: bot_user_email, application_id: @current_user.application_id)
         if bot_user.nil?
-          raise Exception.new("Bot user is not found.")
+          raise InputError.new("Bot user is not found.")
         end
 
         # Looking for a group chat with is_official_chat=true
@@ -289,10 +289,11 @@ class Api::V1::CallsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -384,10 +385,11 @@ class Api::V1::CallsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
 

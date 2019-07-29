@@ -47,7 +47,7 @@ class Api::V2::ChannelController < ProtectedController
 
       redirect_back fallback_location: location
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -107,7 +107,7 @@ class Api::V2::ChannelController < ProtectedController
         has_joined: has_joined
       }
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

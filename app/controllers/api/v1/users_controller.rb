@@ -18,7 +18,7 @@ class Api::V1::UsersController < ProtectedController
         application = @current_user.application
         user_ids = params[:user_id]
         if !user_ids.is_a?(Array)
-          raise Exception.new("User id must be an array of user id.")
+          raise InputError.new("User id must be an array of user id.")
         end
 
         users = User.where(id: user_ids.to_a, application_id: application.id)
@@ -34,10 +34,11 @@ class Api::V1::UsersController < ProtectedController
       render json: {
         data: users
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -60,13 +61,13 @@ class Api::V1::UsersController < ProtectedController
         application = @current_user.application
         user_id = params[:id]
         if user_id.nil?
-          raise Exception.new("User id must be present.")
+          raise InputError.new("User id must be present.")
         end
 
         user = User.find_by(id: user_id, application_id: application.id)
 
         if user.nil?
-          raise Exception.new("User not found")
+          raise InputError.new("User not found")
         end
 
         contact = Contact.find_by(user_id: @current_user.id, contact_id: user.id)
@@ -79,10 +80,11 @@ class Api::V1::UsersController < ProtectedController
       render json: {
         data: user
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

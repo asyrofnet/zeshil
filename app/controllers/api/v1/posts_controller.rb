@@ -87,7 +87,7 @@ class Api::V1::PostsController < ProtectedController
       if !params[:share_post_id].present? || params[:share_post_id].nil?
         # if user create a new post then content or media cannot be empty
         if !params[:content].present? && @media_params.empty?
-          raise Exception.new("Post content or media cannot be empty.")
+          raise InputError.new("Post content or media cannot be empty.")
         end
       end
 
@@ -157,11 +157,11 @@ class Api::V1::PostsController < ProtectedController
             if params[:link_meta].is_a?(String)
               begin
                 link_meta = JSON.parse(params[:link_meta])
-              rescue Exception => e
-                raise Exception.new('Link meta params is malformed JSON string.')
+              rescue => e
+                raise InputError.new('Link meta params is malformed JSON string.')
               end
             else
-              raise Exception.new('Link meta params must be string.')
+              raise InputError.new('Link meta params must be string.')
             end
           end
 
@@ -205,10 +205,11 @@ class Api::V1::PostsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -230,7 +231,7 @@ class Api::V1::PostsController < ProtectedController
       post = Post.where(user_id: @current_user.id).where(id: params[:id]).first
 
       if post.nil?
-        raise Exception.new("Post not found")
+        raise InputError.new("Post not found")
       end
 
       post.delete
@@ -246,10 +247,11 @@ class Api::V1::PostsController < ProtectedController
         data: post
       } and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -269,17 +271,17 @@ class Api::V1::PostsController < ProtectedController
   def update
     begin
       if !params[:content].present? || params[:content] == ""
-        raise Exception.new("Post content cannot be empty.")
+        raise InputError.new("Post content cannot be empty.")
       end
 
       post = Post.find(params[:id])
       if post.nil?
-        raise Exception.new("Post not found.")
+        raise InputError.new("Post not found.")
       end
 
       # only post owner that can update post
       if post.user_id != @current_user.id
-        raise Exception.new("Only post owner that can update post.")
+        raise InputError.new("Only post owner that can update post.")
       end
 
       ActiveRecord::Base.transaction do
@@ -325,10 +327,11 @@ class Api::V1::PostsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -348,7 +351,7 @@ class Api::V1::PostsController < ProtectedController
       post = Post.find(params[:id])
 
       if post.nil?
-        raise Exception.new('Post not found.')
+        raise InputError.new('Post not found.')
       end
 
       post_history = post.post_history.order(created_at: :desc)
@@ -356,10 +359,11 @@ class Api::V1::PostsController < ProtectedController
       render json: {
         data: post_history
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

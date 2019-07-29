@@ -42,7 +42,7 @@ class Dashboard::Admin::AuthEmailController < ApplicationController
         redirect_back fallback_location: "/app/#{app_id}/auth_email"
       end
 
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: "/app/#{app_id}"
     end

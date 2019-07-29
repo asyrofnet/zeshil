@@ -40,7 +40,7 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
         total_data: total,
         data: chat_rooms
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -61,7 +61,7 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
         target_user_id = params[:target_user_id]
 
         if target_user_id.nil? || target_user_id == ""
-          raise Exception.new("Target user id can not be blank.")
+          raise InputError.new("Target user id can not be blank.")
         end
 
         target_user = User.find(target_user_id)
@@ -103,10 +103,11 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
       render json: {
         data: chat_room
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -130,7 +131,7 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
         target_user_id = params[:target_user_id]
 
         if !target_user_id.is_a?(Array)
-          raise Exception.new("Target user id must be an array of user id.")
+          raise InputError.new("Target user id must be an array of user id.")
         end
 
         target_user = User.where("id IN (?)", target_user_id.to_a)
@@ -138,7 +139,7 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
         email_sdk = target_user.pluck(:qiscus_email)
 
         if email_sdk.empty?
-          raise Exception.new("Target user is not match in any record.")
+          raise InputError.new("Target user is not match in any record.")
         end
 
         qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
@@ -180,10 +181,11 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
       render json: {
         data: chat_room
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -206,7 +208,7 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
       render json: {
         data: chat_room.as_json()
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -245,7 +247,7 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
         data: chat_room
       } and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -277,14 +279,14 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
 
         qiscus_room_ids = params[:qiscus_room_id]
         if !qiscus_room_ids.is_a?(Array)
-          raise Exception.new("Qiscus room id must be an array of qiscus room id.")
+          raise InputError.new("Qiscus room id must be an array of qiscus room id.")
         end
         qiscus_room_ids = qiscus_room_ids.to_a
 
         # anticipate empty index array of qiscus room id
         qiscus_room_ids.each do |id|
           if id.nil? || id == ""
-            raise Exception.new("Qiscus room id must be present.")
+            raise InputError.new("Qiscus room id must be present.")
           end
         end
 
@@ -297,7 +299,7 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
         # chat room not found
         if qiscus_room_ids.size != qiscus_room_id_in_database.size
           qiscus_room_ids_not_found = qiscus_room_ids.map(&:to_i) - qiscus_room_id_in_database
-          raise Exception.new("Chat room with qiscus_room_id #{qiscus_room_ids_not_found} not found.")
+          raise InputError.new("Chat room with qiscus_room_id #{qiscus_room_ids_not_found} not found.")
         end
 
         # remove participants from group
@@ -332,10 +334,11 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
         data: chat_rooms
       } and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422
     end
@@ -368,7 +371,7 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
 
 
         if !target_user_id.is_a?(Array)
-          raise Exception.new("Target user id must be an array of user id.")
+          raise InputError.new("Target user id must be an array of user id.")
         end
 
         chat_name = ""
@@ -384,7 +387,7 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
 
         # prevent error if target user is not found
         if target_user.empty?
-          raise Exception.new("No one target user found.")
+          raise InputError.new("No one target user found.")
         end
 
         # Backend need to create chat room in SDK
@@ -395,7 +398,7 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
 
         # qiscus_room_id = params[:qiscus_room_id]
         if qiscus_room_id.nil? || qiscus_room_id == ""
-          raise Exception.new("Qiscus room id can not be blank.")
+          raise InputError.new("Qiscus room id can not be blank.")
         end
 
         chat_room = ChatRoom.find_by(qiscus_room_id: qiscus_room_id, application_id: @current_user.application.id)
@@ -451,7 +454,7 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
           end
         else
           # if exist then return error with warning that qiscus room id has been inserted before
-          raise Exception.new("Qiscus room id has been inserted before, it must be unique.")
+          raise InputError.new("Qiscus room id has been inserted before, it must be unique.")
         end
       end
 
@@ -473,10 +476,11 @@ class Api::V1::Admin::ChatRoomsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

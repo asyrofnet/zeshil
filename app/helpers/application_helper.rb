@@ -7,7 +7,7 @@ module ApplicationHelper
       elsif user.kind_of?(User)
         user_id = user.id
       else 
-        raise Exception.new("Parameter must be an user or user id.")
+        raise StandardError.new("Parameter must be an user or user id.")
       end
 
       if User.exists?(user_id)
@@ -59,7 +59,7 @@ module ApplicationHelper
               auth_session.country_code = country_code if !country_code.nil?
             end
           end
-        rescue Exception => e
+        rescue => e
           # do nothing
         end
 
@@ -68,11 +68,11 @@ module ApplicationHelper
 
         return jwt
       else
-        raise Exception.new("User with id #{user_id} is not found.")
+        raise StandardError.new("User with id #{user_id} is not found.")
       end
       
-    rescue Exception => e
-      raise Exception.new(e.message)
+    rescue => e
+      raise StandardError.new(e.message)
     end
   end
 

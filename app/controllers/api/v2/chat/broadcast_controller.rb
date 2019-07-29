@@ -18,7 +18,7 @@ class Api::V2::Chat::BroadcastController < ProtectedController
       begin
         phone_number = params[:phone_number]
         if phone_number.nil? || !phone_number.kind_of?(Array)
-          raise Exception.new("phone_number must be present in array form.")
+          raise InputError.new("phone_number must be present in array form.")
         end
         phone_numbers = Array.new
         current_user_phone_number = @current_user.phone_number
@@ -45,11 +45,11 @@ class Api::V2::Chat::BroadcastController < ProtectedController
         payload = params[:payload]
 
         if message.nil? && type == type_text
-          raise Exception.new("If type is text please send the message")
+          raise InputError.new("If type is text please send the message")
         end
 
         if type != type_text && payload.nil?
-            raise Exception.new("If type is not text please send the payload") 
+            raise InputError.new("If type is not text please send the payload") 
         end
   
         
@@ -87,10 +87,11 @@ class Api::V2::Chat::BroadcastController < ProtectedController
           }
         }, status: 422 and return
   
-      rescue Exception => e
+      rescue => e
         render json: {
           error: {
-            message: e.message
+            message: e.message,
+            class: e.class.name
           }
         }, status: 422 and return
       end

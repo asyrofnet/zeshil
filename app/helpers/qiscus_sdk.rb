@@ -23,13 +23,13 @@ class QiscusSdk
       res = request("POST", login_or_register_url, params)
       token = res["results"]["user"]["token"]
       if token.nil?
-        raise Exception.new("Qiscus token is null.")
+        raise StandardError.new("Qiscus token is null.")
       else
         return token
       end
 
     else
-      raise Exception.new("Email is not valid.")
+      raise StandardError.new("Email is not valid.")
     end
   end
 
@@ -47,19 +47,19 @@ class QiscusSdk
       res = request("POST", login_or_register_url, params)
       token = res["results"]["user"]["token"]
       if token.nil?
-        raise Exception.new("Qiscus token is null.")
+        raise StandardError.new("Qiscus token is null.")
       else
         return token
       end
 
     else
-      raise Exception.new("Email is not valid.")
+      raise StandardError.new("Email is not valid.")
     end
   end
 
   def get_or_create_room_with_target(token, emails, distinct_id = nil, options = nil)
     if token.nil?
-      raise Exception.new("Token is empty.")
+      raise StandardError.new("Token is empty.")
     end
 
     if emails.kind_of?(String)
@@ -82,20 +82,20 @@ class QiscusSdk
     chat_type = res["results"]["room"]["chat_type"]
 
     if room_name.nil?
-      raise Exception.new("Qiscus room name is null.")
+      raise StandardError.new("Qiscus room name is null.")
     end
 
     if room_id.nil?
-      raise Exception.new("Qiscus room id is null.")
+      raise StandardError.new("Qiscus room id is null.")
     end
 
     if topic_id.nil?
-      raise Exception.new("Qiscus topic id is null.")
+      raise StandardError.new("Qiscus topic id is null.")
     end
 
     is_group_chat = false
     if chat_type.nil?
-      raise Exception.new("Qiscus chat type is null.")
+      raise StandardError.new("Qiscus chat type is null.")
     else
       if chat_type != "single"
         is_group_chat = true
@@ -171,11 +171,11 @@ class QiscusSdk
 
   def get_rooms_info(user_email, room_id)
     if !user_email.kind_of?(String) || user_email.nil? || user_email == ""
-      raise Exception.new("User email is not string or nil.")
+      raise StandardError.new("User email is not string or nil.")
     end
 
     if !room_id.kind_of?(Array) || room_id.nil? || room_id == ""
-      raise Exception.new("Room is not array or nil.")
+      raise StandardError.new("Room is not array or nil.")
     end
 
     url = "#{@BASE_URL}/api/v2/rest/get_rooms_info"
@@ -226,15 +226,15 @@ class QiscusSdk
 
   def create_room(name_, participants, creator, avatar_url = nil)
     if !name_.kind_of?(String) || name_.nil? || name_ == ""
-      raise Exception.new("Name is not string or nil.")
+      raise StandardError.new("Name is not string or nil.")
     end
 
     if !participants.kind_of?(Array) || participants.nil? || participants == ""
-      raise Exception.new("Participants is not array or nil.")
+      raise StandardError.new("Participants is not array or nil.")
     end
 
     if !creator.kind_of?(String) || creator.nil? || creator == ""
-      raise Exception.new("Creator is not string or nil.")
+      raise StandardError.new("Creator is not string or nil.")
     end
 
     url = "#{@BASE_URL}/api/v2/rest/create_room"
@@ -260,11 +260,11 @@ class QiscusSdk
 
   def add_room_participants(emails, room_id)
     if !room_id.kind_of?(Integer) || room_id.nil? || room_id == ""
-      raise Exception.new("Room id is not integer or nil.")
+      raise StandardError.new("Room id is not integer or nil.")
     end
 
     if !emails.kind_of?(Array) || emails.empty? || emails == ""
-      raise Exception.new("Emails is not array or nil.")
+      raise StandardError.new("Emails is not array or nil.")
     end
 
     url = "#{@BASE_URL}/api/v2/rest/add_room_participants"
@@ -279,11 +279,11 @@ class QiscusSdk
 
   def remove_room_participants(emails, room_id)
     if !room_id.kind_of?(Integer) || room_id.nil? || room_id == ""
-      raise Exception.new("Room id is not integer or nil.")
+      raise StandardError.new("Room id is not integer or nil.")
     end
 
     if !emails.kind_of?(Array) || emails.empty? || emails == ""
-      raise Exception.new("Emails is not array or nil.")
+      raise StandardError.new("Emails is not array or nil.")
     end
 
     url = "#{@BASE_URL}/api/v2/rest/remove_room_participants"
@@ -346,16 +346,16 @@ class QiscusSdk
     chat_type = res["results"]["room"]["chat_type"]
 
     if room_id.nil?
-      raise Exception.new("Qiscus room id is null.")
+      raise StandardError.new("Qiscus room id is null.")
     end
 
     if topic_id.nil?
-      raise Exception.new("Qiscus topic id is null.")
+      raise StandardError.new("Qiscus topic id is null.")
     end
 
     is_group_chat = false
     if chat_type.nil?
-      raise Exception.new("Qiscus chat type is null.")
+      raise StandardError.new("Qiscus chat type is null.")
     else
       if chat_type != "single"
         is_group_chat = true
@@ -375,11 +375,11 @@ class QiscusSdk
 
   def get_or_create_room_with_unique_id(token, unique_id, chat_name = nil, avatar_url = nil)
     if token.nil?
-      raise Exception.new("Token is empty.")
+      raise StandardError.new("Token is empty.")
     end
 
     if unique_id.nil?
-      raise Exception.new("Unique id is empty.")
+      raise StandardError.new("Unique id is empty.")
     end
 
     url = "#{@BASE_URL}/api/v2/mobile/get_or_create_room_with_unique_id"
@@ -398,20 +398,20 @@ class QiscusSdk
     chat_type = res["results"]["room"]["chat_type"]
 
     if room_name.nil?
-      raise Exception.new("Qiscus room name is null.")
+      raise StandardError.new("Qiscus room name is null.")
     end
 
     if room_id.nil?
-      raise Exception.new("Qiscus room id is null.")
+      raise StandardError.new("Qiscus room id is null.")
     end
 
     if unique_id.nil?
-      raise Exception.new("Qiscus unique_id id is null.")
+      raise StandardError.new("Qiscus unique_id id is null.")
     end
 
     is_group_chat = false
     if chat_type.nil?
-      raise Exception.new("Qiscus chat type is null.")
+      raise StandardError.new("Qiscus chat type is null.")
     else
       if chat_type != "single"
         is_group_chat = true
@@ -431,7 +431,7 @@ class QiscusSdk
 
   def get_user_rooms(user_email, page = 1, limit = 100, show_participants = false)
     if !user_email.kind_of?(String) || user_email.nil? || user_email == ""
-      raise Exception.new("User email is not string or nil.")
+      raise StandardError.new("User email is not string or nil.")
     end
 
     url = "#{@BASE_URL}/api/v2/rest/get_user_rooms?user_email=#{user_email}"
@@ -473,14 +473,14 @@ class QiscusSdk
 
   def upload_file(token, file)
       if !defined?(file.content_type) || !defined?(file.original_filename)
-        raise Exception.new("Invalid file.")
+        raise StandardError.new("Invalid file.")
       end
 
       user = User.find_by(qiscus_token: token)
       if user
         app_id = user.application.app_id
       else
-        raise Exception.new("User not found")
+        raise StandardError.new("User not found")
       end
 
       upload_url = "#{@BASE_URL}/api/v2/mobile/upload"
@@ -518,7 +518,7 @@ class QiscusSdk
     res = request("POST", update_profile_url, params)
     token = res["results"]["user"]["token"]
     if token.nil?
-      raise Exception.new("Qiscus token is null.")
+      raise StandardError.new("Qiscus token is null.")
     else
       return token
     end
@@ -561,7 +561,7 @@ class QiscusSdk
 
   def get_or_create_channel(chat_name, unique_id, participants, room_avatar_url=nil)
     if !participants.kind_of?(Array) || participants.nil? || participants == ""
-      raise Exception.new("Participants is not array or nil.")
+      raise StandardError.new("Participants is not array or nil.")
     end
 
     url = "#{@BASE_URL}/api/v2.1/rest/get_or_create_channel"
@@ -633,7 +633,7 @@ class QiscusSdk
               }
             )
 
-            raise Exception.new("Error while calling Qiscus SDK #{uri.host} return HTTP status code #{res.code} (#{res.message})")
+            raise StandardError.new("Error while calling Qiscus SDK #{uri.host} return HTTP status code #{res.code} (#{res.message})")
           end
 
         else
@@ -666,11 +666,11 @@ class QiscusSdk
               }
             )
 
-            raise Exception.new("Error while calling Qiscus SDK #{uri.host} return HTTP status code #{res.code} (#{res.message})")
+            raise StandardError.new("Error while calling Qiscus SDK #{uri.host} return HTTP status code #{res.code} (#{res.message})")
           end
         end
-      rescue Exception => e
-        raise Exception.new(e.message)
+      rescue => e
+        raise StandardError.new(e.message)
       end
     end
 
@@ -706,10 +706,10 @@ class QiscusSdk
             return res.response_code, error
           end
         else
-          raise Exception.new("Qiscus SDK return HTTP status code #{res.response_code}.")
+          raise StandardError.new("Qiscus SDK return HTTP status code #{res.response_code}.")
         end
-      rescue Exception => e
-        raise Exception.new(e.message)
+      rescue => e
+        raise StandardError.new(e.message)
       end
     end
 
@@ -747,14 +747,14 @@ class QiscusSdk
         end
 
 
-      rescue Exception => e
+      rescue => e
         Raven.capture_message(e.message,
           level: "error",
           extra: {
             url: url
           }
         )
-        raise Exception.new(e.message)
+        raise StandardError.new(e.message)
       end
     end
 end

@@ -37,12 +37,12 @@ class QiscusCallSdk
         duration = res["data"]["duration"]
         status = res["data"]["status"]
       else
-        raise Exception.new("Error while calling Qiscus call SDK #{uri.host} return HTTP status code #{res.code} (#{res.message})")
+        raise StandardError.new("Error while calling Qiscus call SDK #{uri.host} return HTTP status code #{res.code} (#{res.message})")
       end
 
       return connected_at, duration, status
-    rescue Exception => e
-      raise Exception.new(e.message)
+    rescue => e
+      raise StandardError.new(e.message)
     end
   end
 

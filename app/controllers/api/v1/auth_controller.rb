@@ -42,10 +42,10 @@ class Api::V1::AuthController < ApplicationController
           # phone_number = PhonyRails.normalize_number(phone_number, default_country_code: 'ID')
 
           if phone_number == ""
-            raise Exception.new('Phone number is empty.')
+            raise InputError.new('Phone number is empty.')
           end
         else
-          raise Exception.new('Phone number is empty.')
+          raise InputError.new('Phone number is empty.')
         end
         user = User.find_by(phone_number: phone_number, application_id: application.id)
 
@@ -173,10 +173,11 @@ class Api::V1::AuthController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -245,7 +246,7 @@ class Api::V1::AuthController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -319,7 +320,7 @@ class Api::V1::AuthController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message,

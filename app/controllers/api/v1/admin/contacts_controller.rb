@@ -22,11 +22,11 @@ class Api::V1::Admin::ContactsController < ProtectedController
       page = params[:page]
       ActiveRecord::Base.transaction do
         if !params[:user_id].present? || params[:user_id] == ""
-          raise Exception.new("User id must be present.")
+          raise InputError.new("User id must be present.")
         end
 
         user = User.find_by(id: params[:user_id], application_id: @current_user.application_id)
-        raise Exception.new("User is not found.") if user.nil?
+        raise InputError.new("User is not found.") if user.nil?
 
         # add all official user before loading contacts
         role_official_user = Role.official
@@ -111,10 +111,11 @@ class Api::V1::Admin::ContactsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -134,14 +135,14 @@ class Api::V1::Admin::ContactsController < ProtectedController
   def create
     begin
       if !params[:user_id].present? || params[:user_id] == ""
-        raise Exception.new("User id must be present.")
+        raise InputError.new("User id must be present.")
       end
       user = User.find_by(id: params[:user_id], application_id: @current_user.application_id)
-      raise Exception.new("User is not found.") if user.nil?
+      raise InputError.new("User is not found.") if user.nil?
 
       candidate_contact_ids = params[:contact_id]
       if !candidate_contact_ids.is_a?(Array)
-        raise Exception.new("Contact id must be an array of user id.")
+        raise InputError.new("Contact id must be an array of user id.")
       end
       candidate_contact_ids = candidate_contact_ids.collect{|i| i.to_i} # convert array of string to array of int
 
@@ -215,10 +216,11 @@ class Api::V1::Admin::ContactsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -238,14 +240,14 @@ class Api::V1::Admin::ContactsController < ProtectedController
   def destroy_contacts
     begin
       if !params[:user_id].present? || params[:user_id] == ""
-        raise Exception.new("User id must be present.")
+        raise InputError.new("User id must be present.")
       end
       user = User.find_by(id: params[:user_id], application_id: @current_user.application_id)
-      raise Exception.new("User is not found.") if user.nil?
+      raise InputError.new("User is not found.") if user.nil?
 
       candidate_contact_ids = params[:contact_id]
       if !candidate_contact_ids.is_a?(Array)
-        raise Exception.new("Contact id must be an array of user id.")
+        raise InputError.new("Contact id must be an array of user id.")
       end
       candidate_contact_ids = candidate_contact_ids.collect{|i| i.to_i} # convert array of string to array of int
 
@@ -301,10 +303,11 @@ class Api::V1::Admin::ContactsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

@@ -32,7 +32,7 @@ class SmsVerification
 
     # prevent provider setting null error when no one provider setting in db
     if provider_setting.nil?
-      raise Exception.new("Provider setting is not exists, you may not receive your passcode.")
+      raise StandardError.new("Provider setting is not exists, you may not receive your passcode.")
     end
 
     provider_name = provider_setting.provider.provider_name
@@ -144,10 +144,10 @@ class SmsVerification
           Rails.logger.debug "POST #{uri} response #{res.body}"
         end
 
-        raise Exception.new("Error while calling InfoBip API with HTTP status #{res.code} (#{res.message})")
+        raise StandardError.new("Error while calling InfoBip API with HTTP status #{res.code} (#{res.message})")
       end
 
-    rescue Exception => e
+    rescue => e
       Rails.logger.debug e.message
     end
   end
@@ -190,10 +190,10 @@ class SmsVerification
           Rails.logger.debug "POST #{uri} response #{res.body}"
         end
 
-        raise Exception.new("Error while calling Mainapi API with HTTP status #{res.code} (#{res.message})")
+        raise StandardError.new("Error while calling Mainapi API with HTTP status #{res.code} (#{res.message})")
       end
 
-    rescue Exception => e
+    rescue => e
       Rails.logger.debug e.message
     end
   end
@@ -231,10 +231,10 @@ class SmsVerification
           Rails.logger.debug "POST #{uri} response #{res.body}"
         end
 
-        raise Exception.new("Error while calling Mainapi API with HTTP status #{res.code} (#{res.message})")
+        raise StandardError.new("Error while calling Mainapi API with HTTP status #{res.code} (#{res.message})")
       end
 
-    rescue Exception => e
+    rescue => e
       Rails.logger.debug e.message
     end
   end

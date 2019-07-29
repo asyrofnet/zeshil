@@ -65,11 +65,11 @@ class ApplicationController < ActionController::Base
           end
         end
 
-      rescue Exception => error
-        raise Exception.new(error.message)
+      rescue StandardError => error
+        raise InputError.new(error.message)
       end
 
-    rescue Exception => e
+    rescue StandardError => e
       # do nothing
     end
 
@@ -79,35 +79,39 @@ class ApplicationController < ActionController::Base
       # send to sentry
       if response.status != 200 && response.status != 401
         error_message = ""
-
+        error_class = ""
         begin
-          error_message = JSON.parse(response.body)['error']['message']
-        rescue Exception => e
+          response_body = JSON.parse(response.body)
+          error_message = response_body['error']['message']
+          error_class = response_body['error']['class']
+        rescue StandardError => e
 
         end
+        
+        if error_class != InputError.name
+          extra = {
+              parameters: params.inspect,
+              http_request_header: http_envs,
+              access_token: access_token,
+              http_code_response: response.status,
+              response_body: response.body
+          }
+          
+          # bind the logged in user
+          Raven.user_context(
+            email: user_qiscus_email, # the actor's email address, if available
+            ip_address: request.ip # '127.0.0.1'
+          )
 
-        extra = {
-            parameters: params.inspect,
-            http_request_header: http_envs,
-            access_token: access_token,
-            http_code_response: response.status,
-            response_body: response.body
-        }
+          Raven.capture_message("#{user_qiscus_email} #{error_message}",
+            level: "error",
+            logger: "#{user_qiscus_email}",
+            extra: extra,
+            tags: {'app_id' => app_id}
+          )
 
-        # bind the logged in user
-        Raven.user_context(
-          email: user_qiscus_email, # the actor's email address, if available
-          ip_address: request.ip # '127.0.0.1'
-        )
-
-        Raven.capture_message("#{user_qiscus_email} #{error_message}",
-          level: "error",
-          logger: "#{user_qiscus_email}",
-          extra: extra,
-          tags: {'app_id' => app_id}
-        )
-
-        Raven::Context.clear!
+          Raven::Context.clear!
+        end
 
       end
 

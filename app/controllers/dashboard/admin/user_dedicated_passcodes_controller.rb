@@ -9,7 +9,7 @@ class Dashboard::Admin::UserDedicatedPasscodesController < AdminController
       @path_segments = request.fullpath.split("/")
 
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/admin/home'
     end
@@ -23,7 +23,7 @@ class Dashboard::Admin::UserDedicatedPasscodesController < AdminController
   def create
     begin
       if params[:user_phone_number] == "" || params[:passcode] == ""
-        raise Exception.new("application_id, phone_number, or passcode can't be empty.")
+        raise InputError.new("application_id, phone_number, or passcode can't be empty.")
       end
 
       application = nil
@@ -44,7 +44,7 @@ class Dashboard::Admin::UserDedicatedPasscodesController < AdminController
         user = ::User.find_by(phone_number: params[:user_phone_number], application_id: application.id)
 
         if user.nil?
-          raise Exception.new("User not found")
+          raise InputError.new("User not found")
 
           render json: {
             error: {
@@ -62,7 +62,7 @@ class Dashboard::Admin::UserDedicatedPasscodesController < AdminController
 
       flash[:success] = "Success create new dedicated passcode."
       redirect_to "/dashboard/admin/user_dedicated_passcodes" and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/admin/home'
     end
@@ -81,7 +81,7 @@ class Dashboard::Admin::UserDedicatedPasscodesController < AdminController
 
       flash[:success] = "Success delete passcode."
       redirect_to "/dashboard/admin/user_dedicated_passcodes"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/admin/home'
     end
@@ -97,7 +97,7 @@ class Dashboard::Admin::UserDedicatedPasscodesController < AdminController
       end
 
       render "show"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/admin/home'
     end
@@ -113,7 +113,7 @@ class Dashboard::Admin::UserDedicatedPasscodesController < AdminController
         # check user
         user = ::User.find_by(phone_number: params[:user_phone_number], application_id: application.id)
         if user.nil?
-          raise Exception.new("user not found. please input registered user")
+          raise InputError.new("user not found. please input registered user")
         end
 
         passcode = ::UserDedicatedPasscode.find(params[:passcode_id])
@@ -125,7 +125,7 @@ class Dashboard::Admin::UserDedicatedPasscodesController < AdminController
 
       flash[:success] = "Success update passcode."
       redirect_to "/dashboard/admin/user_dedicated_passcodes"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end

@@ -21,7 +21,7 @@ class Dashboard::User::ProfileController < UserController
       @path_segments = request.fullpath.split("/")
 
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/user/home'
     end
@@ -42,7 +42,7 @@ class Dashboard::User::ProfileController < UserController
         # before updating user's email or phone number, check if there are no another user
         # who have same email/phone number except current user
         if User.where.not(id: @user.id).where(application_id: @user.application.id).exists?(phone_number: phone_number)
-          raise Exception.new("Your submitted phone number already used by another user. Please use another phone number.")
+          raise InputError.new("Your submitted phone number already used by another user. Please use another phone number.")
         end
 
         @user.phone_number = phone_number
@@ -65,7 +65,7 @@ class Dashboard::User::ProfileController < UserController
         # before updating user's email or phone number, check if there are no another user
         # who have same email/phone number except current user
         if User.where.not(id: @user.id).where(application_id: @user.application.id).exists?(email: email)
-          raise Exception.new("Your submitted email already used by another user. Please use another email.")
+          raise InputError.new("Your submitted email already used by another user. Please use another email.")
         end
 
         @user.email = (email.nil? || email == "") ? "" : email.strip().delete(' ')
@@ -136,7 +136,7 @@ class Dashboard::User::ProfileController < UserController
 
       flash[:success] = "Success update profile."
       redirect_back fallback_location: '/dashboard/user/profile' and return
-    rescue Exception => e
+    rescue => e
       render json: {
         backtrace: e.backtrace
       } and return
@@ -166,7 +166,7 @@ class Dashboard::User::ProfileController < UserController
       # render json: {
       #   user: @chat_rooms
       # }
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/user/home'
     end

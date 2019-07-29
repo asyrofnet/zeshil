@@ -20,7 +20,7 @@ class Dashboard::User::HomeController < UserController
       @path_segments = request.fullpath.split("/")
 
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/user/home'
     end

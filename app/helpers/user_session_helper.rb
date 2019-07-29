@@ -11,7 +11,7 @@ module UserSessionHelper
       end
 
       return true
-    rescue Exception => e
+    rescue => e
       redirect_back fallback_location: ""
     end
   end

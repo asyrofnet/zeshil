@@ -69,7 +69,7 @@ class Api::V1::Contacts::OfficialsController < ProtectedController
       render json: {
         data: official_contacts + bot_contacts
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

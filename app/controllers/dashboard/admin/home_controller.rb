@@ -76,7 +76,7 @@ class Dashboard::Admin::HomeController < AdminController
 
       # render json: @statistics and return
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/admin/home'
     end
@@ -89,7 +89,7 @@ class Dashboard::Admin::HomeController < AdminController
 
       flash[:success] = "Make all users as contact is on progress"
       redirect_back fallback_location: '/dashboard/admin/home' and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/admin/home'
     end

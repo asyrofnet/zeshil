@@ -9,7 +9,7 @@ class Dashboard::SuperAdmin::Application::CustomMenusController < SuperAdminCont
       @path_segments = request.fullpath.split("/")
 
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -23,7 +23,7 @@ class Dashboard::SuperAdmin::Application::CustomMenusController < SuperAdminCont
   def create
     begin
       if params[:caption] == "" || params[:url] == ""
-        raise Exception.new("caption and url can't be empty.")
+        raise InputError.new("caption and url can't be empty.")
       end
 
       application = nil
@@ -49,7 +49,7 @@ class Dashboard::SuperAdmin::Application::CustomMenusController < SuperAdminCont
 
       flash[:success] = "Success create new menu."
       redirect_to "/dashboard/super_admin/application/#{application.id}/custom_menus" and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -69,7 +69,7 @@ class Dashboard::SuperAdmin::Application::CustomMenusController < SuperAdminCont
 
       flash[:success] = "Success delete menu."
       redirect_to "/dashboard/super_admin/application/#{params[:application_id]}/custom_menus"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -85,7 +85,7 @@ class Dashboard::SuperAdmin::Application::CustomMenusController < SuperAdminCont
       end
 
       render "show"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -103,7 +103,7 @@ class Dashboard::SuperAdmin::Application::CustomMenusController < SuperAdminCont
 
       flash[:success] = "Success update Menu."
       redirect_to "/dashboard/super_admin/application/#{params[:application_id]}/custom_menus"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end

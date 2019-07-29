@@ -65,7 +65,7 @@ class Api::V1::Me::PostsController < ProtectedController
       post = Post.where(user_id: @current_user.id).where(id: params[:id]).first
 
       if post.nil?
-        raise Exception.new("Post not found")
+        raise InputError.new("Post not found")
       end
 
       post.delete
@@ -81,10 +81,11 @@ class Api::V1::Me::PostsController < ProtectedController
         data: post
       } and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

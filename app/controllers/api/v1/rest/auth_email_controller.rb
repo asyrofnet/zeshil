@@ -43,29 +43,29 @@ class Api::V1::Rest::AuthEmailController < ApplicationController
           email = email.strip().delete(' ')
 
           if email == ""
-            raise Exception.new('Email is empty.')
+            raise InputError.new('Email is empty.')
           end
         else
-          raise Exception.new('Email is empty.')
+          raise InputError.new('Email is empty.')
         end
 
         # fullname
         fullname = params[:user][:name]
         if fullname.nil? || fullname == ""
-          raise Exception.new('Name is empty.')
+          raise InputError.new('Name is empty.')
         end
 
         # phone number
         phone_number = params[:user][:phone_number]
         # if phone_number.nil? || phone_number == ""
-        #   raise Exception.new('Phone number is empty.')
+        #   raise InputError.new('Phone number is empty.')
         # end
         phone_number = phone_number.strip().delete(' ')
 
         # is_official
         is_official = params[:user][:is_official]
         if is_official.nil? || is_official == ""
-          raise Exception.new('Is_official is empty.')
+          raise InputError.new('Is_official is empty.')
         end
 
         # avatar_url is optional
@@ -180,10 +180,11 @@ class Api::V1::Rest::AuthEmailController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

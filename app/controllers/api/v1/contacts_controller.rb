@@ -266,10 +266,11 @@ class Api::V1::ContactsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -289,11 +290,11 @@ class Api::V1::ContactsController < ProtectedController
     begin
 
       if !params[:contact_id].present? || params[:contact_id] == ""
-        raise Exception.new("Contact id must be present.")
+        raise InputError.new("Contact id must be present.")
       end
 
       if params[:contact_id].to_s == @current_user.id.to_s
-        raise Exception.new("You can not add your self as contact.")
+        raise InputError.new("You can not add your self as contact.")
       end
 
       user = nil
@@ -301,7 +302,7 @@ class Api::V1::ContactsController < ProtectedController
         contact_id = User.find_by(id: params[:contact_id], application_id: @current_user.application.id)
 
         if contact_id.nil?
-          raise Exception.new("Contact id is not found.")
+          raise InputError.new("Contact id is not found.")
         end
 
         contact = Contact.find_by(user_id: @current_user.id, contact_id: contact_id.id)
@@ -315,7 +316,7 @@ class Api::V1::ContactsController < ProtectedController
           new_contacts_pn = [[@current_user.id, contact_id.id]]
           ContactPushNotificationJob.perform_later(new_contacts_pn)
         else
-          raise Exception.new("User already in your contact.")
+          raise InputError.new("User already in your contact.")
         end
 =begin
         # make added contact as adder's contact
@@ -355,10 +356,11 @@ class Api::V1::ContactsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -377,7 +379,7 @@ class Api::V1::ContactsController < ProtectedController
   def delete_contact
     begin
       if !params[:contact_id].present? || params[:contact_id] == ""
-        raise Exception.new("Contact id can not be empty string.")
+        raise InputError.new("Contact id can not be empty string.")
       end
 
       contact_user = nil
@@ -412,10 +414,11 @@ class Api::V1::ContactsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -436,12 +439,12 @@ class Api::V1::ContactsController < ProtectedController
       phone_number = params[:phone_number].delete(' ')
 
       if !phone_number.present? || phone_number == "" || phone_number.length < 9
-        raise Exception.new("Minimum phone number is 9")
+        raise InputError.new("Minimum phone number is 9")
       end
 
       # valid_phone_number = Phony.plausible?(phone_number)
       # if valid_phone_number == false
-      #   raise Exception.new("Phone number format is invalid.")
+      #   raise InputError.new("Phone number format is invalid.")
       # end
 
       user = nil
@@ -462,15 +465,15 @@ class Api::V1::ContactsController < ProtectedController
           # if user has not complete their profile, then return error
           # disable, user can be found even they has not complete their fullname
           # if user.fullname.nil? || user.fullname == ""
-          #   raise Exception.new("User has not complete their profile yet.")
+          #   raise InputError.new("User has not complete their profile yet.")
           # end
 
           exist_contact = Contact.find_by(user_id: @current_user.id, contact_id: user.id)
           if exist_contact.nil? == false # already in contact
-            raise Exception.new("User already in your contact.")
+            raise InputError.new("User already in your contact.")
           end
         else
-          # raise Exception.new("User not found.")
+          # raise InputError.new("User not found.")
           render json: {
             error: {
               message: "User not found."
@@ -497,10 +500,11 @@ class Api::V1::ContactsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -521,7 +525,7 @@ class Api::V1::ContactsController < ProtectedController
       qiscus_email = params[:qiscus_email].delete(' ')
 
       if !qiscus_email.present? || qiscus_email == ""
-        raise Exception.new("Qiscus email can't be empty.")
+        raise InputError.new("Qiscus email can't be empty.")
       end
 
       user = nil
@@ -531,7 +535,7 @@ class Api::V1::ContactsController < ProtectedController
         user = User.find_by(application_id: application.id, qiscus_email: qiscus_email)
 
         if user.nil?
-          raise Exception.new("User not found.")
+          raise InputError.new("User not found.")
         end
       end
 
@@ -553,10 +557,11 @@ class Api::V1::ContactsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -577,7 +582,7 @@ class Api::V1::ContactsController < ProtectedController
       email = params[:email].delete(' ')
 
       if !email.present? || email == ""
-        raise Exception.new("Email can't be empty.")
+        raise InputError.new("Email can't be empty.")
       end
 
       user = nil
@@ -591,15 +596,15 @@ class Api::V1::ContactsController < ProtectedController
           # if user has not complete their profile, then return error
           # disable, user can be found even they has not complete their fullname
           # if user.fullname.nil? || user.fullname == ""
-          #   raise Exception.new("User has not complete their profile yet.")
+          #   raise InputError.new("User has not complete their profile yet.")
           # end
 
           exist_contact = Contact.find_by(user_id: @current_user.id, contact_id: user.id)
           if exist_contact.nil? == false # already in contact
-            raise Exception.new("User already in your contact.")
+            raise InputError.new("User already in your contact.")
           end
         else
-          raise Exception.new("User not found.")
+          raise InputError.new("User not found.")
         end
       end
 
@@ -621,10 +626,11 @@ class Api::V1::ContactsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -775,10 +781,11 @@ class Api::V1::ContactsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -789,7 +796,7 @@ class Api::V1::ContactsController < ProtectedController
       username = params[:username].delete(' ')
 
       if !username.present? || username == ""
-        raise Exception.new("Username can't be empty.")
+        raise InputError.new("Username can't be empty.")
       end
 
       user = nil
@@ -802,10 +809,10 @@ class Api::V1::ContactsController < ProtectedController
         if user.nil? == false
           exist_contact = Contact.find_by(user_id: @current_user.id, contact_id: user.id)
           if exist_contact.nil? == false # already in contact
-            raise Exception.new("Bot already in your contact.")
+            raise InputError.new("Bot already in your contact.")
           end
         else
-          raise Exception.new("Bot not found.")
+          raise InputError.new("Bot not found.")
         end
       end
 
@@ -831,10 +838,11 @@ class Api::V1::ContactsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -845,15 +853,15 @@ class Api::V1::ContactsController < ProtectedController
     begin
 
       if !params[:contact_id].present? || params[:contact_id] == ""
-        raise Exception.new("Contact id must be present.")
+        raise InputError.new("Contact id must be present.")
       end
 
       if params[:contact_id].to_s == @current_user.id.to_s
-        raise Exception.new("You can not add your self as contact.")
+        raise InputError.new("You can not add your self as contact.")
       end
 
       if !params[:password].present?
-        raise Exception.new("Password must be present.")
+        raise InputError.new("Password must be present.")
       end
 
       user = nil
@@ -861,7 +869,7 @@ class Api::V1::ContactsController < ProtectedController
         contact_id = User.find_by(id: params[:contact_id], application_id: @current_user.application.id)
 
         if contact_id.nil?
-          raise Exception.new("Contact id is not found.")
+          raise InputError.new("Contact id is not found.")
         end
 
         contact = Contact.find_by(user_id: @current_user.id, contact_id: contact_id.id)
@@ -875,7 +883,7 @@ class Api::V1::ContactsController < ProtectedController
           new_contacts_pn = [[@current_user.id, contact_id.id]]
           ContactPushNotificationJob.perform_later(new_contacts_pn)
         else
-          raise Exception.new("User already in your contact.")
+          raise InputError.new("User already in your contact.")
         end
 =begin
         # make added contact as adder's contact
@@ -895,19 +903,19 @@ class Api::V1::ContactsController < ProtectedController
         user = User.find(contact.contact_id)
         bot = Bot.where(user_id: user.id).first
         if bot.nil?
-          raise Exception.new("Bot not found!")
+          raise InputError.new("Bot not found!")
         end
 
         creator = User.where(id: bot.user_id_creator).first
         if creator.nil?
-          raise Exception.new("Bot creator not found!")
+          raise InputError.new("Bot creator not found!")
         end
 
         check_password = Bot.check_password(params, bot.password_digest)
         if check_password == true
           user = user.as_contact_json({:show_profile => false})
         else
-          raise Exception.new("Wrong Password!, for password information please contact #{user.fullname} creator : #{creator.fullname}")
+          raise InputError.new("Wrong Password!, for password information please contact #{user.fullname} creator : #{creator.fullname}")
         end
       end
 
@@ -930,10 +938,11 @@ class Api::V1::ContactsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

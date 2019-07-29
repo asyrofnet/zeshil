@@ -39,7 +39,7 @@ class Api::V1::Files::UploaderController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message

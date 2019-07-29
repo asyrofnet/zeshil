@@ -18,7 +18,7 @@ class Api::V1::Posts::CommentsController < ProtectedController
       post = Post.find(params[:post_id])
 
       if post.nil?
-        raise Exception.new('Post not found.')
+        raise InputError.new('Post not found.')
       end
 
       per_page = 25
@@ -46,11 +46,12 @@ class Api::V1::Posts::CommentsController < ProtectedController
         },
         data: comments
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message,
-          backtrace: e.backtrace
+          backtrace: e.backtrace,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -76,11 +77,11 @@ class Api::V1::Posts::CommentsController < ProtectedController
       post = Post.find_by(id: params[:post_id])
 
       if post.nil?
-        raise Exception.new('Post not found.')
+        raise InputError.new('Post not found.')
       end
 
       if params[:content].nil? || params[:content] == ""
-        raise Exception.new("Comment content cannot be empty.")
+        raise InputError.new("Comment content cannot be empty.")
       end
 
       media = []
@@ -97,13 +98,13 @@ class Api::V1::Posts::CommentsController < ProtectedController
           if parent_comment.comment_id.nil?
             comment.comment_id = parent_comment.id
           else
-            raise Exception.new("Cannot comment in child comment section.")
+            raise InputError.new("Cannot comment in child comment section.")
           end
         end
 
         save = comment.save
 
-        raise Exception.new("Comment maximum character is 400.") unless save
+        raise InputError.new("Comment maximum character is 400.") unless save
 
         media_params = @media_params
         qiscus_sdk = QiscusSdk.new(@current_user.application.app_id, @current_user.application.qiscus_sdk_secret)
@@ -184,10 +185,11 @@ class Api::V1::Posts::CommentsController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -209,22 +211,23 @@ class Api::V1::Posts::CommentsController < ProtectedController
       comment = Comment.find_by(id: params[:id])
 
       if comment.nil?
-        raise Exception.new("Comment not found.")
+        raise InputError.new("Comment not found.")
       elsif comment.post.user_id == @current_user.id || comment.user_id == @current_user.id
         # delete by post owner or comment owner
         comment.delete
       else
-        raise Exception.new("Not post owner or comment owner.")
+        raise InputError.new("Not post owner or comment owner.")
       end
 
       render json: {
         data: comment
       } and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

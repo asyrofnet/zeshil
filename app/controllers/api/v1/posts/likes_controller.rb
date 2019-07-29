@@ -17,7 +17,7 @@ class Api::V1::Posts::LikesController < ProtectedController
       post = Post.find(params[:post_id])
 
       if post.nil?
-        raise Exception.new('Post not found.')
+        raise InputError.new('Post not found.')
       end
 
       likes = post.likes.order(created_at: :asc)
@@ -33,10 +33,11 @@ class Api::V1::Posts::LikesController < ProtectedController
         },
         data: likes
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -60,13 +61,13 @@ class Api::V1::Posts::LikesController < ProtectedController
       post = Post.find_by(id: params[:post_id])
 
       if post.nil?
-        raise Exception.new('Post not found.')
+        raise InputError.new('Post not found.')
       end
 
       like = Like.find_by(user_id: @current_user.id, post_id: params[:post_id])
 
       if !like.nil?
-        raise Exception.new('You are already like this post.')
+        raise InputError.new('You are already like this post.')
       end
 
       like = Like.new
@@ -113,10 +114,11 @@ class Api::V1::Posts::LikesController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -136,7 +138,7 @@ class Api::V1::Posts::LikesController < ProtectedController
       like = Like.find_by(post_id: params[:post_id], user_id: @current_user.id)
 
       if like.nil?
-        raise Exception.new("You have not like this post yet.")
+        raise InputError.new("You have not like this post yet.")
       end
       
       like.delete
@@ -145,10 +147,11 @@ class Api::V1::Posts::LikesController < ProtectedController
         data: like
       } and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

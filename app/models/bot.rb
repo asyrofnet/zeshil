@@ -238,7 +238,7 @@ class Bot < ApplicationRecord
               status, error = ChatRoom.remove_participant_from_groups(user)
     
               if !error.nil?
-                raise Exception.new(error)
+                raise StandardError.new(error)
               end
             end
     

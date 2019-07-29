@@ -32,13 +32,13 @@ class Api::V1::Rest::AuthEmailNonceController < ApplicationController
         # app_id
         app_id = params[:user][:app_id]
         if app_id.nil? || app_id == ""
-          raise Exception.new("App_id can't be empty.")
+          raise InputError.new("App_id can't be empty.")
         end
 
         # server_key
         server_key = params[:user][:server_key]
         if server_key.nil? || server_key == ""
-          raise Exception.new("Server key can't be empty.")
+          raise InputError.new("Server key can't be empty.")
         end
 
         # find application using app_id and server_key
@@ -58,16 +58,16 @@ class Api::V1::Rest::AuthEmailNonceController < ApplicationController
           email = email.strip().delete(' ')
 
           if email == ""
-            raise Exception.new("Email can't be empty.")
+            raise InputError.new("Email can't be empty.")
           end
         else
-          raise Exception.new("Email can't be empty.")
+          raise InputError.new("Email can't be empty.")
         end
 
         # fullname
         fullname = params[:user][:fullname]
         if fullname.nil? || fullname == ""
-          raise Exception.new("Fullname can't be empty.")
+          raise InputError.new("Fullname can't be empty.")
         end
 
         # avatar_url is optional
@@ -81,7 +81,7 @@ class Api::V1::Rest::AuthEmailNonceController < ApplicationController
         # nonce
         nonce = params[:user][:nonce]
         if nonce.nil? || nonce == ""
-          raise Exception.new("Nonce can't be empty.")
+          raise InputError.new("Nonce can't be empty.")
         end
 
         user = User.find_by(email: email, application_id: application.id)
@@ -210,10 +210,11 @@ class Api::V1::Rest::AuthEmailNonceController < ApplicationController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

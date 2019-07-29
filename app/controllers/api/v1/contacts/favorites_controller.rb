@@ -29,7 +29,7 @@ class Api::V1::Contacts::FavoritesController < ProtectedController
       render json: {
         data: contacts
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
           message: e.message
@@ -55,12 +55,12 @@ class Api::V1::Contacts::FavoritesController < ProtectedController
         contact_to_show = User.find(params[:id])
 
         if contact_to_show.nil?
-          raise Exception.new("User is not found.")
+          raise InputError.new("User is not found.")
         else
           contact = Contact.find_by(user_id: @current_user.id, contact_id: contact_to_show.id)
 
           if contact.nil?
-            raise Exception.new("This user is not in your contact. Please add before mark it as favourites.")
+            raise InputError.new("This user is not in your contact. Please add before mark it as favourites.")
           end
 
           favored_status = @current_user.contacts.pluck(:contact_id, :is_favored)
@@ -72,10 +72,11 @@ class Api::V1::Contacts::FavoritesController < ProtectedController
       render json: {
         data: contact_to_show
       }
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -98,12 +99,12 @@ class Api::V1::Contacts::FavoritesController < ProtectedController
         contact_candidate = User.find_by(id: params[:user_id])
 
         if contact_candidate.nil?
-          raise Exception.new("User is not found.")
+          raise InputError.new("User is not found.")
         else
           contact = Contact.find_by(user_id: @current_user.id, contact_id: contact_candidate.id)
 
           if contact.nil?
-            raise Exception.new("This user is not in your contact. Please add before mark it as favourites.")
+            raise InputError.new("This user is not in your contact. Please add before mark it as favourites.")
           else
             contact.update_attribute(:is_favored, true)
           end
@@ -132,10 +133,11 @@ class Api::V1::Contacts::FavoritesController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end
@@ -158,12 +160,12 @@ class Api::V1::Contacts::FavoritesController < ProtectedController
         unfavorited_candidate = User.find_by(id: params[:id])
 
         if unfavorited_candidate.nil?
-          raise Exception.new("User is not found.")
+          raise InputError.new("User is not found.")
         else
           contact = Contact.find_by(user_id: @current_user.id, contact_id: unfavorited_candidate.id)
 
           if contact.nil?
-            raise Exception.new("This user is not in your contact. Please add before mark it as favourites.")
+            raise InputError.new("This user is not in your contact. Please add before mark it as favourites.")
           else
             contact.update_attribute(:is_favored, false)
           end
@@ -192,10 +194,11 @@ class Api::V1::Contacts::FavoritesController < ProtectedController
         }
       }, status: 422 and return
 
-    rescue Exception => e
+    rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422 and return
     end

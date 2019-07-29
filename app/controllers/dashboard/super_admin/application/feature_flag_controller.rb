@@ -10,7 +10,7 @@ class Dashboard::SuperAdmin::Application::FeatureFlagController < SuperAdminCont
       @path_segments = request.fullpath.split("/")
       
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -19,18 +19,18 @@ class Dashboard::SuperAdmin::Application::FeatureFlagController < SuperAdminCont
   def create
     begin
       if params[:target_user_id] == "" || params[:target_user_id].nil?
-        raise Exception.new("target_user_id can't be empty.")
+        raise InputError.new("target_user_id can't be empty.")
       end
 
       if params[:feature_action] == "" || params[:feature_action].nil? 
-        raise Exception.new("Action and can't be empty.")
+        raise InputError.new("Action and can't be empty.")
       end
 
       string_target_user_id = params[:target_user_id]
       target_user_ids = string_target_user_id.split(",") # Split params target_user_id and convert it to array
 
       if !target_user_ids.is_a?(Array)
-        raise Exception.new("Target user id must be an array of user id.")
+        raise InputError.new("Target user id must be an array of user id.")
       end
 
       user_params = params.permit!
@@ -77,7 +77,7 @@ class Dashboard::SuperAdmin::Application::FeatureFlagController < SuperAdminCont
       end
 
       redirect_to "/dashboard/super_admin/application/#{params[:application_id]}/feature_flag" and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: "/dashboard/super_admin/application/#{params[:application_id]}/feature_flag"
     end
@@ -107,7 +107,7 @@ class Dashboard::SuperAdmin::Application::FeatureFlagController < SuperAdminCont
       @users = User.where("id IN (?)", user_ids).where(application_id: params[:application_id]).order(created_at: :desc)
 
       render 'show_users', layout: false and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: "/dashboard/super_admin/home"
     end

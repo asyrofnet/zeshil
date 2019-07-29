@@ -7,7 +7,7 @@ class Dashboard::SuperAdmin::Application::RemoteConfigController < SuperAdminCon
       @features = @application.features
 
       render "index"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -21,7 +21,7 @@ class Dashboard::SuperAdmin::Application::RemoteConfigController < SuperAdminCon
   def create
     begin
       if params[:feature_id] == "" || params[:feature_name] == ""
-        raise Exception.new("feature_id and feature_name can't be empty.")
+        raise InputError.new("feature_id and feature_name can't be empty.")
       end
 
       application = nil
@@ -48,7 +48,7 @@ class Dashboard::SuperAdmin::Application::RemoteConfigController < SuperAdminCon
 
       flash[:success] = "Success create new feature."
       redirect_to "/dashboard/super_admin/application/#{application.id}/features" and return
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
@@ -68,7 +68,7 @@ class Dashboard::SuperAdmin::Application::RemoteConfigController < SuperAdminCon
 
       flash[:success] = "Success delete feature."
       redirect_to "/dashboard/super_admin/application/#{params[:application_id]}/features"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -84,7 +84,7 @@ class Dashboard::SuperAdmin::Application::RemoteConfigController < SuperAdminCon
       end
 
       render "show"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_to '/dashboard/super_admin/home'
     end
@@ -103,7 +103,7 @@ class Dashboard::SuperAdmin::Application::RemoteConfigController < SuperAdminCon
 
       flash[:success] = "Success update feature."
       redirect_to "/dashboard/super_admin/application/#{params[:application_id]}/features"
-    rescue Exception => e
+    rescue => e
       flash[:notice] = e.message
       redirect_back fallback_location: '/dashboard/super_admin/home'
     end
