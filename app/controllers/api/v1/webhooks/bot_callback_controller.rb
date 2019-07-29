@@ -97,6 +97,9 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
 
       if chat_room.nil?
         target = participants.where.not(id: from.id).first
+        if target.nil?
+          raise InputError.new("Target participant is not found in database.")
+        end
         chat_name = "Group Chat Name"
         chat_room = ChatRoom.new(
             group_chat_name: chat_name,
