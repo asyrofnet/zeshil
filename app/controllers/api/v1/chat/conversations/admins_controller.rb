@@ -327,7 +327,12 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
           }, status: 401 and return
         else
           if !@chat_room.is_group_chat
-            raise InputError.new("This is not group chat. You can't add/remove participants.")
+            render json: {
+            error: {
+              message: "This is not group chat. You can't add/remove participants.",
+              class: InputError.name
+            }
+        }, status: 422 and return
           end
         end
       else
