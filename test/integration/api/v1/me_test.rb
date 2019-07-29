@@ -7,9 +7,7 @@ class API::V1::MeTest< ActionDispatch::IntegrationTest
     session1 = auth_sessions(:user1_session1)
     new_fullname = "abc"
 
-    qiscus_sdk = mock()
-    qiscus_sdk.expects(:update_profile).returns()
-    QiscusSdk.expects(:new).returns(qiscus_sdk)
+    QiscusSdk.expects(:new).never
 
     post "/api/v1/me/update_profile",
       params: {:user => {:fullname => new_fullname}},
@@ -19,7 +17,7 @@ class API::V1::MeTest< ActionDispatch::IntegrationTest
     assert_equal Mime[:json], response.content_type
 
     response_data = JSON.parse(response.body)
-    assert_equal 'Fullname is too short (minimum is 4 characters).', response_data['error']['message']
+    assert_equal 'Fullname minimum character is 4.', response_data['error']['message']
   end
 
   test "user1 attempt to change fullname and success" do
