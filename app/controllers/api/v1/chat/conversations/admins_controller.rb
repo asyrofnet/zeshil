@@ -13,6 +13,27 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
   # =end
   def index
     begin
+
+      user_agent = request.user_agent
+      @os = Format.get_os_request(request)
+      
+      if @os == "ios" 
+        @build_number = Format.get_ios_build_number(request).to_i
+        @version_number = Format.get_ios_version_number(request)
+        forbidden_110 = (278..284)
+        forbidden_111 = (294..301)
+        forbidden_111_1 = 1
+        version_110 = "1.1.0"
+        version_111 = "1.1.1"
+        blocked = false
+        if ( (@version_number == version_110) && forbidden_110.include?(@build_number)  ) or ( 
+          (@version_number == version_111) && ( forbidden_111.include?(@build_number) || @build_number == 1)
+           
+        )
+          blocked = true
+        end
+        raise InputError.new("temporarily closed") if blocked
+      end
       participants = @chat_room
 
       chat_room_id = participants.id
@@ -26,7 +47,8 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
     rescue => e
       render json: {
         error: {
-          message: e.message
+          message: e.message,
+          class: e.class.name
         }
       }, status: 422
     end
@@ -327,7 +349,12 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
           }, status: 401 and return
         else
           if !@chat_room.is_group_chat
-            raise InputError.new("This is not group chat. You can't add/remove participants.")
+            render json: {
+            error: {
+              message: "This is not group chat. You can't add/remove participants.",
+              class: InputError.name
+            }
+        }, status: 422 and return
           end
         end
       else

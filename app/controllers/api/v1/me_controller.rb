@@ -66,7 +66,7 @@ class Api::V1::MeController < ProtectedController
       end
 
       fullname = user_params[:fullname]
-      if fullname.present? && !fullname.nil? && fullname != ""
+      if fullname.present? && !fullname.nil? && fullname != "" && fullname.length > 3
         user.fullname = (fullname.nil? || fullname == "") ? "" : fullname.strip().gsub(/\s+/, " ") # to remove multi space to single space
 
         # Change username in SDK

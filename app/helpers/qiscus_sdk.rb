@@ -267,6 +267,8 @@ class QiscusSdk
       raise StandardError.new("Emails is not array or nil.")
     end
 
+    emails = emails.reject { |c| c.empty? }
+
     url = "#{@BASE_URL}/api/v2/rest/add_room_participants"
     params = {
       "emails[]" => emails.to_a,
@@ -285,6 +287,8 @@ class QiscusSdk
     if !emails.kind_of?(Array) || emails.empty? || emails == ""
       raise StandardError.new("Emails is not array or nil.")
     end
+
+    emails = emails.reject { |c| c.empty? }
 
     url = "#{@BASE_URL}/api/v2/rest/remove_room_participants"
     params = {
