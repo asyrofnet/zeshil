@@ -28,6 +28,10 @@ class Api::V1::CallsController < ProtectedController
         raise InputError.new("user_email cannot be empty.")
       end
 
+      if user_email == @current_user.qiscus_email
+        raise InputError.new("user_email cannot be the same as current_user.")
+      end
+
       user1 = User.find_by(qiscus_email: user_email, application_id: @current_user.application.id)
       if user1.nil?
         raise InputError.new("User is not found.")
