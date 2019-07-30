@@ -92,6 +92,29 @@ class API::V1::CallsTest < ActionDispatch::IntegrationTest
     assert_equal "user_type can't be empty.", response_data['error']['message']
   end
 
+  test "user1 attempt to post call system event message with user email same as user1" do
+    session1 = auth_sessions(:user1_session1)
+    user1 = users(:user1)
+    qiscus_email = user1.qiscus_email
+    body = {
+      :user_email => qiscus_email,
+      :user_type => '',
+      :call_room_id => 212,
+      :is_video => false,
+      :call_event => 'incoming',
+    }
+
+    post "/api/v1/calls",
+      params: body,
+      headers: { 'Authorization' => token_header(session1.jwt_token) }
+
+    assert_equal 422, response.status
+    assert_equal Mime[:json], response.content_type
+
+    response_data = JSON.parse(response.body)
+    assert_equal "user_email cannot be the same as current_user.", response_data['error']['message']
+  end
+
   test "user1 attempt to post call system event message without parameter call_room_id" do
     session1 = auth_sessions(:user1_session1)
 
