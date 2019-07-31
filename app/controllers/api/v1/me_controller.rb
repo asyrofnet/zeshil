@@ -184,7 +184,7 @@ class Api::V1::MeController < ProtectedController
       ActiveRecord::Base.transaction do
         qiscus_sdk = QiscusSdk.new(@current_user.application.app_id, @current_user.application.qiscus_sdk_secret)
         url = qiscus_sdk.upload_file(@current_user.qiscus_token, @avatar_file) # upload file
-        @current_user.update!(avatar_url: url) # update avatar_url in qisme
+        @current_user.reload.update!(avatar_url: url) # update avatar_url in qisme
 
         # Change avatar_url in SDK
         qiscus_sdk.update_profile(@current_user.qiscus_email, nil, url)
@@ -359,7 +359,10 @@ class Api::V1::MeController < ProtectedController
           status: "already exists"
         }, status: 200
       end
-
+    rescue ActiveRecord::RecordNotUnique => e
+      render :json => {
+          status: "duplicate request"
+        }, status: 200
     rescue => e
       render json: {
         error: {
