@@ -2,7 +2,7 @@ class Api::V1::MeController < ProtectedController
   before_action :authorize_user
   before_action :ensure_update_profile_params, only: [:update_profile]
   before_action :ensure_update_avatar_params, only: [:update_avatar]
-
+  SessionLength = 1.minute.to_i
   # =begin
   # @apiVersion 1.0.0
   # @api {get} /api/v1/me My Profile
@@ -331,14 +331,21 @@ class Api::V1::MeController < ProtectedController
       end
 
       userdevicetoken = UserDeviceToken.find_by(devicetoken: params[:devicetoken])
-
+      save_status = false
       if userdevicetoken.nil?
         userdevicetoken = UserDeviceToken.new
         userdevicetoken.devicetoken = params[:devicetoken]
         userdevicetoken.user_type = params[:user_type]
         userdevicetoken.user_id = @current_user.id
-
-        save_status = true if userdevicetoken.save
+        if !$redis.get(params[:devicetoken]).present?
+          $redis.set(params[:devicetoken], true)
+          $redis.expire(params[:devicetoken], SessionLength)
+          save_status = true if userdevicetoken.save
+        else
+          render :json => {
+          status: "already in progress"
+        }, status: 200 and return
+        end
       else
         # if devicetoken is exist but with different user_id then update it with current user_id
         if userdevicetoken.user_id != @current_user.id
