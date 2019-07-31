@@ -359,7 +359,10 @@ class Api::V1::MeController < ProtectedController
           status: "already exists"
         }, status: 200
       end
-
+    rescue ActiveRecord::RecordNotUnique => e
+      render :json => {
+          status: "duplicate request"
+        }, status: 200
     rescue => e
       render json: {
         error: {
