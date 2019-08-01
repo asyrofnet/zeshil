@@ -369,7 +369,7 @@ class Api::V1::MeController < ProtectedController
     rescue ActiveRecord::RecordNotUnique => e
       render :json => {
           status: "duplicate request"
-        }, status: 200
+        }, status: 200 and return
     rescue => e
       render json: {
         error: {
