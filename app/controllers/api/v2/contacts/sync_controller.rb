@@ -76,11 +76,6 @@ class Api::V2::Contacts::SyncController < ProtectedController
                 if Contact.find_by(user_id: @current_user.id, contact_id: id).nil?
                   official_account_to_be_added.push({:user_id => @current_user.id, :contact_id => id})
                 end
-  
-                # auto dependent add, if A add B, then A in B's contact too
-                if Contact.find_by(user_id: id, contact_id: @current_user.id).nil?
-                  official_account_to_be_added.push({:user_id => id, :contact_id => @current_user.id})
-                end
               end
   
               # add official contact
