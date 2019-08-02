@@ -8,12 +8,8 @@ class API::V2::Contacts::SyncTest< ActionDispatch::IntegrationTest
     user3 = users(:user3)
     user1 = users(:user1)
     contact = [ {contact_name:"random",phone_number:user3.phone_number} ]
-    old_contact = user1.contacts.count
-
-    role_official_user = Role.official
-    user_role_ids = UserRole.where(role_id: role_official_user.id).pluck(:user_id).to_a
-    official_account_count = User.where("id IN (?)", user_role_ids).where(application_id: user1.application_id).count
-
+    old_contact = user1.contacts.where(is_active:true).count
+    
     post "/api/v2/contacts/sync",
       params: {:contact => contact},
       headers: { 'Authorization' => token_header(session1.jwt_token) }
@@ -21,42 +17,40 @@ class API::V2::Contacts::SyncTest< ActionDispatch::IntegrationTest
     assert_equal 200, response.status
     assert_equal Mime[:json], response.content_type
     
-    target_current_contact = official_account_count+1 #official + the number of object in param
+    target_current_contact = old_contact+contact.length #the number of object in param
     response_data = JSON.parse(response.body)
-    assert_equal target_current_contact,response_data['data'].length
+    
+    assert_equal contact.length,response_data['data'].length
     assert_equal "random", Contact.find_by(user_id:user1.id,contact_id:user3.id).contact_name
-    assert_equal target_current_contact, user1.reload.contacts.count - old_contact #because old contact still exist just inactive
+    
+    assert_equal target_current_contact, user1.reload.contacts.count #because old contact still exist just inactive
     
 end
 
-test "sync will not deactivate official" do
+test "sync will not deactivate bot" do
   session1 = auth_sessions(:user1_session1)
   
   user1 = users(:user1)
   old_contact = user1.contacts.count
   old_contact_user = user1.contacts.first.contact
+  bot = Role.bot
+  UserRole.create(role_id: bot.id, user_id: old_contact_user.id)
+
   name_param = "hello world"
-  contact = [ {contact_name:name_param,phone_number:old_contact_user.phone_number} ]
+  #WE WILL USE RANDOM PHONE NUMBER
+  random_phone_number = old_contact_user.phone_number+"1"
+  contact = [ {contact_name:name_param,phone_number: random_phone_number} ] 
+  assert_nil User.find_by(phone_number: random_phone_number)
   
-
-  role_official_user = Role.official
-  user_role_ids = UserRole.where(role_id: role_official_user.id).pluck(:user_id).to_a
-  official_accounts = User.where("id IN (?)", user_role_ids).where(application_id: user1.application_id)
-  official_account_count = official_accounts.count
-
   post "/api/v2/contacts/sync",
     params: {:contact => contact},
     headers: { 'Authorization' => token_header(session1.jwt_token) }
 
   assert_equal 200, response.status
   assert_equal Mime[:json], response.content_type
-  target_current_contact = official_account_count+1 #official + the number of object in param
   response_data = JSON.parse(response.body)
-  assert_equal target_current_contact,response_data['data'].length
-  assert_equal name_param, Contact.find_by(user_id:user1.id,contact_id:old_contact_user.id).contact_name
-  official_accounts.each do |acc|
-    assert_equal true , Contact.find_by(user_id:user1.id,contact_id:acc.id).is_active
-  end
+  assert_equal old_contact,response_data['data'].length
+  assert_equal old_contact_user.id,response_data['data'].first["id"]
   
 end
 
