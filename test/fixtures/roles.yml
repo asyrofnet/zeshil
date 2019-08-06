@@ -15,3 +15,6 @@ role3:
 role4:
   id: 4
   name: "Helpdesk"
+role4:
+  id: 4
+  name: "Bot"

@@ -206,7 +206,25 @@ class Dashboard::Admin::UsersController < AdminController
       end
 
       @user.save!
+      auto_responder_exist = user_params.has_key?(:auto_responder)
+      auto_starter_exist =  user_params.has_key?(:auto_starter)
+      if auto_starter_exist
+        auto_starter = user_params[:auto_starter]
+        UserAdditionalInfo.create_or_update_user_additional_info(
+          [@user.id],
+          UserAdditionalInfo::AUTO_STARTER_KEY,
+          auto_starter
+          )
+      end
 
+      if auto_responder_exist
+        auto_responder = user_params[:auto_responder]
+        UserAdditionalInfo.create_or_update_user_additional_info(
+        [@user.id],
+        UserAdditionalInfo::AUTO_RESPONDER_KEY,
+        auto_responder
+        )
+      end
       # Update SDK Profile if fullname or avatar_file present
       if fullname.present? || @avatar_file.present?
         user = User.find_by(id: params[:user_id], application_id: @current_admin.application.id)

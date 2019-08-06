@@ -1,7 +1,7 @@
 require 'uri'
 
 class Api::V1::Webhooks::BotCallbackController < ApplicationController
-
+  SessionLength = 1.minute.to_i
   # =begin
   # @apiVersion 1.0.0
   # @api {post} /api/v1/webhooks/bot-callback/:app_id General Callback
@@ -65,6 +65,7 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
       room = params[:payload][:room]
       room_participants = room[:participants]
       message = params[:payload][:message]
+      room_type = room[:type]
 
       # first, match all data from SDK using qisme database,
       # this ensure the data still relevant in qisme
@@ -101,21 +102,33 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
           raise InputError.new("Target participant is not found in database.")
         end
         chat_name = "Group Chat Name"
+
+        is_group_chat = !(room_type == "single".downcase)
         chat_room = ChatRoom.new(
             group_chat_name: chat_name,
             qiscus_room_name: chat_name,
             qiscus_room_id: room[:id],
-            is_group_chat: false,
+            is_group_chat: is_group_chat,
             user_id: from.id,
             target_user_id: target.id,
             application_id: from.application.id
           )
+          redis_key = "callback"+room[:id].to_s+"application="+app.id.to_s
 
-          chat_room.save!
+          if !$redis.get(redis_key).present?
+            $redis.set(redis_key, true)
+            $redis.expire(redis_key, SessionLength)
+            chat_room.save!
+            participants.each do |roompeople|
+              ChatUser.create(chat_room_id: chat_room.id, user_id: roompeople.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: roompeople.id)
+            end
+          else
+            chat_room = ChatRoom.find_by(qiscus_room_id: room[:id], application_id: app.id)
+            if !chat_room.present?
+              raise InputError.new("Duplicate request")
+            end
+          end
 
-          ChatUser.create(chat_room_id: chat_room.id, user_id: from.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: from.id)
-          ChatUser.create(chat_room_id: chat_room.id, user_id: target.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: target.id)
-  
       end
 
       chat_room = chat_room.as_json(:webhook => true) # convert to hash to merge more property/field such as qiscus_id
@@ -206,7 +219,15 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
         success: true,
         data: payloads
       }
-
+    rescue ActiveRecord::RecordNotUnique => e
+      render json: {
+        error: {
+          message: e.message,
+          payload: params,
+          trace: e.backtrace,
+          class: InputError.name
+        }
+    }, status: 422 and return
     rescue => e
       render json: {
         error: {

@@ -476,7 +476,8 @@ class Api::V1::ContactsController < ProtectedController
           # raise InputError.new("User not found.")
           render json: {
             error: {
-              message: "User not found."
+              message: "User not found.",
+              class: InputError.name
             }
           }, status: 404 and return
         end

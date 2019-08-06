@@ -1,7 +1,7 @@
 class Api::V1::Chat::ConversationsController < ProtectedController
   before_action :authorize_user
   before_action :ensure_raw_file, only: [:change_group_avatar]
-
+  SessionLength = 1.minute.to_i
   # =begin
   # @apiVersion 1.0.0
   # @api {get} /api/v1/chat/conversations Get Conversation List
@@ -243,14 +243,15 @@ class Api::V1::Chat::ConversationsController < ProtectedController
 
         # Backend need to get chat room from to sdk to ensure single chat room contain valid participants
         qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
+
         room = qiscus_sdk.get_or_create_room_with_target_rest(emails)
 
         if qiscus_room_id.to_i != room.id
           raise InputError.new("Invalid qiscus_room_id.")
         end
-
-        chat_room = ChatRoom.find_by(qiscus_room_id: qiscus_room_id, application_id: @current_user.application.id)
-
+        application_id = @current_user.application.id
+        redis_key = qiscus_room_id.to_s+"application="+application_id.to_s
+        chat_room = ChatRoom.find_by(qiscus_room_id: qiscus_room_id, application_id: application_id)
         # if chat room with room id and room topic id not exist then create it
         if chat_room.nil?
           chat_name = ""
@@ -270,19 +271,29 @@ class Api::V1::Chat::ConversationsController < ProtectedController
             application_id: @current_user.application.id
           )
 
+          if !$redis.get(redis_key).present?
+            $redis.set(redis_key, true)
+            $redis.expire(redis_key, SessionLength)
+          else
+            chat_room = ChatRoom.find_by(qiscus_room_id: qiscus_room_id, application_id: application_id)
+            if chat_room.present?
+              render json: {
+              data: chat_room.as_json({:me => @current_user})
+            }, status: 200 and return
+            else
+              raise InputError.new("Duplicate request")
+            end
+          end
+
           chat_room.save!
 
           ChatUser.create(chat_room_id: chat_room.id, user_id: @current_user.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: @current_user.id)
           ChatUser.create(chat_room_id: chat_room.id, user_id: target_user.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: target_user.id)
 
-					# if chat with official then post comment 'get started'
-					if target_user.is_official
-						message = "Get started"
-
-						qiscus_sdk = QiscusSdk.new(@current_user.application.app_id, @current_user.application.qiscus_sdk_secret)
-						qiscus_sdk.post_comment(@current_user.qiscus_token, qiscus_room_id, message)
-					end
         else
+          ChatUser.create(chat_room_id: chat_room.id, user_id: @current_user.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: @current_user.id)
+          ChatUser.create(chat_room_id: chat_room.id, user_id: target_user.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: target_user.id)
+
           # if exist then return error with warning that qiscus room id has been inserted before
           # raise InputError.new("Qiscus room id has been inserted before, it must be unique.")
         end
@@ -306,7 +317,13 @@ class Api::V1::Chat::ConversationsController < ProtectedController
           message: msg
         }
       }, status: 422 and return
-
+    rescue ActiveRecord::RecordNotUnique => e
+      render json: {
+        error: {
+          message: "Duplicate Request",
+          class: InputError.name
+        }
+    }, status: 422 and return
     rescue => e
       render json: {
         error: {
