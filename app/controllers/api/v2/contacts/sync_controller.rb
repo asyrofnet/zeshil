@@ -154,7 +154,13 @@ class Api::V2::Contacts::SyncController < ProtectedController
             message: msg
           }
         }, status: 422 and return
-  
+      rescue ActiveRecord::RecordNotUnique => e
+        render json: {
+          error: {
+            message: "Duplicate request",
+            class: InputError.name
+          }
+      }, status: 422 and return
       rescue => e
         render json: {
           error: {
