@@ -243,6 +243,7 @@ class Api::V1::Chat::ConversationsController < ProtectedController
 
         # Backend need to get chat room from to sdk to ensure single chat room contain valid participants
         qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
+
         room = qiscus_sdk.get_or_create_room_with_target_rest(emails)
 
         if qiscus_room_id.to_i != room.id
@@ -250,22 +251,6 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         end
         application_id = @current_user.application.id
         redis_key = qiscus_room_id.to_s+"application="+application_id.to_s
-        if !$redis.get(redis_key).present?
-          $redis.set(redis_key, true)
-          $redis.expire(redis_key, SessionLength)
-        else
-          chat_room = ChatRoom.find_by(qiscus_room_id: qiscus_room_id, application_id: application_id)
-          if chat_room.present?
-            render json: {
-            data: chat_room.as_json({:me => @current_user})
-          }, status: 200 and return
-          else
-            render :json => {
-                status: "duplicate request"
-              }, status: 200 and return
-          end
-        end
-
         chat_room = ChatRoom.find_by(qiscus_room_id: qiscus_room_id, application_id: application_id)
         # if chat room with room id and room topic id not exist then create it
         if chat_room.nil?
@@ -285,6 +270,20 @@ class Api::V1::Chat::ConversationsController < ProtectedController
             target_user_id: target_user.id,
             application_id: @current_user.application.id
           )
+
+          if !$redis.get(redis_key).present?
+            $redis.set(redis_key, true)
+            $redis.expire(redis_key, SessionLength)
+          else
+            chat_room = ChatRoom.find_by(qiscus_room_id: qiscus_room_id, application_id: application_id)
+            if chat_room.present?
+              render json: {
+              data: chat_room.as_json({:me => @current_user})
+            }, status: 200 and return
+            else
+              raise InputError.new("Duplicate request")
+            end
+          end
 
           chat_room.save!
 
@@ -319,9 +318,12 @@ class Api::V1::Chat::ConversationsController < ProtectedController
         }
       }, status: 422 and return
     rescue ActiveRecord::RecordNotUnique => e
-        render :json => {
-            status: "duplicate request"
-          }, status: 200 and return
+      render json: {
+        error: {
+          message: "Duplicate Request",
+          class: InputError.name
+        }
+    }, status: 422 and return
     rescue => e
       render json: {
         error: {
