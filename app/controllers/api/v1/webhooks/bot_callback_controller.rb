@@ -1,7 +1,7 @@
 require 'uri'
 
 class Api::V1::Webhooks::BotCallbackController < ApplicationController
-
+  SessionLength = 1.minute.to_i
   # =begin
   # @apiVersion 1.0.0
   # @api {post} /api/v1/webhooks/bot-callback/:app_id General Callback
@@ -110,12 +110,22 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
             target_user_id: target.id,
             application_id: from.application.id
           )
+          redis_key = "callback"+qiscus_room_id.to_s+"application="+app.id.to_s
 
-          chat_room.save!
+          if !$redis.get(redis_key).present?
+            $redis.set(redis_key, true)
+            $redis.expire(redis_key, SessionLength)
+            chat_room.save!
 
-          ChatUser.create(chat_room_id: chat_room.id, user_id: from.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: from.id)
-          ChatUser.create(chat_room_id: chat_room.id, user_id: target.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: target.id)
-  
+            ChatUser.create(chat_room_id: chat_room.id, user_id: from.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: from.id)
+            ChatUser.create(chat_room_id: chat_room.id, user_id: target.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: target.id)
+          else
+            chat_room = ChatRoom.find_by(qiscus_room_id: room[:id], application_id: app.id)
+            if !chat_room.present?
+              raise InputError.new("Duplicate request")
+            end
+          end
+
       end
 
       chat_room = chat_room.as_json(:webhook => true) # convert to hash to merge more property/field such as qiscus_id
@@ -206,7 +216,15 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
         success: true,
         data: payloads
       }
-
+    rescue ActiveRecord::RecordNotUnique => e
+      render json: {
+        error: {
+          message: e.message,
+          payload: params,
+          trace: e.backtrace,
+          class: InputError.name
+        }
+    }, status: 422 and return
     rescue => e
       render json: {
         error: {
