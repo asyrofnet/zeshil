@@ -110,7 +110,7 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
             target_user_id: target.id,
             application_id: from.application.id
           )
-          redis_key = "callback"+qiscus_room_id.to_s+"application="+app.id.to_s
+          redis_key = "callback"+room[:id].to_s+"application="+app.id.to_s
 
           if !$redis.get(redis_key).present?
             $redis.set(redis_key, true)
