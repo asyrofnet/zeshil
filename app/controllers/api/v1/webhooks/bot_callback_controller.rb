@@ -65,6 +65,7 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
       room = params[:payload][:room]
       room_participants = room[:participants]
       message = params[:payload][:message]
+      room_type = room[:type]
 
       # first, match all data from SDK using qisme database,
       # this ensure the data still relevant in qisme
@@ -101,11 +102,13 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
           raise InputError.new("Target participant is not found in database.")
         end
         chat_name = "Group Chat Name"
+
+        is_group_chat = !(room_type == "single".downcase)
         chat_room = ChatRoom.new(
             group_chat_name: chat_name,
             qiscus_room_name: chat_name,
             qiscus_room_id: room[:id],
-            is_group_chat: false,
+            is_group_chat: is_group_chat,
             user_id: from.id,
             target_user_id: target.id,
             application_id: from.application.id
@@ -116,9 +119,9 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
             $redis.set(redis_key, true)
             $redis.expire(redis_key, SessionLength)
             chat_room.save!
-
-            ChatUser.create(chat_room_id: chat_room.id, user_id: from.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: from.id)
-            ChatUser.create(chat_room_id: chat_room.id, user_id: target.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: target.id)
+            participants.each do |roompeople|
+              ChatUser.create(chat_room_id: chat_room.id, user_id: roompeople.id) unless ChatUser.exists?(chat_room_id: chat_room.id, user_id: roompeople.id)
+            end
           else
             chat_room = ChatRoom.find_by(qiscus_room_id: room[:id], application_id: app.id)
             if !chat_room.present?
