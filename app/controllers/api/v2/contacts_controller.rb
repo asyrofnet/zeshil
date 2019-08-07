@@ -260,17 +260,22 @@ class Api::V2::ContactsController < ProtectedController
             users = User.where("LOWER(phone_number) IN (?)", phone_numbers)
             users = users.where(application_id: @current_user.application.id) # only looking for user where has same application id
             users = users.where.not(phone_number: current_user_phone_number) # exclude ownself to be added
-            
+            new_contacts = Array.new
             #update old contacts with new name
             users.each do |user|
-              contact = Contact.find_or_create_by(user_id: @current_user.id, contact_id: user.id)
+              contact = Contact.find_by(user_id: @current_user.id, contact_id: user.id)
               phone = user.phone_number
               if !contact.nil?
                 if (contact.contact_name != phone_books[phone]) || (!contact.is_active)
                   contact.update!(contact_name: phone_books[phone],is_active:true)
                 end
+              else
+                new_contacts.push({:user_id => @current_user.id, :contact_id => user.id, :contact_name => phone_books[phone]})
               end
             end
+  
+            # add new contact
+            Contact.create(new_contacts) if !new_contacts.empty?
             
             contacts = users.order(fullname: :asc)
     
@@ -305,7 +310,13 @@ class Api::V2::ContactsController < ProtectedController
             message: msg
           }
         }, status: 422 and return
-  
+      rescue ActiveRecord::RecordNotUnique => e
+        render json: {
+          error: {
+            message: "Duplicate request",
+            class: InputError.name
+          }
+      }, status: 422 and return
       rescue => e
         render json: {
           error: {
