@@ -368,18 +368,9 @@ class Api::V2::ContactsController < ProtectedController
           ActiveRecord::Base.transaction do
             users = User.where("LOWER(phone_number) IN (?)", phone_numbers)
             users = users.where(application_id: @current_user.application.id) # only looking for user where has same application id
-            users = users.where.not(phone_number: current_user_phone_number) # exclude ownself to be added
-            
-            #deactivate contacts
-            users.each do |user|
-              contact = Contact.find_by(user_id: @current_user.id, contact_id: user.id)
-              phone = user.phone_number
-              if !contact.nil?
-                if (contact.is_active)
-                  contact.update!(is_active:false)
-                end
-              end
-            end
+            users_ids = users.where.not(phone_number: current_user_phone_number).pluck(:id) # exclude ownself to be added
+            contacts = Contact.where(user_id: @current_user.id, contact_id: users_ids)
+            contacts.update_all(is_active:false)
             
             contacts = users.order(fullname: :asc)
     
