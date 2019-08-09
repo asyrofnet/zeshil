@@ -1,7 +1,7 @@
 require 'net/http'
 require 'curb'
 require 'net/http/post/multipart'
-
+MAX_RETRY = 3
 class QiscusSdk
   def initialize(app_name = "qisme", qiscus_sdk_secret = "qisme-123")
     @BASE_URL = ENV["QISCUS_SDK_URL"] || "https://api.qiscus.com"
@@ -498,16 +498,38 @@ class QiscusSdk
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
-
-      res = http.start do |h|
-        h.use_ssl = (uri.scheme == "https")
-        h.request(req)
+      tries_number = 0
+      server_error = true
+      while (tries_number < MAX_RETRY && server_error )
+        res = http.start do |h|
+          h.use_ssl = (uri.scheme == "https")
+          h.request(req)
+        end
+        server_error = ["504","502",502,504].include? res.code
+        tries_number = tries_number+ 1
       end
+      if res.is_a?(Net::HTTPSuccess)
+        res = JSON.parse(res.body)
+        puts "RESPONSE #{res}"
+        res = res["results"]["file"]["url"]
+        return res
+      else
+        if res.content_type == "application/json"
+          Rails.logger.debug "Upload #{uri} response #{JSON.parse(res.body)}"
+        else
+          Rails.logger.debug "Upload #{uri} response #{res.body}"
+        end
 
-      res = JSON.parse(res.body)
-      puts "RESPONSE #{res}"
-      res = res["results"]["file"]["url"]
-      return res
+        Raven.capture_message("After #{tries_number} number of tries, Error while calling QiscusSdk",
+          level: "error",
+          extra: {
+            url: upload_url,
+            request_parameter: file,
+            response_body: res.body
+          }
+        )
+        raise StandardError.new("After #{tries_number} number of tries, Error while calling Qiscus SDK #{uri.host} return HTTP status code #{res.code} (#{res.message})")
+      end 
   end
 
   def update_profile(email, name = nil, avatar_url = nil, password =nil)
@@ -613,9 +635,13 @@ class QiscusSdk
           req.set_form_data(params)
 
           Rails.logger.debug "#{req_method} #{url} with headers #{req}"
-
-          res = https.request(req)
-
+          tries_number = 0
+          server_error = true
+          while (tries_number < MAX_RETRY && server_error )
+            res = https.request(req)
+            server_error = ["504","502",502,504].include? res.code
+            tries_number = tries_number+ 1
+          end
           if res.is_a?(Net::HTTPSuccess)
             res = JSON.parse(res.body)
 
@@ -628,7 +654,7 @@ class QiscusSdk
               Rails.logger.debug "#{req_method} #{url} response #{res.body}"
             end
 
-            Raven.capture_message("Error while calling QiscusSdk",
+            Raven.capture_message("After #{tries_number} number of tries, Error while calling QiscusSdk",
               level: "error",
               extra: {
                 url: url,
@@ -637,7 +663,7 @@ class QiscusSdk
               }
             )
 
-            raise StandardError.new("Error while calling Qiscus SDK #{uri.host} return HTTP status code #{res.code} (#{res.message})")
+            raise StandardError.new("After #{tries_number} number of tries, Error while calling Qiscus SDK #{uri.host} return HTTP status code #{res.code} (#{res.message})")
           end
 
         else
@@ -647,8 +673,13 @@ class QiscusSdk
 
           Rails.logger.debug "#{req_method} #{url} with headers #{req}"
 
-          res = https.request(req)
-
+          tries_number = 0
+          server_error = true
+          while (tries_number < MAX_RETRY && server_error )
+            res = https.request(req)
+            server_error = ["504","502",502,504].include? res.code
+            tries_number = tries_number+ 1
+          end
           if res.is_a?(Net::HTTPSuccess)
             res = JSON.parse(res.body)
 
@@ -661,7 +692,7 @@ class QiscusSdk
               Rails.logger.debug "#{req_method} #{url} response #{res.body}"
             end
 
-            Raven.capture_message("Error while calling QiscusSdk",
+            Raven.capture_message("After #{tries_number} number of tries, Error while calling QiscusSdk",
               level: "error",
               extra: {
                 url: url,
@@ -670,7 +701,7 @@ class QiscusSdk
               }
             )
 
-            raise StandardError.new("Error while calling Qiscus SDK #{uri.host} return HTTP status code #{res.code} (#{res.message})")
+            raise StandardError.new("After #{tries_number} number of tries, Error while calling Qiscus SDK #{uri.host} return HTTP status code #{res.code} (#{res.message})")
           end
         end
       rescue => e
