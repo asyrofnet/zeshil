@@ -182,7 +182,6 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
 
             # send to worker to avoid 30 seconds timeout limit
             CallbackBotPostcommentWorker.perform_later(payload.to_json)
-
             payloads.push(payload)
           end
 
