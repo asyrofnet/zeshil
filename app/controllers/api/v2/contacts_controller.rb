@@ -145,8 +145,6 @@ class Api::V2::ContactsController < ProtectedController
             contacts = User.includes([:roles, :application,:user_additional_infos]).where("users.application_id = ?", @current_user.application_id).where("users.id IN (?)", contact_id)
             contacts = contacts.order(fullname: :asc)
   
-            total = contacts.count
-  
             # pagination only when exist
             if page.present?
               contacts = contacts.page(page)
@@ -162,6 +160,17 @@ class Api::V2::ContactsController < ProtectedController
               limit = 25
               contacts = contacts.limit(25)
             end
+
+            # Hide Dexy Bot in Discover from unauthorized users (Currently with dummy)
+            # ToDO: Change dummy authorized numbers list
+            dexy_bot_id = 61793
+            dummy_authorized_phone_number = ['+6283806305699', '+6281214690096', '+6282116222261', '+6282213620002']
+            phone_number = @current_user.phone_number
+            if not dummy_authorized_phone_number.include? phone_number
+              contacts = contacts.reject { |x| x[:id] == dexy_bot_id }
+            end
+
+            total = contacts.count
   
             total_page = (total / limit.to_f).ceil
 
