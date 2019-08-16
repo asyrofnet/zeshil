@@ -711,11 +711,17 @@ class QiscusSdk
 
     # request using curb
     def curb_post(req_method, url, params = {})
+      number_of_try = 0
       begin
-        res = Curl.post(url, params) do |curl|
-          curl.headers["QISCUS_SDK_APP_ID"] = @QISCUS_SDK_APP_ID
-          curl.headers["QISCUS_SDK_SECRET"] = @QISCUS_SDK_SECRET
-          # curl.verbose = true
+        need_to_try = true
+        while (need_to_try && (number_of_try < MAX_RETRY))
+          res = Curl.post(url, params) do |curl|
+            curl.headers["QISCUS_SDK_APP_ID"] = @QISCUS_SDK_APP_ID
+            curl.headers["QISCUS_SDK_SECRET"] = @QISCUS_SDK_SECRET
+            # curl.verbose = true
+          end
+          need_to_try = ["504","502",502,504].include? res.response_code
+          number_of_try = number_of_try+1
         end
 
         Rails.logger.debug "#{req_method} #{url} with params #{params}"
@@ -727,7 +733,7 @@ class QiscusSdk
           else
             error = JSON.parse(res.body_str)
             message = error['error']['detailed_messages'].to_a.join(", ").capitalize
-            message = "Error while calling Qiscus SDK #{url} return HTTP status code #{res.response_code}. #{message}."
+            message = "After #{number_of_try} number of tries, Error while calling Qiscus SDK #{url} return HTTP status code #{res.response_code}. #{message}."
 
             Raven.capture_message(message,
               level: "error",
@@ -741,7 +747,7 @@ class QiscusSdk
             return res.response_code, error
           end
         else
-          raise StandardError.new("Qiscus SDK return HTTP status code #{res.response_code}.")
+          raise StandardError.new("After #{number_of_try} number of tries, Qiscus SDK return HTTP status code #{res.response_code}.")
         end
       rescue => e
         raise StandardError.new(e.message)
