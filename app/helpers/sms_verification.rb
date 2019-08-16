@@ -97,7 +97,12 @@ class SmsVerification
         )
       rescue Twilio::REST::RestError => e
           puts e.message
-          
+          Raven.capture_message("Error while calling Twilio API with phone #{phone_no}",
+            level: "error",
+            extra: {
+              response_body: e
+            }
+          )
           return e.message
       end
   end
@@ -201,7 +206,12 @@ class SmsVerification
           Rails.logger.debug "POST #{uri} response #{res.body}"
         end
         error_response = res.body.to_s
-        
+        Raven.capture_message("Error while calling Bigbox API with phone #{phone_number}",
+          level: "error",
+          extra: {
+            response_body: res.body
+          }
+        )
         raise StandardError.new("Error while calling Bigbox API with HTTP status #{res.code} (#{res.message})")
       end
 
@@ -250,7 +260,12 @@ class SmsVerification
           Rails.logger.debug "POST #{uri} response #{res.body}"
         end
         error_response = res.body.to_s
-        
+        Raven.capture_message("Error while calling Mainapi API with phone #{phone_number}",
+          level: "error",
+          extra: {
+            response_body: res.body
+          }
+        )
         raise StandardError.new("Error while calling Mainapi API with HTTP status #{res.code} (#{res.message})")
       end
 
