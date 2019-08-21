@@ -146,6 +146,7 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
       # if post comment, then pass to worker, and sender is not from telkom news bot
       # otherwise just leave it as is it
       payloads = Array.new
+      
       if type.start_with? "post_comment" # handle if type is "post_comment_mobile" and "post_comment_rest"
         participants.each do | participant |
           # only send callback webhook to all participant who is official account
@@ -181,7 +182,6 @@ class Api::V1::Webhooks::BotCallbackController < ApplicationController
 
             # send to worker to avoid 30 seconds timeout limit
             CallbackBotPostcommentWorker.perform_later(payload.to_json)
-
             payloads.push(payload)
           end
 

@@ -64,9 +64,12 @@ class CallbackBotPostcommentWorker < ActiveJob::Base
 
       if res.is_a?(Net::HTTPSuccess)
         if res.content_type == "application/json"
-          message = JSON.parse(res.body)
-
-          return message.to_json
+          begin
+            message = JSON.parse(res.body)
+            return message.to_json
+          rescue JSON::ParserError
+            return res.body
+          end
         else
           # if not json, then it 
           return res.body
