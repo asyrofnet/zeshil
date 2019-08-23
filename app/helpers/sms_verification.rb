@@ -179,9 +179,6 @@ class SmsVerification
       https.use_ssl = true
       _headers = {}
       _headers["Content-Type"]  = "application/x-www-form-urlencoded"
-      _headers["X-MainAPI-Senderid"]  = sms_sender
-      _headers["X-MainAPI-Username"]  = MAINAPI_USERNAME
-      _headers["X-MainAPI-Password"]  = MAINAPI_PASSWORD
       _headers["x-api-key"] = BIGBOX_API_KEY
 
       params = {
