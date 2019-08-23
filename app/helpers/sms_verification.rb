@@ -4,6 +4,11 @@ require 'base64'
 require 'net/http'
 
 class SmsVerification
+  TWILIO_NAME = "twilio"
+  INFOBIP_NAME = "infobip"
+  NEXMO_NAME = "nexmo"
+  MAINAPI_NAME = "mainapi"
+  BIGBOX_NAME = "bigbox"
   SMS_SENDER = ENV["SMS_SENDER"] || "Kiwari"
   NEXMO_API_KEY = ENV['NEXMO_API_KEY'] || "DUMMY_OR_DEVELOPMENT_API_KEY"
   NEXMO_API_SECRET = ENV['NEXMO_API_SECRET'] || "DUMMY_SECRET_API_KEY"
@@ -20,6 +25,9 @@ class SmsVerification
   MAINAPI_GRANT_TYPE = ENV['MAINAPI_GRANT_TYPE']
   MAINAPI_USERNAME = ENV['MAINAPI_USERNAME']
   MAINAPI_PASSWORD = ENV['MAINAPI_PASSWORD']
+
+  BIGBOX_API_KEY = ENV['BIGBOX_API_KEY']
+
 
   def self.request(user, code)
     phone_no = user.phone_number
@@ -58,14 +66,16 @@ class SmsVerification
   end
 
   def self.send(provider, phone_no, verify_text, sms_sender)
-    if provider == "twilio"
+    if provider == TWILIO_NAME
       send_using_twilio(phone_no, verify_text, sms_sender)
-    elsif provider == "infobip"
+    elsif provider == INFOBIP_NAME
       send_using_infobip(phone_no, verify_text, sms_sender)
-    elsif provider == "nexmo"
+    elsif provider == NEXMO_NAME
       send_using_nexmo(phone_no, verify_text, sms_sender)
-    elsif provider == "mainapi"
+    elsif provider == MAINAPI_NAME
       send_using_mainapi(phone_no, verify_text, sms_sender)
+    elsif provider == BIGBOX_NAME
+      send_using_bigbox(phone_no, verify_text, sms_sender)
     end
   end
 
@@ -87,6 +97,13 @@ class SmsVerification
         )
       rescue Twilio::REST::RestError => e
           puts e.message
+          Raven.capture_message("Error while calling Twilio API with phone #{phone_no}",
+            level: "error",
+            extra: {
+              response_body: e
+            }
+          )
+          return e.message
       end
   end
 
@@ -152,8 +169,58 @@ class SmsVerification
     end
   end
 
+  def self.send_using_bigbox(phone_number, verify_text, sms_sender)
+    begin
+      error_response = ""
+      # bigbox url api for sending single text premium message
+      uri = URI.parse('https://api.thebigbox.id/sms-premium/1.0.0/messages')
+      https = Net::HTTP.new(uri.host, uri.port)
+
+      https.use_ssl = true
+      _headers = {}
+      _headers["Content-Type"]  = "application/x-www-form-urlencoded"
+      _headers["x-api-key"] = BIGBOX_API_KEY
+
+      params = {
+        "msisdn": phone_number,
+        "content": verify_text
+      }
+
+      req = Net::HTTP::Put.new(uri.path, _headers)
+      req.set_form_data(params)
+
+      res = https.request(req)
+      puts res.body
+      if res.is_a?(Net::HTTPSuccess)
+        res = JSON.parse(res.body)
+
+        Rails.logger.debug "POST #{uri} response #{res}"
+        return res
+      else
+        if res.content_type == "application/json"
+          Rails.logger.debug "POST #{uri} response #{JSON.parse(res.body)}"
+        else
+          Rails.logger.debug "POST #{uri} response #{res.body}"
+        end
+        error_response = res.body.to_s
+        Raven.capture_message("Error while calling Bigbox API with phone #{phone_number}",
+          level: "error",
+          extra: {
+            response_body: res.body
+          }
+        )
+        raise StandardError.new("Error while calling Bigbox API with HTTP status #{res.code} (#{res.message})")
+      end
+
+    rescue => e
+      Rails.logger.debug e.message
+      return error_response
+    end
+  end
+
   def self.send_using_mainapi(phone_number, verify_text, sms_sender)
     begin
+      error_response = ""
       # get mainapi access token
       access_token = get_mainapi_token
 
@@ -189,12 +256,19 @@ class SmsVerification
         else
           Rails.logger.debug "POST #{uri} response #{res.body}"
         end
-
+        error_response = res.body.to_s
+        Raven.capture_message("Error while calling Mainapi API with phone #{phone_number}",
+          level: "error",
+          extra: {
+            response_body: res.body
+          }
+        )
         raise StandardError.new("Error while calling Mainapi API with HTTP status #{res.code} (#{res.message})")
       end
 
     rescue => e
       Rails.logger.debug e.message
+      return error_response
     end
   end
 
