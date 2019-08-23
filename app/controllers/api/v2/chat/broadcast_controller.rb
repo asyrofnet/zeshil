@@ -43,6 +43,10 @@ class Api::V2::Chat::BroadcastController < ProtectedController
         type = params[:type] || type_text
         message = params[:message]
         payload = params[:payload]
+        if payload.present?
+          payload = payload.to_json
+       end
+
 
         if message.nil? && type == type_text
           raise InputError.new("If type is text please send the message")
