@@ -124,6 +124,7 @@ class SmsVerification
 
   def self.send_using_infobip(phone_number, verify_text, sms_sender)
     begin
+      error_response = ""
       # infobip url api for sending single text message
       uri = URI.parse('http://107.20.199.106/restapi/sms/1/text/single')
       https = Net::HTTP.new(uri.host, uri.port)
@@ -155,12 +156,19 @@ class SmsVerification
         else
           Rails.logger.debug "POST #{uri} response #{res.body}"
         end
-
+        error_response = res.body.to_s
+        Raven.capture_message("Error while calling Infobip API with phone #{phone_number}",
+          level: "error",
+          extra: {
+            response_body: res.body
+          }
+        )
         raise StandardError.new("Error while calling InfoBip API with HTTP status #{res.code} (#{res.message})")
       end
 
     rescue => e
       Rails.logger.debug e.message
+      return error_response
     end
   end
 
