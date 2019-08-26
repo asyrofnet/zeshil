@@ -157,6 +157,12 @@ class SmsVerification
           Rails.logger.debug "POST #{uri} response #{res.body}"
         end
         error_response = res.body.to_s
+        Raven.capture_message("Error while calling Infobip API with phone #{phone_number}",
+          level: "error",
+          extra: {
+            response_body: res.body
+          }
+        )
         raise StandardError.new("Error while calling InfoBip API with HTTP status #{res.code} (#{res.message})")
       end
 
