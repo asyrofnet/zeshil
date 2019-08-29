@@ -75,10 +75,10 @@ class CallbackBotPostcommentWorker < ActiveJob::Base
           return res.body
         end
       else
-        raise StandardError.new("Error while calling callback at #{url} return HTTP status code #{res.code} (#{res.message}): #{res.body}")
+        #raise StandardError.new("Error while calling callback at #{url} return HTTP status code #{res.code} (#{res.message}): #{res.body}")
       end
     rescue => e
-      raise StandardError.new(e.message)
+      Rails.logger.debug e.message
     end
   end
 
