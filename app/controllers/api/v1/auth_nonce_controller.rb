@@ -382,7 +382,8 @@ class Api::V1::AuthNonceController < ApplicationController
         else
           render json: {
             error: {
-              message: "Can't find user or wrong passcode."
+              message: "Can't find user or wrong passcode.",
+              class: InputError.name
             }
           }, status: 404 and return
         end
