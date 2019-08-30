@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   validates :email, length: { minimum: 1}, email: true, allow_nil: true, allow_blank: true
   validates :qiscus_email, email: true, presence: true # email registered to Qiscus SDK
   # validates :phone_number, phony_plausible: { with: /\A\+\d+/ }, allow_nil: true, allow_blank: true
-  validates :phone_number, presence: true, allow_nil: true, allow_blank: true
+  validates :phone_number, presence: true, allow_nil: true, allow_blank: true,uniqueness: { scope: :application_id }
   # phony_normalize :phone_number
   # validates_plausible_phone :phone_number, with: /\A\+\d+/
   enum gender: [ :male, :female ]
