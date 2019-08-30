@@ -23,7 +23,13 @@ class Format < ActiveRecord::Base
 
   def self.get_ios_version_number(request)
     user_agent = request.user_agent
-    version_start = user_agent.index("iwari/")+"iwari/".length
+    user_agent = user_agent.downcase
+    app_name = "chataja/"
+    version_start = 0
+    if !user_agent.index(app_name).present?
+      app_name = "kiwari/"
+    end
+    version_start = user_agent.index(app_name)+app_name.length
     subs_build = user_agent[version_start..version_start+6]
     start_sub = 0
     end_sub = subs_build.index("(") || subs_build.length
