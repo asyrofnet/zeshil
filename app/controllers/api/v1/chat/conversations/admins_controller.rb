@@ -48,7 +48,8 @@ class Api::V1::Chat::Conversations::AdminsController < ProtectedController
       render json: {
         error: {
           message: e.message,
-          class: e.class.name
+          class: e.class.name,
+          backtrace: e.backtrace.join("\n")
         }
       }, status: 422
     end
