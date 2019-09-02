@@ -19,13 +19,15 @@ class BroadcastMessageJobV2 < ActiveJob::Base
   
     private
       def broadcastUnitSender(sender_user, target_user, message,type,payload, broadcast_message_id,application)
+        
         is_sent = false
         retry_counter = 0
         qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
         extras = {"is_broadcast": true}.to_json
-
+        
         qiscus_room_id = get_qiscus_room_id(sender_user,target_user)
         comment = nil
+        
         if (qiscus_room_id.present?)
           
           begin
@@ -49,7 +51,7 @@ class BroadcastMessageJobV2 < ActiveJob::Base
           room = qiscus_sdk.get_or_create_room_with_target_rest(emails)
 
 
-          chat_name = sender_user.fullname+" and "+target_user.fullname
+          chat_name = sender_user.fullname.to_s+" and "+target_user.fullname.to_s
           
           chat_room = ChatRoom.find_or_initialize_by(application_id: application.id, qiscus_room_id: room.id)
           chat_room.update!(
