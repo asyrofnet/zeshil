@@ -5,6 +5,7 @@ class BroadcastMessageJobV2 < ActiveJob::Base
       application = sender.application
   
       target_user_emails.each do |target_email|
+        sleep(1.0/10.0)
         target_user = User.find_by(qiscus_email: target_email)
         if !target_user.nil?
           begin
@@ -25,7 +26,7 @@ class BroadcastMessageJobV2 < ActiveJob::Base
 
         qiscus_room_id = get_qiscus_room_id(sender_user,target_user)
         comment = nil
-        while ( (is_sent == false) && (retry_counter < 5) && qiscus_room_id.present? ) do
+        if (qiscus_room_id.present?)
           
           begin
             comment = qiscus_sdk.post_comment( sender_user.qiscus_token, qiscus_room_id, message,type,payload)
