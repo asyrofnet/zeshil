@@ -5,11 +5,11 @@ class BroadcastMessageJobV2 < ActiveJob::Base
       application = sender.application
   
       target_user_emails.each do |target_email|
-        sleep(1.0/10.0)
+        sleep(1.0/20.0)
         target_user = User.find_by(qiscus_email: target_email)
         if !target_user.nil?
           begin
-          broadcastUnitSender(sender, target_user, message,type,payload, broadcast_message_id,application)
+            broadcastUnitSender(sender, target_user, message,type,payload, broadcast_message_id,application)
           rescue
           end
         end
