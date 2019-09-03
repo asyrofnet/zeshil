@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190619044406) do
+ActiveRecord::Schema.define(version: 20190903061225) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -87,7 +87,6 @@ ActiveRecord::Schema.define(version: 20190619044406) do
   end
 
   create_table "broadcast_receipt_histories", force: :cascade do |t|
-    t.integer "chat_room_id", null: false
     t.integer "user_id", null: false
     t.integer "broadcast_message_id", null: false
     t.datetime "sent_at"
@@ -367,7 +366,6 @@ ActiveRecord::Schema.define(version: 20190619044406) do
   add_foreign_key "broadcast_messages", "applications", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_messages", "users", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_receipt_histories", "broadcast_messages", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "broadcast_receipt_histories", "chat_rooms", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_receipt_histories", "users", on_update: :cascade, on_delete: :cascade
   add_foreign_key "call_logs", "applications", on_update: :cascade, on_delete: :cascade
   add_foreign_key "call_logs", "users", column: "callee_user_id", on_update: :cascade, on_delete: :cascade

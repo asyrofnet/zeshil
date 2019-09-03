@@ -31,10 +31,17 @@ class BroadcastMessageJobV2 < ActiveJob::Base
         if (qiscus_room_id.present?)
           
           begin
-            comment = qiscus_sdk.post_comment( sender_user.qiscus_token, qiscus_room_id, message,type,payload)
+            comment = qiscus_sdk.post_comment(sender_user.qiscus_token, qiscus_room_id, message,type,payload)
           rescue => e
           end
+
           is_sent = true if comment.present?
+          sent_at = nil
+          if is_sent == true
+            sent_at = Time.now
+          end
+          history = BroadcastReceiptHistory.create_history(sender_user.id, comment.id, sent_at)
+
           retry_counter += 1
         end  
       end
@@ -50,7 +57,7 @@ class BroadcastMessageJobV2 < ActiveJob::Base
           emails = [sender_user.qiscus_email, target_user.qiscus_email]
           room = qiscus_sdk.get_or_create_room_with_target_rest(emails)
 
-
+          
           chat_name = sender_user.fullname.to_s+" and "+target_user.fullname.to_s
           
           chat_room = ChatRoom.find_or_initialize_by(application_id: application.id, qiscus_room_id: room.id)
