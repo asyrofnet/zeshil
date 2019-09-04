@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # User stable release of ruby 2.4.0 for this project
-ruby '2.4.1'
+ruby '2.6.3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.0', '>= 5.1.0'
 # Use postgresql as the database for Active Record
