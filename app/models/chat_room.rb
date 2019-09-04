@@ -389,6 +389,7 @@ class ChatRoom < ActiveRecord::Base
     qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
     chats.each do |chat_room|
       qiscus_sdk.add_room_participants(emails, chat_room.qiscus_room_id.to_i)
+      new_chat_users = Array.new
       new_participant_ids.each do |uid|
         tmp = Hash.new
         tmp[:chat_room_id] = chat_room.id
@@ -397,7 +398,7 @@ class ChatRoom < ActiveRecord::Base
       end
       new_chat_users = new_chat_users.uniq
       result = ChatUser.create(new_chat_users)
-      results >> result
+      results << result
     end
     return results
   end
