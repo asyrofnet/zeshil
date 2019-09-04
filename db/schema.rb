@@ -46,6 +46,8 @@ ActiveRecord::Schema.define(version: 20190903061225) do
     t.boolean "is_send_message_pn", default: false
     t.boolean "is_send_call_pn", default: false
     t.boolean "is_coaching_module_connected", default: false
+    t.string "default_locale", default: "en"
+    t.boolean "is_locale_activated", default: false
     t.index ["app_id"], name: "index_applications_on_app_id", unique: true
   end
 
