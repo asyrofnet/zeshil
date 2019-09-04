@@ -19,7 +19,6 @@ class BroadcastMessageJobV2 < ActiveJob::Base
   
     private
       def broadcastUnitSender(sender_user, target_user, message,type,payload, broadcast_message_id,application)
-        
         is_sent = false
         retry_counter = 0
         qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)

@@ -19,4 +19,13 @@ class BroadcastReceiptHistory < ActiveRecord::Base
       return false
     end
   end
+
+  def self.get_history(user_id)
+    if user_id != nil
+      history = BroadcastReceiptHistory.select('broadcast_message_id').where('user_id = ?', user_id).distinct
+      return history
+    else
+      return false
+    end
+  end
 end
