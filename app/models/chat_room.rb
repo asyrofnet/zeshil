@@ -380,6 +380,28 @@ class ChatRoom < ActiveRecord::Base
     puts "Total : #{single_chat_user.count}"
   end
 
+  def self.add_participant_to_groups(users,chats)
+    emails = users.pluck(:qiscus_email)
+    new_participant_ids = users.pluck(:id)
+    results = []
+
+    application = users.first.application
+    qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
+    chats.each do |chat_room|
+      qiscus_sdk.add_room_participants(emails, chat_room.qiscus_room_id.to_i)
+      new_participant_ids.each do |uid|
+        tmp = Hash.new
+        tmp[:chat_room_id] = chat_room.id
+        tmp[:user_id] = uid
+        new_chat_users.push(tmp)
+      end
+      new_chat_users = new_chat_users.uniq
+      result = ChatUser.create(new_chat_users)
+      results >> result
+    end
+    return results
+  end
+
   def self.remove_participant_from_groups(user)
     # step 1
     user_groups = user.chat_rooms.where(is_group_chat: true)
