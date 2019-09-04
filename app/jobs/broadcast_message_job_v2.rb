@@ -29,19 +29,16 @@ class BroadcastMessageJobV2 < ActiveJob::Base
         comment = nil
         
         if (qiscus_room_id.present?)
-          
           begin
             comment = qiscus_sdk.post_comment(sender_user.qiscus_token, qiscus_room_id, message,type,payload)
           rescue => e
           end
-
           is_sent = true if comment.present?
           sent_at = nil
           if is_sent == true
             sent_at = Time.now
           end
           BroadcastReceiptHistory.create_history(sender_user.id, broadcast_message_id, sent_at)
-
           retry_counter += 1
         end  
       end

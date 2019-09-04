@@ -68,7 +68,7 @@ class Api::V2::Chat::BroadcastController < ProtectedController
             broadcast_message.save!
 
             # send broadcast message in background job
-            BroadcastMessageJobV2.perform_later(@current_user, target_qiscus_emails,  message,type,payload, broadcast_message.id)
+            BroadcastMessageJobV2.perform_now(@current_user, target_qiscus_emails,  message,type,payload, broadcast_message.id)
   
         end
   
