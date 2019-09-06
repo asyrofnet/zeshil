@@ -283,7 +283,7 @@ class Dashboard::Admin::UsersController < AdminController
             group_admin_count = chat_room.chat_users.where(is_group_admin: true).count
             if group_admin_count == 0
               chat_user = chat_room.chat_users.first
-              chat_user.update_attribute(:is_group_admin, true)
+              chat_user.update_attribute(:is_group_admin, true) if chat_user.present?
             end
           end
         end
