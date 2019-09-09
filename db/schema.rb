@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 20190905065331) do
     t.datetime "read_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "phonenumber", null: false
+    t.string "phonenumber"
   end
 
   create_table "call_logs", force: :cascade do |t|

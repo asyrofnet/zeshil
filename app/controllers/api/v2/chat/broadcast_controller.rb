@@ -67,7 +67,7 @@ class Api::V2::Chat::BroadcastController < ProtectedController
             broadcast_message_id = broadcast_message.id
           end
           # send broadcast message in background job
-          BroadcastMessageJobV2.perform_now(@current_user, target_qiscus_emails,  message,type,payload, broadcast_message.id, phone_numbers)
+          BroadcastMessageJobV2.perform_now(@current_user, target_qiscus_emails,  message,type,payload, broadcast_message_id)
         end
   
         render json: {

@@ -1,15 +1,14 @@
 class BroadcastMessageJobV2 < ActiveJob::Base
     queue_as :broadcast_starter
   
-    def perform(sender, target_user_emails, message,type,payload, broadcast_message_id, phone_numbers)
+    def perform(sender, target_user_emails, message,type,payload, broadcast_message_id)
       application = sender.application
-  
       target_user_emails.each do |target_email|
         sleep(1.0/20.0)
         target_user = User.find_by(qiscus_email: target_email)
         if !target_user.nil?
           begin
-            broadcastUnitSender(sender, target_user, message,type,payload, broadcast_message_id,application, phone_numbers)
+            broadcastUnitSender(sender, target_user, message,type,payload, broadcast_message_id,application)
           rescue
           end
         end
@@ -18,7 +17,7 @@ class BroadcastMessageJobV2 < ActiveJob::Base
     end
   
     private
-      def broadcastUnitSender(sender_user, target_user, message,type,payload, broadcast_message_id,application, phone_numbers)
+      def broadcastUnitSender(sender_user, target_user, message,type,payload, broadcast_message_id,application)
         is_sent = false
         retry_counter = 0
         qiscus_sdk = QiscusSdk.new(application.app_id, application.qiscus_sdk_secret)
@@ -37,7 +36,8 @@ class BroadcastMessageJobV2 < ActiveJob::Base
           if is_sent == true
             sent_at = Time.now
           end
-          BroadcastReceiptHistory.create_history(sender_user.id, broadcast_message_id, sent_at, phone_numbers)
+          phonenumber = '+6282116222261'
+          BroadcastReceiptHistory.create_history(sender_user.id, broadcast_message_id, sent_at, phonenumber)
           retry_counter += 1
         end  
       end

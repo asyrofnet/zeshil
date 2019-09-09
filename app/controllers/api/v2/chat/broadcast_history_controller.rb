@@ -31,7 +31,8 @@ class Api::V2::Chat::BroadcastHistoryController < ProtectedController
                 id: x.id,
                 message: x.broadcast_message.message,
                 is_sent: is_sent,
-                sent_at: x.sent_at
+                sent_at: x.sent_at,
+                target: x.phonenumber
             })
         end
         render json: {
