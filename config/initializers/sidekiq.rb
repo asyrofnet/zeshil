@@ -18,6 +18,6 @@ end
 
 # https://github.com/mperham/sidekiq/wiki/Advanced-Options
 Sidekiq.default_worker_options = {
-  'backtrace' => true, # save backtrace, for easy debug
+  'backtrace' => true, # save backtrace, for easy debug, nice
   'retry' => 3 # max retry
 }
