@@ -1,6 +1,6 @@
 Sidekiq.configure_server do |config|
   if ENV["REDIS_URL"] == "redis-secret-stag"
-    url = "redis://:UD4ywLh7V13N4bNe@localhost:6379")
+    url = "redis://:UD4ywLh7V13N4bNe@redis-persistent-x77cx:6379/0")
     config.redis = { url: url, network_timeout: 5}
   else
     config.redis = { url: ENV['REDIS_URL'], network_timeout: 5}
@@ -9,7 +9,7 @@ end
 
 Sidekiq.configure_client do |config|
   if ENV["REDIS_URL"] == "redis-secret-stag"
-    url = "redis://:UD4ywLh7V13N4bNe@localhost:6379")
+    url = "redis://:UD4ywLh7V13N4bNe@redis-persistent-x77cx:6379/0")
     config.redis = { url: url, size: 3 }
   else
     config.redis = { url: ENV['REDIS_URL'], size: 3 }
