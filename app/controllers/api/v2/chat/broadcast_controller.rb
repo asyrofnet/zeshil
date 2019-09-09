@@ -65,9 +65,11 @@ class Api::V2::Chat::BroadcastController < ProtectedController
 
           if broadcast_message.save!
             broadcast_message_id = broadcast_message.id
+            # send broadcast message in background job
+            BroadcastMessageJobV2.perform_later(@current_user, target_qiscus_emails, message, type, payload, broadcast_message.id, phone_numbers)
+          else
+            raise InputError.new("Broadcast message not created") 
           end
-          # send broadcast message in background job
-          BroadcastMessageJobV2.perform_now(@current_user, target_qiscus_emails,  message,type,payload, broadcast_message_id)
         end
   
         render json: {

@@ -8,7 +8,7 @@ class BroadcastReceiptHistory < ActiveRecord::Base
   default_scope { joins(:user)}
 
   def self.create_history(sender, broadcast_message_id, sent_at, target)
-    if user_id != nil && broadcast_message_id != nil
+    if sender != nil && broadcast_message_id != nil && target != nil
       brh = BroadcastReceiptHistory.new(user_id: sender, broadcast_message_id: broadcast_message_id, sent_at: sent_at, phonenumber: target)
       if brh.save!
         return true
