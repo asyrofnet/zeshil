@@ -23,7 +23,7 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 15 } %>
 
 development:
-  # <<: *default
+  <<: *default
   # host: <%= ENV['APP_DATABASE_HOST'] %>
   # port: <%= ENV['APP_DATABASE_PORT'] %>
   # username: <%= ENV['APP_DATABASE_USERNAME'] %>
@@ -62,7 +62,7 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  # <<: *default
+  <<: *default
   # host: <%= ENV['APP_DATABASE_HOST'] %>
   # port: <%= ENV['APP_DATABASE_PORT'] %>
   # username: <%= ENV['APP_DATABASE_USERNAME'] %>
@@ -90,7 +90,7 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  # <<: *default
+  <<: *default
   # host: <%= ENV['APP_DATABASE_HOST'] %>
   # port: <%= ENV['APP_DATABASE_PORT'] %>
   # username: <%= ENV['APP_DATABASE_USERNAME'] %>
