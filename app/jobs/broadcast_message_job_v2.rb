@@ -1,7 +1,7 @@
 class BroadcastMessageJobV2 < ActiveJob::Base
     queue_as :broadcast_starter
   
-    def perform(sender, target_user_emails, message,type,payload, broadcast_message_id, phone_numbers)
+    def perform(sender, target_user_emails, message,type,payload, broadcast_message_id)
       application = sender.application
       i = 0
       target_user_emails.each do |target_email|
@@ -9,7 +9,7 @@ class BroadcastMessageJobV2 < ActiveJob::Base
         target_user = User.find_by(qiscus_email: target_email)
         if !target_user.nil?
           begin
-            broadcastUnitSender(sender, target_user, message, type, payload, broadcast_message_id, application, phone_numbers[i])
+            broadcastUnitSender(sender, target_user, message, type, payload, broadcast_message_id, application, target_user.phone_number)
             i += 1
           rescue
           end

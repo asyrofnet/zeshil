@@ -131,7 +131,7 @@ class Dashboard::Admin::BroadcastsController < AdminController
       end
       target_user_ids.delete(sender_user_id) # ensure that sender user id not in target_user_ids
       target_user_ids.uniq
-
+      target_user_emails = User.where(id:target_user_ids).pluck(:qiscus_email)
       # insert broadcast message into db
       broadcast_message = BroadcastMessage.new(
         user_id: sender_user_id,
@@ -142,8 +142,10 @@ class Dashboard::Admin::BroadcastsController < AdminController
       broadcast_message.save!
 
       # send broadcast message in background job
-      BroadcastMessageJob.perform_later(sender_user_id, target_user_ids, message, broadcast_message.id)
-
+      type = "text"
+      payload = nil
+      # send broadcast message in background job
+      BroadcastMessageJobV2.perform_later(sender_user, target_user_emails, message,type,payload ,broadcast_message.id)
       flash[:success] = "Sending broadcast message is on progress."
       redirect_to "/dashboard/admin/broadcasts" and return
 
