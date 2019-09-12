@@ -23,12 +23,13 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 15 } %>
 
 development:
-  <<: *default
-  host: <%= ENV['APP_DATABASE_HOST'] %>
-  port: <%= ENV['APP_DATABASE_PORT'] %>
-  username: <%= ENV['APP_DATABASE_USERNAME'] %>
-  password: <%= ENV['APP_DATABASE_PASSWORD'] %>
-  database: <%= ENV['APP_DATABASE_NAME'] %>
+  # <<: *default
+  # host: <%= ENV['APP_DATABASE_HOST'] %>
+  # port: <%= ENV['APP_DATABASE_PORT'] %>
+  # username: <%= ENV['APP_DATABASE_USERNAME'] %>
+  # password: <%= ENV['APP_DATABASE_PASSWORD'] %>
+  # database: <%= ENV['APP_DATABASE_NAME'] %>
+  url: <%= ENV['DATABASE_URL'] %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -61,12 +62,13 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  host: <%= ENV['APP_DATABASE_HOST'] %>
-  port: <%= ENV['APP_DATABASE_PORT'] %>
-  username: <%= ENV['APP_DATABASE_USERNAME'] %>
-  password: <%= ENV['APP_DATABASE_PASSWORD'] %>
-  database: <%= ENV['APP_DATABASE_TEST_NAME'] %>
+  # <<: *default
+  # host: <%= ENV['APP_DATABASE_HOST'] %>
+  # port: <%= ENV['APP_DATABASE_PORT'] %>
+  # username: <%= ENV['APP_DATABASE_USERNAME'] %>
+  # password: <%= ENV['APP_DATABASE_PASSWORD'] %>
+  # database: <%= ENV['APP_DATABASE_TEST_NAME'] %>
+  url: <%= ENV['DATABASE_URL'] %>
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -88,9 +90,10 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  <<: *default
-  host: <%= ENV['APP_DATABASE_HOST'] %>
-  port: <%= ENV['APP_DATABASE_PORT'] %>
-  username: <%= ENV['APP_DATABASE_USERNAME'] %>
-  password: <%= ENV['APP_DATABASE_PASSWORD'] %>
-  database: <%= ENV['APP_DATABASE_NAME'] %>
+  # <<: *default
+  # host: <%= ENV['APP_DATABASE_HOST'] %>
+  # port: <%= ENV['APP_DATABASE_PORT'] %>
+  # username: <%= ENV['APP_DATABASE_USERNAME'] %>
+  # password: <%= ENV['APP_DATABASE_PASSWORD'] %>
+  # database: <%= ENV['APP_DATABASE_NAME'] %>
+  url: <%= ENV['DATABASE_URL'] %>
