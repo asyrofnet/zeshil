@@ -36,7 +36,7 @@ class BroadcastMessageJobV2 < ActiveJob::Base
           if is_sent == true
             sent_at = Time.now
           end
-          BroadcastReceiptHistory.create_history(sender_user.id, broadcast_message_id, sent_at, phone_number)
+          BroadcastReceiptHistory.create_history(target_user.id, broadcast_message_id, sent_at, phone_number)
           retry_counter += 1
         end  
       end

@@ -89,7 +89,9 @@ class Dashboard::SuperAdmin::Application::BroadcastsController < SuperAdminContr
       receipt_histories = ::BroadcastReceiptHistory.includes(:user).where(broadcast_message_id: broadcast_message_id)
 
       if status == "pending"
-        @receipt_histories = receipt_histories.where(delivered_at: nil).where(read_at: nil)
+        @receipt_histories = receipt_histories.where(sent_at:nil).where(delivered_at: nil).where(read_at: nil)
+      elsif status == "sent"
+        @receipt_histories = receipt_histories.where.not(sent_at: nil)
       elsif status == "delivered"
         @receipt_histories = receipt_histories.where.not(delivered_at: nil).where(read_at: nil)
       elsif status == "read"
