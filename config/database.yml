@@ -94,3 +94,4 @@ production:
   username: <%= ENV['APP_DATABASE_USERNAME'] %>
   password: <%= ENV['APP_DATABASE_PASSWORD'] %>
   database: <%= ENV['APP_DATABASE_NAME'] %>
+  
