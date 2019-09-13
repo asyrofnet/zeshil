@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 if [[ -a /tmp/server.pid ]]; then
 	rm -f /tmp/server.pid
