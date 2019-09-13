@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 if [ $# -eq 0 ] ; then
   echo 'no argument supplied, running precompile'
