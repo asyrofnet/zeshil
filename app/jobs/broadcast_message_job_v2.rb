@@ -9,8 +9,10 @@ class BroadcastMessageJobV2 < ActiveJob::Base
         target_user = User.find_by(qiscus_email: target_email)
         if !target_user.nil?
           begin
-            broadcastUnitSender(sender, target_user, message, type, payload, broadcast_message_id, application, target_user.phone_number)
-            i += 1
+            if BroadcastReceiptHistory.where(user:target_user,broadcast_message_id:broadcast_message_id).where.not(sent_at:nil).empty?
+              broadcastUnitSender(sender, target_user, message, type, payload, broadcast_message_id, application, target_user.phone_number)
+              i += 1
+            end
           rescue
           end
         end
