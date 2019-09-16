@@ -28,9 +28,9 @@ RUN apk add --no-cache --update --virtual .build-deps \
     && apk del .build-deps
 
 COPY . .
-RUN chmod -R 755 scripts \
-    && ./scripts/precompile.sh $DO_PRECOMPILE_ASSETS \
-    && chmod -R 777 storage \
+RUN chmod -R 755 scripts
+RUN ./scripts/precompile.sh $DO_PRECOMPILE_ASSETS
+RUN chmod -R 777 storage \
     && chmod -R 777 log \
     && chmod -R 777 tmp
 
