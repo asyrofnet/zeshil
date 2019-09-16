@@ -41,6 +41,7 @@ class Api::V1::MeController < ProtectedController
   # @apiParam {Text} user[additional_infos][key] You can fill anything in [key]
   # =end
   def update_profile
+    number_of_retry = 5
     begin
       user = @current_user
       application = user.application
@@ -118,7 +119,6 @@ class Api::V1::MeController < ProtectedController
       end
 
       user.save!
-
       additional_infos = user_params[:additional_infos]
 
       # Save or update user additional infos
@@ -159,7 +159,20 @@ class Api::V1::MeController < ProtectedController
         message: msg
       }
       }, status: 422 and return
-
+    rescue ActiveRecord::StaleObjectError => e
+      @current_user.reload
+      number_of_retry = number_of_retry - 1
+      if number_of_retry > 0
+        retry
+      else
+        render json: {
+          error: {
+            message: e.message,
+            class: e.class.name,
+            retry: number_of_retry
+          }
+          }, status: 422 and return
+      end
     rescue => e
       render json: {
         error: {
