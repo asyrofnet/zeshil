@@ -22,21 +22,20 @@ class Api::V2::Chat::BroadcastController < ProtectedController
         end
         phone_numbers = Array.new
         current_user_phone_number = @current_user.phone_number
-          
-          params[:phone_number].each do | phone_number |
-  
-            phone_number = phone_number.strip().delete(' ') # remove all spaces
-            phone_number = phone_number.strip().delete('-') # remove dash
-            phone_number = phone_number.gsub(/[[:space:]]/, '')
-  
-            if phone_number.start_with?("8")
-              phone_number = @current_user.country_code + phone_number
-            elsif phone_number.start_with?("0")
-              phone_number = phone_number[1..-1]
-              phone_number = @current_user.country_code + phone_number
-            end
-             phone_numbers.push(phone_number)
+        
+        params[:phone_number].each do | phone_number |  
+          phone_number = phone_number.strip().delete(' ') # remove all spaces
+          phone_number = phone_number.strip().delete('-') # remove dash
+          phone_number = phone_number.gsub(/[[:space:]]/, '')
+
+          if phone_number.start_with?("8")
+            phone_number = @current_user.country_code + phone_number
+          elsif phone_number.start_with?("0")
+            phone_number = phone_number[1..-1]
+            phone_number = @current_user.country_code + phone_number
           end
+          phone_numbers.push(phone_number)
+        end
 
         target_qiscus_emails = User.where(phone_number: phone_numbers).pluck(:qiscus_email)
         type_text = "text"
@@ -45,8 +44,7 @@ class Api::V2::Chat::BroadcastController < ProtectedController
         payload = params[:payload]
         if payload.present?
           payload = payload.to_json
-       end
-
+        end
 
         if message.nil? && type == type_text
           raise InputError.new("If type is text please send the message")
@@ -56,24 +54,27 @@ class Api::V2::Chat::BroadcastController < ProtectedController
             raise InputError.new("If type is not text please send the payload") 
         end
   
-        
+        broadcast_message_id = nil  
         ActiveRecord::Base.transaction do
           # insert broadcast message into db
-            broadcast_message = BroadcastMessage.new(
-                user_id: @current_user.id,
-                message: message,
-                application_id: @current_user.application.id
-            )
+          broadcast_message = BroadcastMessage.new(
+            user_id: @current_user.id,
+            message: message,
+            application_id: @current_user.application.id
+          )
 
-            broadcast_message.save!
-
+          if broadcast_message.save!
+            broadcast_message_id = broadcast_message.id
             # send broadcast message in background job
-            BroadcastMessageJobV2.perform_later(@current_user, target_qiscus_emails,  message,type,payload, broadcast_message.id)
-  
+            BroadcastMessageJobV2.perform_later(@current_user, target_qiscus_emails, message, type, payload, broadcast_message.id)
+          else
+            raise InputError.new("Broadcast message not created") 
+          end
         end
   
         render json: {
           status: "success",
+          broadcast_message_id: broadcast_message_id,
           phone_numbers: phone_numbers
         }
   

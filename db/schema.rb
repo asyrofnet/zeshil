@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190619044406) do
+ActiveRecord::Schema.define(version: 20190905065331) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,8 @@ ActiveRecord::Schema.define(version: 20190619044406) do
     t.boolean "is_send_message_pn", default: false
     t.boolean "is_send_call_pn", default: false
     t.boolean "is_coaching_module_connected", default: false
+    t.string "default_locale", default: "en"
+    t.boolean "is_locale_activated", default: false
     t.index ["app_id"], name: "index_applications_on_app_id", unique: true
   end
 
@@ -87,7 +89,6 @@ ActiveRecord::Schema.define(version: 20190619044406) do
   end
 
   create_table "broadcast_receipt_histories", force: :cascade do |t|
-    t.integer "chat_room_id", null: false
     t.integer "user_id", null: false
     t.integer "broadcast_message_id", null: false
     t.datetime "sent_at"
@@ -95,6 +96,7 @@ ActiveRecord::Schema.define(version: 20190619044406) do
     t.datetime "read_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "phonenumber", default: "", null: false
   end
 
   create_table "call_logs", force: :cascade do |t|
@@ -367,7 +369,6 @@ ActiveRecord::Schema.define(version: 20190619044406) do
   add_foreign_key "broadcast_messages", "applications", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_messages", "users", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_receipt_histories", "broadcast_messages", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "broadcast_receipt_histories", "chat_rooms", on_update: :cascade, on_delete: :cascade
   add_foreign_key "broadcast_receipt_histories", "users", on_update: :cascade, on_delete: :cascade
   add_foreign_key "call_logs", "applications", on_update: :cascade, on_delete: :cascade
   add_foreign_key "call_logs", "users", column: "callee_user_id", on_update: :cascade, on_delete: :cascade

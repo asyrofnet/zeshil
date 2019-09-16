@@ -29,3 +29,4 @@ docker-compose.yml
 .tool-versions
 settings.json
 coverage
+dump.rdb

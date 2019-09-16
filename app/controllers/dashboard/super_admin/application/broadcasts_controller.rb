@@ -89,7 +89,9 @@ class Dashboard::SuperAdmin::Application::BroadcastsController < SuperAdminContr
       receipt_histories = ::BroadcastReceiptHistory.includes(:user).where(broadcast_message_id: broadcast_message_id)
 
       if status == "pending"
-        @receipt_histories = receipt_histories.where(delivered_at: nil).where(read_at: nil)
+        @receipt_histories = receipt_histories.where(sent_at:nil).where(delivered_at: nil).where(read_at: nil)
+      elsif status == "sent"
+        @receipt_histories = receipt_histories.where.not(sent_at: nil)
       elsif status == "delivered"
         @receipt_histories = receipt_histories.where.not(delivered_at: nil).where(read_at: nil)
       elsif status == "read"
@@ -114,7 +116,6 @@ class Dashboard::SuperAdmin::Application::BroadcastsController < SuperAdminContr
       if sender_user_id == "" || sender_user_id.nil?
         raise InputError.new("Sender user can't be empty.")
       end
-
       sender_user = User.find_by(id: sender_user_id, application_id: params[:application_id])
       if sender_user.nil?
         raise InputError.new("Sender user not found.")
@@ -138,6 +139,8 @@ class Dashboard::SuperAdmin::Application::BroadcastsController < SuperAdminContr
       target_user_ids.delete(sender_user_id) # ensure that sender user id not in target_user_ids
       target_user_ids.uniq
 
+      target_user_emails = User.where(id:target_user_ids).pluck(:qiscus_email)
+
       # insert broadcast message into db
       broadcast_message = BroadcastMessage.new(
         user_id: sender_user_id,
@@ -146,9 +149,10 @@ class Dashboard::SuperAdmin::Application::BroadcastsController < SuperAdminContr
       )
 
       broadcast_message.save!
-
+      type = "text"
+      payload = nil
       # send broadcast message in background job
-      BroadcastMessageJob.perform_later(sender_user_id, target_user_ids, message, broadcast_message.id)
+      BroadcastMessageJobV2.perform_later(sender_user, target_user_emails, message,type,payload ,broadcast_message.id)
 
       flash[:success] = "Sending broadcast message is on progress."
 

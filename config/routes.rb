@@ -409,6 +409,8 @@ Rails.application.routes.draw do
             post :delete, on: :collection
           end
           post '/send_broadcast', to: 'broadcast#send_broadcast'
+          get '/broadcast_history', to: 'broadcast_history#get_history_by_sender'
+          get '/broadcast_detail', to: 'broadcast_history#get_detail_history'
         end
         resources :channel, only: [:show] do
           get :username_to_room_id, on: :collection

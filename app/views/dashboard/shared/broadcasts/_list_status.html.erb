@@ -11,7 +11,8 @@
         <th>Broadcast Sender</th>
         <th>DateTime</th>
         <th>Messages</th>
-        <th>Pending</th>
+        <th>Not Sent</th>
+        <th>Total Sent</th>
         <th>Delivered</th>
         <th>Read</th>
       </tr>
@@ -23,7 +24,8 @@
       <% @broadcast_messages.each do |broadcast_message| %>
       <%
         # counting pending, delivered, and read
-        pending_count = broadcast_message.broadcast_receipt_histories.where(delivered_at: nil).where(read_at: nil).count
+        pending_count = broadcast_message.broadcast_receipt_histories.where(sent_at:nil).where(delivered_at: nil).where(read_at: nil).count
+        sent_count =  broadcast_message.broadcast_receipt_histories.where.not(sent_at:nil).count
         delivered_count = broadcast_message.broadcast_receipt_histories.where.not(delivered_at: nil).where(read_at: nil).count
         read_count = broadcast_message.broadcast_receipt_histories.where.not(read_at: nil).count
 
@@ -42,6 +44,11 @@
         <td>
           <a href="<%= url %>?broadcast_message_id=<%= broadcast_message.id %>&status=pending">
             <%= pending_count %>
+          </a>
+        </td>
+        <td>
+          <a href="<%= url %>?broadcast_message_id=<%= broadcast_message.id %>&status=sent">
+            <%= sent_count %>
           </a>
         </td>
         <td>

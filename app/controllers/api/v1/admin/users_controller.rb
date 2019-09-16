@@ -412,9 +412,9 @@ class Api::V1::Admin::UsersController < ProtectedController
 
       if room_name.present?
         chat_rooms = user.chat_rooms.where("qiscus_room_name ILIKE ?", "%#{room_name}%")
-                    .or(user.chat_rooms.where("group_chat_name ILIKE ?", "%#{room_name}%"))
+                    .or(user.chat_rooms.where("group_chat_name ILIKE ?", "%#{room_name}%")).includes(user: :user_additional_infos)
       else
-        chat_rooms = user.chat_rooms.all
+        chat_rooms = user.chat_rooms.all.includes(user: :user_additional_infos)
       end
 
       if params[:start_date].present? && params[:end_date].present?
@@ -425,10 +425,12 @@ class Api::V1::Admin::UsersController < ProtectedController
       end
 
       total = chat_rooms.count
+      chat_rooms = chat_rooms.page(page).per(limit)
 
       qiscus_room_ids = chat_rooms.pluck(:qiscus_room_id)
 
       if qiscus_room_ids.present? && !qiscus_room_ids.empty?
+        
         # get rooms info from sdk
         qiscus_sdk = QiscusSdk.new(@current_user.application.app_id, @current_user.application.qiscus_sdk_secret)
         sdk_status, chat_room_sdk_info = qiscus_sdk.get_rooms_info(user.qiscus_email, qiscus_room_ids)
@@ -443,10 +445,8 @@ class Api::V1::Admin::UsersController < ProtectedController
         chat_count = chat_rooms.count
       end
 
-      chat_rooms = Kaminari.paginate_array(chat_rooms).page(page).per(limit)
-
       if chat_count.present?
-        total_page = (chat_count / limit.to_f).ceil
+        total_page = (total / limit.to_f).ceil
       else
         total_page = 0
       end
@@ -456,7 +456,8 @@ class Api::V1::Admin::UsersController < ProtectedController
           limit: limit.to_i,
           page: page == nil || page.to_i < 0 ? 0 : page.to_i,
           total_page: total_page,
-          total: chat_count,
+          total: total,
+          total_retrieved_from_sdk: chat_count || 0
         },
 				data: chat_rooms
       }

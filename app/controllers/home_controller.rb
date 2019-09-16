@@ -2,7 +2,7 @@ class HomeController < ApplicationController
 
   def index
       render json: {
-        message: "Kiwari Engine",
+        message: "ChatAja Engine",
         status: 200
       } and return
   end
