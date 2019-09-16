@@ -35,7 +35,7 @@ class Api::V1::Chat::BroadcastController < ProtectedController
         if chat_room.nil?
           raise InputError.new("Chat room not found. Please check qiscus_room_id value.")
         end
-
+=begin
         # Search broadcast receipt histories
         broadcast_receipt_histories = BroadcastReceiptHistory.where(chat_room_id: chat_room.id, user_id: @current_user.id)
 
@@ -56,7 +56,7 @@ class Api::V1::Chat::BroadcastController < ProtectedController
           broadcast_read.update_all(:read_at => time_now)
 
         end
-
+=end
       end
 
       render json: {
