@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   has_many :roles, through: :user_roles
 
   has_many :contacts
-  has_many :users, through: :contacts
+  has_many :users, through: :contacts, source: :contact
 
   has_many :chat_users
   has_many :chat_rooms, through: :chat_users
