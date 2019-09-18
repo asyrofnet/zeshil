@@ -91,12 +91,25 @@ class Bot < ApplicationRecord
         if ((username.split("") - Bot.lowercase - Bot.numbers - Bot.symbols) == []) && (username.split("").length >= leng)
             bot = Bot.where(username: username).first
             if bot.nil?
-                response = {"message": "masukkan fullname bot anda", "send_now": false}
+                response = {"message": "masukkan fullname bot anda, minimum 4 karakter", "send_now": false}
             else
                 response = {"message": "username #{username} sudah terpakai!\nmasukkan username lain!", "send_now": true}
             end
         else
             response[:message] = "format username salah!\nharap ulangi.\n#{Bot.message("format_username")}"
+            response[:send_now] = true
+        end
+        return response
+    end
+
+    def self.check_fullname(params)
+        response = {}
+        fullname = params["fullname"] || "nil"
+
+        if fullname.length > 3
+            response = {"message": "masukkan password bot anda\n#{Bot.message("format_password")}", "send_now": false}
+        else
+            response[:message] = "format fullname salah!\nharap ulangi.Minimum 4 karakter"
             response[:send_now] = true
         end
         return response
