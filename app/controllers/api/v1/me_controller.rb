@@ -104,8 +104,8 @@ class Api::V1::MeController < ProtectedController
       end
 
       description = user_params[:description]
-      if description.present? && !description.nil? && description != ""
-        user.description = description
+      if user_params.key?("description")
+        user.description = description.to_s
       end
 
       country_name = user_params[:country_name]
