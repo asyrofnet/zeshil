@@ -403,6 +403,16 @@ class User < ActiveRecord::Base
     end
   end
 
+  def update_passcode(input_passcode)
+    sql =  "UPDATE users SET passcode = CASE WHEN passcode is null THEN ? ELSE passcode end WHERE id = ? Returning users.passcode"
+    result = User.execute_sql(sql,input_passcode,self.id)
+    result.values.flatten.first
+  end
+
+  def self.execute_sql(*sql_array)
+    connection.execute(send(:sanitize_sql_array, sql_array))
+   end
+
   # Soft delete mechanism
   def destroy
     unless self.deleted?
