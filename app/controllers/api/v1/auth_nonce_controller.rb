@@ -179,7 +179,7 @@ class Api::V1::AuthNonceController < ApplicationController
         # since model using phony_plausible validation it need to be use valid number to register
         if user.phone_number.include?("+628681")
           # send to qiscus
-          messages = "#{application.app_name} : Passcode for account #{user.phone_number} is #{user.passcode}"
+          messages = "#{application.app_name} : Passcode for account #{user.phone_number} is #{passcode}"
           SendToQiscus.send_message(110362, messages)
         end
       end
