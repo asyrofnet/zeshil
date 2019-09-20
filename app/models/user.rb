@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   has_many :roles, through: :user_roles
 
   has_many :contacts
-  has_many :users, through: :contacts
+  has_many :users, through: :contacts, source: :contact
 
   has_many :chat_users
   has_many :chat_rooms, through: :chat_users
@@ -402,6 +402,16 @@ class User < ActiveRecord::Base
       AutoAddContact.perform_later(user_ids, id)
     end
   end
+
+  def update_passcode(input_passcode)
+    sql =  "UPDATE users SET passcode = CASE WHEN passcode is null THEN ? ELSE passcode end WHERE id = ? Returning users.passcode"
+    result = User.execute_sql(sql,input_passcode,self.id)
+    result.values.flatten.first
+  end
+
+  def self.execute_sql(*sql_array)
+    connection.execute(send(:sanitize_sql_array, sql_array))
+   end
 
   # Soft delete mechanism
   def destroy

@@ -19,7 +19,10 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
 
         elsif exist_session["state"] == "fill_fullname"
           exist_session["params"]["fullname"] = params[:message][:text]
-          message = "masukkan password bot anda\n#{Bot.message("format_password")}"
+          response = Bot.check_fullname(exist_session["params"])
+          message = response[:message]
+          send_now = response[:send_now]
+          #message = "masukkan password bot anda\n#{Bot.message("format_password")}"
           exist_session["state"] = "fill_password"
 
         elsif exist_session["state"] == "fill_password"
@@ -154,10 +157,16 @@ class Api::V1::Webhooks::BotBuilderController < ApplicationController
             end
 
           elsif exist_session["editable_bot"] == "fullname"
-            exist_session["params"]["new_fullname"] = params[:message][:text]
-            message = Bot.message("determination")
-            response[:buttons] = {buttons: Bot.create_buttons({buttons: ["ya", "tidak", "/batal"]})}  
-            exist_session["editable_bot"] = "confirm_fullname"
+            name = params[:message][:text]
+            exist_session["params"]["new_fullname"] = name
+            if name.to_s.length > 3
+              message = Bot.message("determination")
+              response[:buttons] = {buttons: Bot.create_buttons({buttons: ["ya", "tidak", "/batal"]})}
+              exist_session["editable_bot"] = "confirm_fullname"
+            else
+              message = "Minimum 4 karakter. silahkan ganti fullname lain"
+              exist_session["editable_bot"] = "fullname"
+            end
           elsif exist_session["editable_bot"] == "confirm_fullname"
             if params[:message][:text] == "ya"
               bot_params = exist_session["params"]

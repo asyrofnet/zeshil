@@ -54,17 +54,16 @@ class Api::V1::PasscodeController < ApplicationController
           # for now, update passcode only when passcode field in database is nil
           # if passcode field not nil its mean user request to resend passcode. Then take the existing passcode value
           # handling race condition with locking
-          user.with_lock do
+          
             if user.passcode.nil? || user.passcode == ""
               passcode = SmsVerification.generate_code(phone_number, application.id)
-              user.update_columns(passcode: passcode)
+              passcode = user.update_passcode(passcode)
             else
               # get current passcode
               passcode = user.passcode
             end
-          end
+          
         end
-
         # then send the passcode sms
         SmsVerification.request(user, passcode)
       end

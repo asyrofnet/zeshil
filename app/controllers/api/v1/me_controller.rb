@@ -104,8 +104,8 @@ class Api::V1::MeController < ProtectedController
       end
 
       description = user_params[:description]
-      if description.present? && !description.nil? && description != ""
-        user.description = description
+      if user_params.key?("description")
+        user.description = description.to_s
       end
 
       country_name = user_params[:country_name]
@@ -516,11 +516,18 @@ class Api::V1::MeController < ProtectedController
 
       def ensure_update_avatar_params
         @avatar_file = params[:avatar_file]
-
+        is_valid_file = true
+        if !defined?(file.content_type) || !defined?(file.original_filename)
+          is_valid_file = false
+        end
         render json: {
           status: 'fail',
-          message: 'invalid avatar file'
-          }, status: 422 unless @avatar_file
+          message: 'invalid avatar file',
+          error: {
+            message:'invalid avatar file',
+            class:InputError.name
+          }
+          }, status: 422 unless is_valid_file
         end
 
       end
