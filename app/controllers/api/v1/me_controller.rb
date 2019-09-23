@@ -41,7 +41,6 @@ class Api::V1::MeController < ProtectedController
   # @apiParam {Text} user[additional_infos][key] You can fill anything in [key]
   # =end
   def update_profile
-    number_of_retry = 5
     begin
       user = @current_user
       application = user.application
@@ -141,7 +140,6 @@ class Api::V1::MeController < ProtectedController
       end
 
     end
-
     render json: {
       data: user.as_json({:show_profile => true})
     }
@@ -161,18 +159,10 @@ class Api::V1::MeController < ProtectedController
       }, status: 422 and return
     rescue ActiveRecord::StaleObjectError => e
       @current_user.reload
-      number_of_retry = number_of_retry - 1
-      if number_of_retry > 0
-        retry
-      else
-        render json: {
-          error: {
-            message: e.message,
-            class: e.class.name,
-            retry: 5-number_of_retry
-          }
-          }, status: 422 and return
-      end
+      render json: {
+        log_message:"retry stale",
+        data: @current_user.as_json({:show_profile => true})
+      }
     rescue => e
       render json: {
         error: {
@@ -193,7 +183,6 @@ class Api::V1::MeController < ProtectedController
   # @apiParam {File} avatar_file Image file
   # =end
   def update_avatar
-    number_of_retry = 5
     begin
       ActiveRecord::Base.transaction do
         qiscus_sdk = QiscusSdk.new(@current_user.application.app_id, @current_user.application.qiscus_sdk_secret)
@@ -222,18 +211,10 @@ class Api::V1::MeController < ProtectedController
         }, status: 422 and return
       rescue ActiveRecord::StaleObjectError => e
         @current_user.reload
-        number_of_retry = number_of_retry - 1
-        if number_of_retry > 0
-          retry
-        else
-          render json: {
-            error: {
-              message: e.message,
-              class: e.class.name,
-              retry: 5-number_of_retry
-            }
-            }, status: 422 and return
-        end
+        render json: {
+          log_message:"retry stale",
+          data: @current_user.as_json({:show_profile => true})
+        } and return
       rescue => e
         render json: {
           error: {
