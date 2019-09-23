@@ -27,6 +27,9 @@ class ContactCreateJob < ActiveJob::Base
       end
 
       # add new contact
-      Contact.create(new_contacts)
+      begin
+        Contact.import(new_contacts)
+      rescue
+      end
     end
   end

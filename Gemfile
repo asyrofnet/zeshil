@@ -99,6 +99,9 @@ gem 'fcm'
 # Multipart POST capability to net/http
 gem 'multipart-post'
 
+#single insert SQL with import
+gem 'activerecord-import'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
