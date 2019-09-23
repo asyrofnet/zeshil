@@ -498,9 +498,9 @@ class Api::V1::MeController < ProtectedController
       def ensure_update_avatar_params
         @avatar_file = params[:avatar_file]
         is_valid_file = true
-        if !defined?(file.content_type) || !defined?(file.original_filename)
-          is_valid_file = false
-        end
+        #if !defined?(file.content_type) || !defined?(file.original_filename)
+        #  is_valid_file = false
+        #end
         render json: {
           status: 'fail',
           message: 'invalid avatar file',
