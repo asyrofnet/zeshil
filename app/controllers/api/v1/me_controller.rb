@@ -76,6 +76,7 @@ class Api::V1::MeController < ProtectedController
         raise InputError.new("Fullname minimum character is 4.")
       end
 
+=begin    
       email = user_params[:email]
       if email.present? && !email.nil? && email != ""
         # before updating user's email or phone number, check if there are no another user
@@ -86,7 +87,7 @@ class Api::V1::MeController < ProtectedController
 
         user.email = (email.nil? || email == "") ? "" : email.strip().delete(' ')
       end
-
+=end
       gender = user_params[:gender]
       if gender.present? && !gender.nil? && gender != ""
         user.gender = gender
